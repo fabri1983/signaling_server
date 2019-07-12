@@ -9,7 +9,7 @@ Enter to directory ```src/main/resources``` and generate self signed certificate
 ```bash
 keytool -genkey -alias tomcat -keyalg RSA -keystore keystore.jks
 ```
-```bash
+```
 Enter keystore password: changeit
 Re-enter new password: changeit
 What is your first and last name?
@@ -36,24 +36,25 @@ Enter key password for <tomcat>
 Enter to directory ```src/main/resources/profiles```.
 ```bash
 openssl genrsa -out jwt_local_private.key 2048
-
+```
 Convert private Key to PKCS#8 format (so Java can read it)
+```bash
 openssl pkcs8 -topk8 -inform PEM -outform DER -in jwt_local_private.key -out jwt_local_private.der -nocrypt
-
+```
 Output public key portion in DER format (so Java can read it)
+```bash
 openssl rsa -in jwt_local_private.key -pubout -outform DER -out jwt_local_public.der
-
 rm -f jwt_local_private.key
 ```
 
 ## Maven Profiles
 **Profiles**  
-- ```local``` (active by default)
-They set JWT Signer's private and public keys.
+- ```local``` (active by default)  
+They set JWT signer and verifier private and public keys.
 
 **Additional profiles**  
-- ```eventbus-local``` (active by default)
-- ```eventbus-dist```
+- ```eventbus-local``` (active by default)  
+- ```eventbus-dist```  
 They remove/add additional dependencies and disable/enable a Spring profile which allow the use of a distributed eventbus.
 When using *eventbus-local* some dependencies are removed and the beans defined in ```DistributedSignalingConfiguration``` are not created.
 When using *eventbus-dist* the opposite occurs.
@@ -62,10 +63,10 @@ When using *eventbus-dist* the opposite occurs.
 ## Build WAR file to deploy in Tomcat (external or with Cargo plugin)
 
 #### Maven pom and Spring Bean Configuration setup
-- Edit *pom.xml*:
-	- add next property:
+- Edit *pom.xml*:  
+	- add next property:  
 		```<javax.websocket.api.version>1.1</javax.websocket.api.version>```
-	- add next dependencies:
+	- add next dependencies:  
 		```xml
 		<!-- Java JSR 356 WebSocket -->
 		<dependency>
@@ -80,13 +81,13 @@ When using *eventbus-dist* the opposite occurs.
 			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope> <!-- provided by Tomcat -->
 		</dependency>
-		```
-	- remove next dependencies (if exist):
+		```  
+	- remove next dependencies (if exist):  
 		```xml
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-websocket</artifactId>
-		```
-	- NextRTC dependency needs to exclude Spring Context dependency:
+		```  
+	- NextRTC dependency needs to exclude Spring Context dependency:  
 		```xml
 		<dependency>
 			<groupId>org.nextrtc.signalingserver</groupId>
@@ -99,15 +100,15 @@ When using *eventbus-dist* the opposite occurs.
 				</exclusion>
 			</exclusions>
 		</dependency>
-		```
-	- remove next build plugins:
+		```  
+	- remove next build plugins:  
 		```xml
 		<groupId>org.apache.maven.plugins</groupId>
 		<artifactId>maven-war-plugin</artifactId>
 		
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-maven-plugin</artifactId>
-		```
+		```  
 - Then remnove next beans (if exist) in *SignalingConfiguration* class:
 	- ```ServerEndpointExporter serverEndpointExporter()```
 - Edit *application.properties* accordingly. Be aware *server.port* value is *8443*.
