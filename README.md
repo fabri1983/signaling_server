@@ -135,61 +135,61 @@ When using *eventbus-dist* the opposite occurs.
 - Deploy from *Eclipse's Server tab*.
 
 #### Deploy using Cargo plugin with Tomcat
-Add next plugin on *build* section:
-	```xml
-	<plugin>
-		<groupId>org.codehaus.cargo</groupId>
-		<artifactId>cargo-maven2-plugin</artifactId>
-		<version>1.6.6</version>
+Add next plugin on *build* section:  
+```xml
+<plugin>
+	<groupId>org.codehaus.cargo</groupId>
+	<artifactId>cargo-maven2-plugin</artifactId>
+	<version>1.6.6</version>
+	<configuration>
+		<container>
+			<containerId>tomcat8x</containerId>
+			<artifactInstaller>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat</artifactId>
+				<version>${tomcat.version}</version>
+			</artifactInstaller>
+		</container>
 		<configuration>
-			<container>
-				<containerId>tomcat8x</containerId>
-				<artifactInstaller>
-					<groupId>org.apache.tomcat</groupId>
-					<artifactId>tomcat</artifactId>
-					<version>${tomcat.version}</version>
-				</artifactInstaller>
-			</container>
-			<configuration>
-				<type>standalone</type>
-				<home>
-					${project.build.directory}/apache-tomcat-${tomcat.version}
-				</home>
-				<properties>
-					<cargo.start.jvmargs>
-						-Xdebug
-						-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
-						-Xnoagent
-						-Dorg.apache.tomcat.websocket.executorCoreSize=10
-						-Dorg.apache.tomcat.websocket.executorMaxSize=15
-						-Djava.compiler=NONE
-					</cargo.start.jvmargs>
-					<cargo.logging>medium</cargo.logging>
-					<cargo.servlet.port>8443</cargo.servlet.port>
-					<cargo.protocol>https</cargo.protocol>
-					<cargo.tomcat.connector.clientAuth>false</cargo.tomcat.connector.clientAuth>
-					<cargo.tomcat.connector.keyAlias>tomcat</cargo.tomcat.connector.keyAlias>
-					<cargo.tomcat.connector.keystoreFile>${project.basedir}/conf/keystore.jks
-					</cargo.tomcat.connector.keystoreFile>
-					<cargo.tomcat.connector.keystorePass>changeit</cargo.tomcat.connector.keystorePass>
-					<cargo.tomcat.connector.keystoreType>JKS</cargo.tomcat.connector.keystoreType>
-					<cargo.tomcat.connector.sslProtocol>TLS</cargo.tomcat.connector.sslProtocol>
-					<cargo.tomcat.httpSecure>true</cargo.tomcat.httpSecure>
-				</properties>
-			</configuration>
-			<deployables>
-				<deployable>
-					<groupId>${project.groupId}</groupId>
-					<artifactId>${project.artifactId}</artifactId>
-					<type>war</type>
-					<properties>
-						<context>/signaling</context>
-					</properties>
-				</deployable>
-			</deployables>
+			<type>standalone</type>
+			<home>
+				${project.build.directory}/apache-tomcat-${tomcat.version}
+			</home>
+			<properties>
+				<cargo.start.jvmargs>
+					-Xdebug
+					-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+					-Xnoagent
+					-Dorg.apache.tomcat.websocket.executorCoreSize=10
+					-Dorg.apache.tomcat.websocket.executorMaxSize=15
+					-Djava.compiler=NONE
+				</cargo.start.jvmargs>
+				<cargo.logging>medium</cargo.logging>
+				<cargo.servlet.port>8443</cargo.servlet.port>
+				<cargo.protocol>https</cargo.protocol>
+				<cargo.tomcat.connector.clientAuth>false</cargo.tomcat.connector.clientAuth>
+				<cargo.tomcat.connector.keyAlias>tomcat</cargo.tomcat.connector.keyAlias>
+				<cargo.tomcat.connector.keystoreFile>${project.basedir}/conf/keystore.jks
+				</cargo.tomcat.connector.keystoreFile>
+				<cargo.tomcat.connector.keystorePass>changeit</cargo.tomcat.connector.keystorePass>
+				<cargo.tomcat.connector.keystoreType>JKS</cargo.tomcat.connector.keystoreType>
+				<cargo.tomcat.connector.sslProtocol>TLS</cargo.tomcat.connector.sslProtocol>
+				<cargo.tomcat.httpSecure>true</cargo.tomcat.httpSecure>
+			</properties>
 		</configuration>
-	</plugin>
-	```
+		<deployables>
+			<deployable>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>${project.artifactId}</artifactId>
+				<type>war</type>
+				<properties>
+					<context>/signaling</context>
+				</properties>
+			</deployable>
+		</deployables>
+	</configuration>
+</plugin>
+```  
 
 #### Access
 - From your client app access it via:
