@@ -1,0 +1,23 @@
+# Changelog
+All notable changes to the Signaling Server project will be documented in this file, in a per release basis.
+
+
+-------------------------------------------------------------------------------------------------------------------
+## UNRELEASED
+**Tag**: signaling_r1_v2
+
+## Modified
+- Updated README.md to reflect several build and execution schemas.
+- Minor package refactor.
+
+ 
+-------------------------------------------------------------------------------------------------------------------
+## [signaling_r1_v1] - 2018-10-29
+**Tag**: signaling_r1_v1
+
+## Added
+- Additional logs for CANCEL_CALL custom signal.
+- Added porperty to enable/disable creation of bean SignalingInsecureEndpoint.
+
+
+-------------------------------------------------------------------------------------------------------------------

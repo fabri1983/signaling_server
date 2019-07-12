@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration scan="true">
+
+	<property name="do.console.ouput" value="@logger.console.ouput@" />
+	
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy/MM/dd HH:mm:ss.SSS} %-5level [%t] %X{uid} %c{0}: %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- Daily rollover -->
+			<fileNamePattern>logs/signaling-%d{yyyyMMdd}.log</fileNamePattern>
+			<!-- Keep 7 days' worth of history -->
+			<maxHistory>7</maxHistory>
+			<!-- logs up to a maximum size of 1GB -->
+			<totalSizeCap>1GB</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy/MM/dd HH:mm:ss.SSS} %-5level [%t] %X{uid} %c{0}: %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- Override NextRTC Signaling Server log level (for debugging purposes) -->
+	<logger name="org.nextrtc.signalingserver" level="INFO" />
+	
+	<!-- level: TRACE < DEBUG < INFO < WARN < ERROR -->
+	<root level="INFO">
+		<if condition='property("do.console.ouput").equalsIgnoreCase("true")'>
+			<then>
+				<appender-ref ref="STDOUT"/>
+			</then>
+		</if>
+		<appender-ref ref="FILE" />
+	</root>
+
+</configuration>

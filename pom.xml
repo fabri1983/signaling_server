@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>signaling</artifactId>
+	<groupId>org.fabri1983</groupId>
+	<version>1.0.0</version>
+	<packaging>war</packaging>
+	<name>signaling</name>
+	<description>Signaling Server for WebRTC</description>
+	
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.6.RELEASE</version>
+	</parent>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version> <!-- overrides value from Spring Boot's defaults -->
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml -->
+		<activeProfile>default</activeProfile> <!-- default spring profile. Do not change/remove this line. Used by eventbus-type profiles -->
+		<tomcat.version>8.5.35</tomcat.version> <!-- activates spring boot internal servlet configuration when used as auto executable -->
+		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0.0-RC5 it removes Session usage and instead use custom Connection class -->
+		<jwt.version>3.3.0</jwt.version>
+	</properties>
+	
+	<dependencies>
+		<!-- Logging configuration (explicitly import here, however Spring Boot's parent pom already imports them) -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<!-- Logback's conditional statements evaluation used in logback.xml -->
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<!-- The org.codehaus.janino:commons-compiler:3.0.6 dependency will be -->
+			<!-- automatically pulled in by Maven's transitivity rules -->
+		</dependency>
+		<!-- JWT -->
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>${jwt.version}</version>
+		</dependency>
+		<!-- NextRTC Signaling Server -->
+		<dependency>
+			<groupId>org.nextrtc.signalingserver</groupId>
+			<artifactId>nextrtc-signaling-server</artifactId>
+			<version>${nextrtc.signaling.server.version}</version>
+		</dependency>
+		<!-- Spring Boot's dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<!-- Multi Profiles: per environment and per event bus type -->
+	<profiles>
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<app.allow.insecure.path>true</app.allow.insecure.path>
+				<private.key.jwt>jwt_local_private.der</private.key.jwt>
+				<public.key.jwt>jwt_local_public.der</public.key.jwt>
+				<nextrtc.ping_period>10</nextrtc.ping_period>
+				<nextrtc.pong_enabled>true</nextrtc.pong_enabled>
+				<nextrtc.scheduler_size>2</nextrtc.scheduler_size>
+			</properties>
+		</profile>
+		<profile>
+			<id>eventbus-local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<activeProfile>eventbus-local</activeProfile>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>com.hazelcast</groupId>
+					<artifactId>hazelcast</artifactId>
+					<scope>provided</scope> <!-- codes compiles, but not included in the final jar -->
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>eventbus-dist</id>
+			<properties>
+				<activeProfile>eventbus-dist</activeProfile>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>com.hazelcast</groupId>
+					<artifactId>hazelcast</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+	
+	<build>
+		<finalName>signaling</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<excludes>
+					<exclude>profiles/*</exclude>
+					<exclude>*.der</exclude>
+					<exclude>*.key</exclude>
+					<exclude>*.jks</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>*.der</include>
+					<include>*.key</include>
+					<include>*.jks</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>com.coderplus.maven.plugins</groupId>
+				<artifactId>copy-rename-maven-plugin</artifactId>
+				<version>1.0.1</version>
+				<executions>
+					<execution>
+						<id>rename-file-jwt-private-key</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<sourceFile>src/main/resources/profiles/${private.key.jwt}</sourceFile>
+							<destinationFile>${project.build.outputDirectory}/jwt_private.key</destinationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>rename-file-jwt-public-key</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<sourceFile>src/main/resources/profiles/${public.key.jwt}</sourceFile>
+							<destinationFile>${project.build.outputDirectory}/jwt_public.key</destinationFile>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eluder.coveralls</groupId>
+				<artifactId>coveralls-maven-plugin</artifactId>
+				<version>4.3.0</version>
+				<configuration>
+					<timestampFormat>EpochMillis</timestampFormat>
+					<!-- token provided by -D argument on .travis.yml from environment variable set up on Travis CI account -->
+					<repoToken></repoToken>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>
