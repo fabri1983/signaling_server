@@ -5,7 +5,7 @@ Based on NextRTC Java project [NextRTC Signlaing Server](https://github.com/mslo
 ## Create self signed certificate
 *(skip this step if you already have your own certificate in your keystore)*
 
-Enter to directory ```src/main/resources``` and generate self signed certificate (in repository certificate might be expired):
+Enter to directory ```src/main/resources``` and generate self signed certificate (current certificate might be expired!):
 ```bash
 keytool -genkey -alias tomcat -keyalg RSA -keystore keystore.jks
 ```
@@ -13,7 +13,7 @@ keytool -genkey -alias tomcat -keyalg RSA -keystore keystore.jks
 Enter keystore password: changeit
 Re-enter new password: changeit
 What is your first and last name?
-  [Unknown]:  127.0.0.1
+  [Unknown]:  Local Name
 What is the name of your organizational unit?
   [Unknown]:  Engineering
 What is the name of your organization?
@@ -24,7 +24,7 @@ What is the name of your State or Province?
   [Unknown]:  Buenos Aires
 What is the two-letter country code for this unit?
   [Unknown]:  AR
-Is CN=127.0.0.1, OU=Engineering, O=Fabri Corp, L=CABA, ST=Buenos Aires, C=AR correct?
+Is CN=Local Name, OU=Engineering, O=Fabri Corp, L=CABA, ST=Buenos Aires, C=AR correct?
   [no]: yes
 
 Enter key password for <tomcat>
