@@ -9,7 +9,7 @@ Enter to directory ```src/main/resources``` and generate self signed certificate
 ```bash
 keytool -genkey -alias tomcat -keyalg RSA -keystore keystore.jks
 ```
-```
+```bash
 Enter keystore password: changeit
 Re-enter new password: changeit
 What is your first and last name?
@@ -32,37 +32,37 @@ Enter key password for <tomcat>
 ```
 
 
-## Create key pair for JWT
+## Create key pair for JWT (Json Web Token)
 Enter to directory ```src/main/resources/profiles```.
-	```sh
-	openssl genrsa -out jwt_local_private.key 2048
-	
-	Convert private Key to PKCS#8 format (so Java can read it)
-	openssl pkcs8 -topk8 -inform PEM -outform DER -in jwt_local_private.key -out jwt_local_private.der -nocrypt
-	
-	Output public key portion in DER format (so Java can read it)
-	openssl rsa -in jwt_local_private.key -pubout -outform DER -out jwt_local_public.der
-	
-	rm -f jwt_local_private.key
-	```
+```bash
+openssl genrsa -out jwt_local_private.key 2048
+
+Convert private Key to PKCS#8 format (so Java can read it)
+openssl pkcs8 -topk8 -inform PEM -outform DER -in jwt_local_private.key -out jwt_local_private.der -nocrypt
+
+Output public key portion in DER format (so Java can read it)
+openssl rsa -in jwt_local_private.key -pubout -outform DER -out jwt_local_public.der
+
+rm -f jwt_local_private.key
+```
 
 ## Maven Profiles
-**Profiles**
-	- ```local``` (active by default)
-	They set JWT Signer's private and public keys.
+**Profiles**  
+- ```local``` (active by default)
+They set JWT Signer's private and public keys.
 
-**Additional profiles**
-	- ```eventbus-local``` (active by default)
-	- ```eventbus-dist```
-	They remove/add additional dependencies and disable/enable a Spring profile which allow the use of a distributed eventbus.
-	When using *eventbus-local* some dependencies are removed and the beans defined in ```DistributedSignalingConfiguration``` are not created.
-	When using *eventbus-dist* the opposite occurs.
+**Additional profiles**  
+- ```eventbus-local``` (active by default)
+- ```eventbus-dist```
+They remove/add additional dependencies and disable/enable a Spring profile which allow the use of a distributed eventbus.
+When using *eventbus-local* some dependencies are removed and the beans defined in ```DistributedSignalingConfiguration``` are not created.
+When using *eventbus-dist* the opposite occurs.
 
 
 ## Build WAR file to deploy in Tomcat (external or with Cargo plugin)
 
 #### Maven pom and Spring Bean Configuration setup
-- Edit pom.xml:
+- Edit *pom.xml*:
 	- add next property:
 		```<javax.websocket.api.version>1.1</javax.websocket.api.version>```
 	- add next dependencies:
