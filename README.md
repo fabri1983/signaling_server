@@ -1,5 +1,5 @@
 # Signaling Server using Spring Boot Websockets
-Based on NextRTC Java project [NextRTC Signlaing Server](https://github.com/mslosarz/nextrtc-signaling-server)
+Based on NextRTC Java project [NextRTC Signaling Server](https://github.com/mslosarz/nextrtc-signaling-server)
 
 
 ## Create self signed certificate
