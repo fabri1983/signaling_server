@@ -65,7 +65,9 @@ When using *eventbus-dist* the opposite occurs.
 #### Maven pom and Spring Bean Configuration setup
 - Edit *pom.xml*:  
 	- add next property:  
-		```<javax.websocket.api.version>1.1</javax.websocket.api.version>```
+		```
+		<javax.websocket.api.version>1.1</javax.websocket.api.version>
+		```  
 	- add next dependencies:  
 		```xml
 		<!-- Java JSR 356 WebSocket -->
