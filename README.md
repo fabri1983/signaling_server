@@ -3,7 +3,7 @@ Based on NextRTC Java project [NextRTC Signaling Server](https://github.com/mslo
 
 
 ## Create self signed certificate
-*(skip this step if you already have your own certificate in your keystore)*
+*(skip this step if you already have your own certificate in your keystore, and edit application.properties accordingly)*
 
 Enter to directory ```src/main/resources``` and generate self signed certificate (current certificate might be expired!):
 ```bash
@@ -31,6 +31,8 @@ Enter key password for <tomcat>
   (RETURN if same as keystore password): <RETURN>
 ```
 
+Edit *application.properties* accordingly.
+
 
 ## Create key pair for JWT (Json Web Token)
 Enter to directory ```src/main/resources/profiles```.
@@ -54,10 +56,10 @@ They set JWT signer and verifier private and public keys.
 
 **Additional profiles**  
 - ```eventbus-local``` (active by default)  
-- ```eventbus-dist```  
+- ```eventbus-hazelcast```  
 They remove/add additional dependencies and disable/enable a Spring profile which allow the use of a distributed eventbus.
 When using *eventbus-local* some dependencies are removed and the beans defined in ```DistributedSignalingConfiguration``` are not created.
-When using *eventbus-dist* the opposite occurs.
+When using *eventbus-hazelcast* the opposite occurs.
 
 
 ## Build WAR file to deploy in Tomcat (external or with Cargo plugin)
@@ -138,56 +140,57 @@ When using *eventbus-dist* the opposite occurs.
 Add next plugin on *build* section:  
 ```xml
 <plugin>
-	<groupId>org.codehaus.cargo</groupId>
-	<artifactId>cargo-maven2-plugin</artifactId>
-	<version>1.6.6</version>
-	<configuration>
-		<container>
-			<containerId>tomcat8x</containerId>
-			<artifactInstaller>
-				<groupId>org.apache.tomcat</groupId>
-				<artifactId>tomcat</artifactId>
-				<version>${tomcat.version}</version>
-			</artifactInstaller>
-		</container>
-		<configuration>
-			<type>standalone</type>
-			<home>
-				${project.build.directory}/apache-tomcat-${tomcat.version}
-			</home>
-			<properties>
-				<cargo.start.jvmargs>
-					-Xdebug
-					-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
-					-Xnoagent
-					-Dorg.apache.tomcat.websocket.executorCoreSize=10
-					-Dorg.apache.tomcat.websocket.executorMaxSize=15
-					-Djava.compiler=NONE
-				</cargo.start.jvmargs>
-				<cargo.logging>medium</cargo.logging>
-				<cargo.servlet.port>8443</cargo.servlet.port>
-				<cargo.protocol>https</cargo.protocol>
-				<cargo.tomcat.connector.clientAuth>false</cargo.tomcat.connector.clientAuth>
-				<cargo.tomcat.connector.keyAlias>tomcat</cargo.tomcat.connector.keyAlias>
-				<cargo.tomcat.connector.keystoreFile>${project.basedir}/conf/keystore.jks
-				</cargo.tomcat.connector.keystoreFile>
-				<cargo.tomcat.connector.keystorePass>changeit</cargo.tomcat.connector.keystorePass>
-				<cargo.tomcat.connector.keystoreType>JKS</cargo.tomcat.connector.keystoreType>
-				<cargo.tomcat.connector.sslProtocol>TLS</cargo.tomcat.connector.sslProtocol>
-				<cargo.tomcat.httpSecure>true</cargo.tomcat.httpSecure>
-			</properties>
-		</configuration>
-		<deployables>
-			<deployable>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>${project.artifactId}</artifactId>
-				<type>war</type>
-				<properties>
-					<context>/signaling</context>
-				</properties>
-			</deployable>
-		</deployables>
-	</configuration>
+  <groupId>org.codehaus.cargo</groupId>
+  <artifactId>cargo-maven2-plugin</artifactId>
+  <version>1.7.5</version>
+  <configuration>
+    <container>
+      <containerId>tomcat8x</containerId>
+      <containerUrl>http://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/8.5.42/tomcat-8.5.42.zip</containerUrl>
+      <artifactInstaller>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat</artifactId>
+        <version>${tomcat.version}</version>
+      </artifactInstaller>
+    </container>
+    <configuration>
+      <type>standalone</type>
+      <home>
+        ${project.build.directory}/apache-tomcat-${tomcat.version}
+      </home>
+      <properties>
+        <cargo.start.jvmargs>
+          -Xdebug
+          -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+          -Xnoagent
+          -Dorg.apache.tomcat.websocket.executorCoreSize=10
+          -Dorg.apache.tomcat.websocket.executorMaxSize=15
+          -Djava.compiler=NONE
+        </cargo.start.jvmargs>
+        <cargo.logging>medium</cargo.logging>
+        <cargo.servlet.port>8443</cargo.servlet.port>
+        <cargo.protocol>https</cargo.protocol>
+        <cargo.tomcat.connector.clientAuth>false</cargo.tomcat.connector.clientAuth>
+        <cargo.tomcat.connector.keyAlias>tomcat</cargo.tomcat.connector.keyAlias>
+        <cargo.tomcat.connector.keystoreFile>${project.basedir}/conf/keystore.jks
+        </cargo.tomcat.connector.keystoreFile>
+        <cargo.tomcat.connector.keystorePass>changeit</cargo.tomcat.connector.keystorePass>
+        <cargo.tomcat.connector.keystoreType>JKS</cargo.tomcat.connector.keystoreType>
+        <cargo.tomcat.connector.sslProtocol>TLS</cargo.tomcat.connector.sslProtocol>
+        <cargo.tomcat.httpSecure>true</cargo.tomcat.httpSecure>
+      </properties>
+    </configuration>
+    <deployables>
+      <deployable>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <type>war</type>
+        <properties>
+          <context>/signaling</context>
+        </properties>
+      </deployable>
+    </deployables>
+  </configuration>
 </plugin>
 ```  
 

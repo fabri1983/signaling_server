@@ -19,8 +19,8 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ITopic;
 
 @Configuration
-@Profile( {"eventbus-dist"} )
-public class DistributedSignalingConfiguration {
+@Profile( {"eventbus-hazelcast"} )
+public class HazelcastSignalingConfiguration {
 
 	/**
 	 * Override bean definition from @{link org.nextrtc.signalingserver.api.NextRTCEventBus} so we can customize the event bus.

@@ -124,7 +124,7 @@
 			</dependencies>
 		</profile>
 		<profile>
-			<id>eventbus-dist</id>
+			<id>eventbus-hazelcast</id>
 			<properties>
 				<activeProfile>eventbus-dist</activeProfile>
 			</properties>
