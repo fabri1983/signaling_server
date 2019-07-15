@@ -2,8 +2,8 @@ package org.fabri1983.signaling.core.handler.signal.toggle;
 
 import javax.websocket.Session;
 
+import org.fabri1983.signaling.core.handler.signal.SignalHandlerHelper;
 import org.fabri1983.signaling.core.population.ConversationPopulation;
-import org.fabri1983.signaling.util.SignalHandlerHelper;
 import org.nextrtc.signalingserver.cases.SignalHandler;
 import org.nextrtc.signalingserver.domain.InternalMessage;
 import org.nextrtc.signalingserver.domain.Signal;

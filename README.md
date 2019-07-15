@@ -52,12 +52,12 @@ rm -f jwt_local_private.key
 ## Maven Profiles
 **Profiles**  
 - ```local``` (active by default)  
-They set JWT signer and verifier private and public keys.
+Set JWT's signer and verifier private and public keys.
 
 **Additional profiles**  
 - ```eventbus-local``` (active by default)  
 - ```eventbus-hazelcast```  
-They remove/add additional dependencies and disable/enable a Spring profile which allow the use of a distributed eventbus.
+Remove/add additional dependencies and disable/enable a Spring profile which allow the use of a distributed eventbus.
 When using *eventbus-local* some dependencies are removed and the beans defined in ```DistributedSignalingConfiguration``` are not created.
 When using *eventbus-hazelcast* the opposite occurs.
 
@@ -106,10 +106,7 @@ When using *eventbus-hazelcast* the opposite occurs.
 		</dependency>
 		```  
 	- remove next build plugins:  
-		```xml
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-war-plugin</artifactId>
-		
+		```xml		
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-maven-plugin</artifactId>
 		```  
@@ -199,6 +196,7 @@ Add next plugin on *build* section:
 	- [wss://localhost:8443/signaling/s-insecure](wss://localhost:8443/signaling/v1/s-insecure)
 - Or the secured endpoint which after HTTP Upgrade to Websocket it expects and validates headers *vcuser* and *vctoken*:
 	- [wss://localhost:8443/signaling/s](wss://localhost:8443/signaling/s)
+See **NextRTC Video Chat exmaple** section.
 
 
 ## Spring Boot standalone:
@@ -212,6 +210,9 @@ Add next plugin on *build* section:
 		
 		<groupId>javax.servlet</groupId>
 		<artifactId>javax.servlet-api</artifactId>
+		
+		<groupId>javax.servlet</groupId>
+		<artifactId>jstl</artifactId>
 		```
 	- add next depedency
 		```xml
@@ -223,15 +224,15 @@ Add next plugin on *build* section:
 	- add next build plugins:
 		```xml
 		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-war-plugin</artifactId>
-		</plugin>
-		<plugin>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-maven-plugin</artifactId>
 		</plugin>
         ```
-	- remove Cargo plugin (if exist)
+	- remove Cargo plugin (if exist):
+		```xml
+		<groupId>org.codehaus.cargo</groupId>
+		<artifactId>cargo-maven2-plugin</artifactId>
+		```
 - Then declare next beans in *SignalingConfiguration* class:
 	```java
 	@Bean
@@ -239,12 +240,29 @@ Add next plugin on *build* section:
 		return new ServerEndpointExporter();
 	}
 	```
-- Edit *application.properties* accordingly. Be aware *server.port* value is *8432*.
+- Edit *application.properties* accordingly. Be aware *server.port* value is *8443*.
 - Run:
 	- ```mvn clean install && java -jar target/signaling.war```
 	
 #### Access
 - From your client app access it via:
-	- [wss://localhost:8432/signaling/v1/s-insecure](wss://localhost:8432/signaling/v1/s-insecure)
+	- [wss://localhost:8443/signaling/v1/s-insecure](wss://localhost:8443/signaling/v1/s-insecure)
 - Or the secured endpoint which after HTTP Upgrade to Websocket it expects and validates headers *vcuser* and *vctoken*:
-	- [wss://localhost:8432/signaling/v1/s](wss://localhost:8432/signaling/v1/s)
+	- [wss://localhost:8443/signaling/v1/s](wss://localhost:8443/signaling/v1/s)
+See **NextRTC Video Chat exmaple** section.
+
+
+## NextRTC Video Chat usage
+- Enter [https://127.0.0.1:8443/signaling/videochat.html](https://127.0.0.1:8443/signaling/videochat.html) in your favourite browser
+(**https** is important, because default http handler isn't configured).
+* Accept untrusted certificate.
+* You can use query param *forceTurn=true* in order to force relay ICE Transport Policy and so test your TURN server:
+[https://127.0.0.1:8443/signaling/videochat.html?forceTurn=true](https://127.0.0.1:8443/signaling/videochat.html?forceTurn=true)
+
+_Sometimes websocket (js side) is throwing an exception and can't connect via websocket o signiling server, then try to change localhost to 127.0.0.1_
+
+
+This is a working test of the Signaling Server and the videochat client using a Chrome browser tab and Opera from my mobile phone. 
+Server exposed with [ngrok](https://ngrok.com/).
+
+![videochat with local signaling](/videochat_example_ngrok.jpg?raw=true "videochat with local signaling")

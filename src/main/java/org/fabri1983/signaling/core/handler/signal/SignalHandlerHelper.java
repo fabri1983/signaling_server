@@ -1,4 +1,4 @@
-package org.fabri1983.signaling.util;
+package org.fabri1983.signaling.core.handler.signal;
 
 import java.util.HashMap;
 import java.util.Map;

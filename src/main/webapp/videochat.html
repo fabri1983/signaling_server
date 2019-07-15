@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NextRTC videochat</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="cache-control" content="no-cache" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+</head>
+<body>
+
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script src="js/nextRTC.js"></script>
+<script src="js/bandwidthHandler.js"></script>
+<script src="js/jquery-2.1.3.min.js"></script>
+<script src="js/sjcl.js"></script>
+<script src="js/sha1.js"></script>
+<script src="js/common.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+<div id="container" class="jumbotron" style="padding: 10px 10px 0 0;">
+</div>
+
+<div style="clear:both; float:left;">
+	User Id: <input id="userId" type="text" style="width:300px;" value=""/>
+	<br/>
+	Websocket endpoint: <input type="text" id="endpointUrlId" style="width:450px;"/>
+	<button onclick="resetEndpointUrl()" id="btnResetEndpointUrl">Reset URL</button>
+	<br/>
+	<br/>
+	
+	<div>
+		<section id="iceServers" style="float:left;">
+	      <label>ICE servers</label>
+	      <br/>
+	      <select id="servers" size="7">
+	      </select>
+	      <div>
+	        <label for="serverUrl">STUN or TURN URI:</label>
+	        <input id="serverUrl">
+	      </div>
+	      <div>
+	        <label for="serverUsername">TURN username:</label>
+	        <input id="serverUsername">
+	      </div>
+	      <div>
+	        <label for="serverPassword">TURN password:</label>
+	        <input id="serverPassword">
+	      </div>
+	      <div>
+	        <button onclick="addServer()" id="addServerButton">Add Server</button>
+	        <button onclick="removeServer()" id="removeServerButton">Remove Server</button>
+	        <button onclick="checkTURNServerFunc('servers', 'btnCheckTurnServer')" id="btnCheckTurnServer">Check Turn Server</button>
+	      </div>
+	    </section>
+	    
+	    <button onclick="copyServerToBox()" id="btnCopyServerToBox" style="float:left; margin:30px 30px 0px 30px">&lt;&lt;</button>
+	    
+	    <section id="iceServersAll" style="float:left;">
+	      <label>All ICE servers</label>
+	      <br/>
+	      <select id="serversAll" size="7">
+	      </select>
+	       <div>
+	        <button onclick="checkTURNServerFunc('serversAll', 'btnCheckTurnServerAll')" id="btnCheckTurnServerAll">Check Turn Server</button>
+	      </div>
+	    </section>
+	</div>
+	
+    <div style="clear:both; margin-top:40px; float:left;">
+    	Use ping-pong timeout logic? <input id="pingPongLogicId" type="checkbox" value="" onclick="toogleUsePingPong()" checked />
+		<br/>
+    	Ping timeout (millis): <input id="pingTimeoutId" type="text" style="width:100px;" value="11000"/>
+		<br/>
+		<button onclick="closeWebsocketManually()" id="btnClose">Close Websocket</button>
+		<button onclick="connect()" id="btnConnect">Connect to Signaling Server</button> (headers not required)
+		<br/>
+		<br/>
+		Conversation id: <input type="text" id="convId" style="width:550px;"/>
+		<br/>
+		<button onclick="createConversation()" id="btnCreate">Create</button>
+		<button onclick="createBroadcastConversation()" id="btnCreateBrdcst">Create broadcast</button>
+		<button onclick="joinConversation()" id="btnJoin">Join</button>
+		<button onclick="leaveConversation()" id="btnLeave">Leave</button>
+	</div>
+</div>
+
+<div style="clear:both; margin-top:20px; float:left;">
+	<button onclick="clearLog()" id="btnClearLog">Clear logs</button>
+	<br/>
+	<ul id="log">
+	</ul>
+</div>
+
+<div style="clear:both; margin-top:40px; float:left;">
+	This template is cloned when local/remote stream is created.
+	<br/><br/>
+	<video id="template" width="320" height="240" autoplay controls style="background-color: black !important; margin: 0 10px 0 0"></video>
+</div>
+
+<script>
+	
+	// set a random guid similar to the uuid we use in our backend
+	$('#userId').val(guid());
+	
+	var queryParams = getUrlQueryParams();
+	
+	// use 'relay' to force TURN server for testing purpose
+	var iceTransportValue = queryParams["forceTurn"] == "true" ? "relay" : "all";
+	var logTransportPolicyRelay = function() {
+		if (iceTransportValue == "relay") {
+			$('#log').append('<li>Using relay as ice transport policy.</li>');
+		}
+	}
+	
+	$('#btnConnect').prop('disabled', false).css('opacity', 1).css('background-color','buttonface');
+	$('#btnCreate').prop('disabled', true).css('opacity', 0.5);
+	$('#btnCreateBrdcst').prop('disabled', true).css('opacity', 0.5);
+	$('#btnJoin').prop('disabled', true).css('opacity', 0.5);
+	$('#btnLeave').prop('disabled', true).css('opacity', 0.5);
+
+	var nextRTC = null;
+	
+	var connect = function() {
+		
+		$('#btnConnect').prop('disabled', true).css('opacity', 0.5).css('background-color','buttonface');
+		
+		var iceServers = collectIceServers()
+		
+		nextRTC = new NextRTC({
+			// required
+			wsURL : $('#endpointUrlId').val(),
+			// required, it's the getUserMedia() constraints parameter
+			mediaConfig : {
+				audio : true,
+				video : {
+					facingMode : { ideal: "user" },
+					frameRate : { ideal: 60, min: 10 },
+					width : { min: 240, max: 720 },
+					height : { min: 320, max: 1280 }
+				}
+			},
+			// optional if in a local network
+			peerConfig : {
+				iceServers: iceServers,
+				iceTransportPolicy: iceTransportValue, // 'none', 'all', 'relay'
+				//iceTransports: iceTransportValue,
+				rtcpMuxPolicy: 'require',
+				//iceCandidatePoolSize: 0
+			},
+			// custom callbacks I added to the framework
+			onChannelReady : function() {
+				if ($('#pingPongLogicId').is(":checked")) {
+					startIntervalHeartbeat($('#pingTimeoutId').val(), function(){ 
+						if (nextRTC) {
+							nextRTC.close();
+						}
+						cleanUp();
+						$('#log').append('<li>Websocket closed due to missing ping from server.</li>');
+					});
+				}
+				$('#log').append('<li>Channel (websocket) ready.</li>');
+				$('#btnConnect').prop('disabled', true).css('opacity', 0.5).css('background-color','limegreen');
+				$('#btnCreate').prop('disabled', false).css('opacity', 1);
+				$('#btnCreateBrdcst').prop('disabled', false).css('opacity', 1);
+				$('#btnJoin').prop('disabled', false).css('opacity', 1);
+				$('#btnLeave').prop('disabled', false).css('opacity', 1);
+			},
+			onChannelNotReady : function() { // executed when NextRTC.error() method is invoked if channel is not ready
+				stopHeartbeat();
+				$('#log').append('<li>Channel (websocket) is not ready. See console.</li>');
+				$('#btnConnect').prop('disabled', false).css('opacity', 1).css('background-color','tomato');
+				$('#btnCreate').prop('disabled', true).css('opacity', 0.5);
+				$('#btnCreateBrdcst').prop('disabled', true).css('opacity', 0.5);
+				$('#btnJoin').prop('disabled', true).css('opacity', 0.5);
+				$('#btnLeave').prop('disabled', true).css('opacity', 0.5);
+			},
+			onCustomError : function(arg) { // executed when NextRTC.error() method is invoked
+				$('#log').append('<li>Something went wrong: '+ arg +'.</li>')
+			},
+			onCustomClose : function() { // executed when NextRTC.close() method is invoked
+				cleanUp();
+				$('#log').append('<li>Websocket closed from server.</li>');
+			}
+		});
+		
+		// first message received after connection to websocket is correctly stablished
+		nextRTC.on('open', function(nextRTC, signal) {
+			$('#log').append('<li>Your id is <b>' + signal.to + '</b>.</li>');
+	    });
+		
+		// ping received from signaling server
+		nextRTC.on('ping', function(nextRTC, signal) {
+			if ($('#pingPongLogicId').is(":checked")) {
+				heartbeatReceived();
+				// let our signaling server know the ping was received
+				var userId = $('#userId').val();
+	    		nextRTC.request('pong', signal.to, null, null, { userFrom : userId });
+			}
+	    });
+	    
+		// do something when room has been created
+		nextRTC.on('created', function(nextRTC, signal) {
+			$('#log').append('<li>Room with id <b>' + signal.content + '</b> has been created, share it to start videochat.</li>');
+		});
+
+		// do something when you have been joined
+		nextRTC.on('joined', function(nextRTC, signal) {
+			$('#log').append('<li>You have been joined to conversation <b>' + signal.content + '</b>.</li>');
+		});
+
+		// do something when someone has joined
+        nextRTC.on('newJoined', function(nextRTC, signal) {
+			$('#log').append('<li>Member with id <b>' + signal.from + '</b> has joined conversation.</li>');
+		});
+
+     	// do something when local stream comes
+		nextRTC.on('localStream', function(member, stream) {
+			$('#local').remove();
+			var dest = $("#template").clone().prop({ id: 'local'});
+			$("#container").append(dest);
+			dest[0].srcObject = stream.stream;
+			dest[0].muted = true;
+		});
+
+		// do something when remote stream comes
+		nextRTC.on('remoteStream', function(member, stream) {
+			var dest = $("#template").clone().prop({ id: 'remote-' + stream.member});
+			$("#container").append(dest);
+			dest[0].srcObject = stream.stream;
+		});
+
+		// do something when someone left
+		nextRTC.on('left', function(nextRTC, signal) {
+			nextRTC.release(signal.from);
+			$('#remote-' + signal.from).remove();
+			$('#log').append('<li><b>' + signal.from + "</b> left!</li>");
+		});
+		
+		// do something when someone suddenly drop from the current call
+		nextRTC.on('drop', function(nextRTC, signal) {
+			nextRTC.release(signal.from);
+			$('#remote-' + signal.from).remove();
+			$('#log').append('<li><b>' + signal.from + "</b> dropped!</li>");
+		});
+		
+		// do something when someone reject the call intent
+		nextRTC.on('reject', function(nextRTC, signal) {
+			$('#log').append('<li><b>' + signal.from + "</b> reject the call!</li>");
+		});
+		
+		// TODO check when is this fired
+		// This doesn't override any function from nextRTC.js
+		nextRTC.on('end', function(nextRTC, signal) {
+			$('#log').append('<li>Conversation id <b>' + signal.content + '</b> has ended.</li>')
+		});
+		
+	};
+	
+	var createConversation = function(){
+		var userId = $('#userId').val();
+		var convId = $('#convId').val();
+		nextRTC.create(null, null, convId, { userFrom : userId }); // type:'MESH' by default
+	};
+	
+	var createBroadcastConversation = function(){
+		var userId = $('#userId').val();
+		var convId = $('#convId').val();
+		nextRTC.create(null, null, convId, {type : 'BROADCAST', userFrom : userId});
+	};
+
+	var joinConversation = function(){
+		var userId = $('#userId').val();
+		var convId = $('#convId').val();
+		nextRTC.join(null, null, convId, { userFrom : userId });
+	};
+
+	var leaveConversation = function(){
+		var userId = $('#userId').val();
+		var convId = $('#convId').val();
+		$('#local').remove();
+		$('[id^=remote-]').remove();
+		$('#log').append('<li><b>You</> left!</li>');
+		nextRTC.leave(userId, convId);
+	};
+
+	var resetEndpointUrl = function(){
+		var hostname = location.hostname.toLowerCase();
+		var defaultWsURL = 'wss://' + hostname + (location.port ? ':'+location.port : '') + '${signaling.insecure.path}';
+		$('#endpointUrlId').val(defaultWsURL);
+	};
+	
+	var clearLog = function(){
+		$('#log').empty();
+		logTransportPolicyRelay();
+	};
+	
+	var closeWebsocketManually = function(){
+		cleanUp();
+		if (nextRTC) {
+			nextRTC.close();
+		}
+		$('#log').append('<li>Websocket closed manually.</li>');
+	};
+	
+	function cleanUp() {
+		stopHeartbeat();
+		$("#container").empty();
+		$('#btnConnect').prop('disabled', false).css('opacity', 1).css('background-color','buttonface');
+		$('#btnJoinCreate').prop('disabled', true).css('opacity', 0.5);
+		$('#btnLeave').prop('disabled', true).css('opacity', 0.5);
+	}
+	
+	function toogleUsePingPong() {
+		if ($('#pingPongLogicId').is(':checked')){
+			$('#pingTimeoutId').prop('disabled', false);
+	    } else {
+	    	$('#pingTimeoutId').prop('disabled', true);
+	    }
+	}
+	
+	window["resetEndpointUrl"]();
+	window["logTransportPolicyRelay"]();
+	window["loadAllServers"]();
+	window["toogleUsePingPong"]();
+	
+</script>
+</body>
+</html>

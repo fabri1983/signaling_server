@@ -22,9 +22,9 @@ import org.springframework.core.io.support.EncodedResource;
 
 public class SignalingResourceLoader {
 
-	private static Logger log = LoggerFactory.getLogger(SignalingResourceLoader.class);
-	 
-	public static final String catalinaHome = System.getProperty("catalina.home");
+	private final static Logger log = LoggerFactory.getLogger(SignalingResourceLoader.class);
+	
+	public final static String catalinaHome = System.getProperty("catalina.home");
 	
 	/**
 	 * Create RSA Key from a Public X509 Encoded key.
@@ -96,9 +96,7 @@ public class SignalingResourceLoader {
 			try {
 				return location.getInputStream();
 			} catch (FileNotFoundException ex) {
-				if (ignoreResourceNotFound) {
-					log.info("Resource not found: {}", ex.getMessage());
-				} else {
+				if (!ignoreResourceNotFound) {
 					throw ex;
 				}
 			}
@@ -126,9 +124,7 @@ public class SignalingResourceLoader {
 			try {
 				return getInputStreamFromEncoder(new EncodedResource(location));
 			} catch (FileNotFoundException ex) {
-				if (ignoreResourceNotFound) {
-					log.info("Resource not found: {}", ex.getMessage());
-				} else {
+				if (!ignoreResourceNotFound) {
 					throw ex;
 				}
 			}

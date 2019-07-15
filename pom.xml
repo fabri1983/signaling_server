@@ -22,11 +22,22 @@
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<maven.compiler.release>11</maven.compiler.release>
+		<tomcat.version>8.5.42</tomcat.version> <!-- activates spring boot internal servlet configuration when used as auto executable -->
+		
+		<!-- Signaling Server -->
 		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml -->
 		<activeProfile>default</activeProfile> <!-- default spring profile. Do not change/remove this line. Used by eventbus-type profiles -->
-		<tomcat.version>8.5.42</tomcat.version> <!-- activates spring boot internal servlet configuration when used as auto executable -->
-		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0.0-RC5 it removes Session usage and instead use custom Connection class -->
+		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it removes Session usage and instead use custom Connection class -->
 		<jwt.version>3.3.0</jwt.version>
+		
+		<!-- NextRTC Video Chat page -->
+		<turn.no.auth.user>turnUser</turn.no.auth.user>
+		<turn.no.auth.pass>turnUserPassword</turn.no.auth.pass>
+		<turn.auth.secret.user>turnAuthUser</turn.auth.secret.user>
+		<turn.auth.secret.pass>turnAuthUserPassword</turn.auth.secret.pass>
+		<signaling.path>/signaling/v1/s</signaling.path>
+		<signaling.insecure.path>/signaling/v1/s-insecure</signaling.insecure.path>
+		<api.rest.videochat.room.url>https://127.0.0.1:8443/v1/users/videochat/room</api.rest.videochat.room.url>
 	</properties>
 	
 	<dependencies>
@@ -88,6 +99,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<!-- Library which provides tag c in jsp pages. Eg: general-error.jsp -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
 		</dependency>
 	</dependencies>
 	
@@ -191,9 +207,27 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-			</plugin>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>${start-class}</mainClass>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+					</archive>
+					<webResources>
+						<resource>
+							<filtering>true</filtering>
+							<directory>src/main/webapp</directory>
+							<includes>
+								<include>js/common.js</include>
+								<include>videochat.html</include>
+								<include>callTo.html</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
+	        </plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
