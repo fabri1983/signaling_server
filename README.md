@@ -1,5 +1,8 @@
 # Signaling Server using Spring Boot Websockets
-Based on NextRTC Java project [NextRTC Signaling Server](https://github.com/mslosarz/nextrtc-signaling-server)
+This project uses NextRTC Java project [NextRTC Signaling Server](https://github.com/mslosarz/nextrtc-signaling-server).
+I added custom signals to provide a complete video call context between two clients.
+It has a distirbuted event bus so the signaling server can be deployed in a cluster (yet to be finished).
+
 
 [![Build Status](https://travis-ci.org/fabri1983/signaling_server.svg?branch=master)](https://travis-ci.org/fabri1983/signaling_server?branch=master)
 &nbsp;&nbsp;&nbsp;&nbsp;
