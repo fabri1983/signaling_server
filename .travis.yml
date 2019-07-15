@@ -1,0 +1,27 @@
+language: java
+
+jdk:
+  - oraclejdk8
+
+# whitelist branches
+branches:
+  only:
+    - master
+
+# overrides travis 'install' step
+# this installs dependencies. Using default profile
+install:
+  - java -version
+  - /usr/local/maven/bin/mvn --version
+  - sudo /usr/local/maven/bin/mvn --batch-mode clean install
+
+# overrides travis 'script' step
+script:
+  - sudo /usr/local/maven/bin/mvn --batch-mode clean package
+
+after_success:
+  # using environment variable $repo_token set in travis web site
+  - sudo /usr/local/maven/bin/mvn clean test jacoco:report coveralls:report -DrepoToken=$repo_token
+  
+notifications:
+  email: false

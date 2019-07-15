@@ -262,7 +262,7 @@ See **NextRTC Video Chat exmaple** section.
 _Sometimes websocket (js side) is throwing an exception and can't connect via websocket o signiling server, then try to change localhost to 127.0.0.1_
 
 
-This is a working test of the Signaling Server and the videochat client using a Chrome browser tab and Opera from my mobile phone. 
+This is a working test of the Signaling Server and the videochat client using a Chrome tab on my laptop and an Opera tab on my mobile phone. 
 Server exposed with [ngrok](https://ngrok.com/).
 
 ![videochat with local signaling](/videochat_example_ngrok.jpg?raw=true "videochat with local signaling")

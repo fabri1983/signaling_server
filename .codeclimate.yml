@@ -1,0 +1,30 @@
+---
+engines:
+  pmd:
+    enabled: true
+    channel: "beta"
+  checkstyle:
+    enabled: true
+    channel: "beta"
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - ruby
+      - javascript
+      - python
+      - php
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+
+ratings:
+  paths:
+  - "**.java"
+
+exclude_paths:
+  - "**.proto"
+  - "**/target/"
+  - .git/
+
