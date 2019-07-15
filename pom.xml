@@ -19,9 +19,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>11</java.version> <!-- overrides value from Spring Boot's defaults -->
-		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
-		<maven.compiler.release>11</maven.compiler.release>
 		<tomcat.version>8.5.42</tomcat.version> <!-- activates spring boot internal servlet configuration when used as auto executable -->
 		
 		<!-- Signaling Server -->
