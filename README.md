@@ -9,7 +9,7 @@
 
 This project uses NextRTC Java project [NextRTC Signaling Server](https://github.com/mslosarz/nextrtc-signaling-server).
 I added custom signals to provide a complete video call context between two clients.
-It has a distirbuted event bus so the signaling server can be deployed in a cluster (yet to be finished).
+It has a distributed event bus so the signaling server can be deployed in a cluster (work in progress).
 
 
 ## Create self signed certificate
