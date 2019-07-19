@@ -179,8 +179,7 @@ Add next plugin on *build* section:
         <cargo.protocol>https</cargo.protocol>
         <cargo.tomcat.connector.clientAuth>false</cargo.tomcat.connector.clientAuth>
         <cargo.tomcat.connector.keyAlias>tomcat</cargo.tomcat.connector.keyAlias>
-        <cargo.tomcat.connector.keystoreFile>${project.basedir}/conf/keystore.jks
-        </cargo.tomcat.connector.keystoreFile>
+        <cargo.tomcat.connector.keystoreFile>${project.basedir}/conf/keystore.jks</cargo.tomcat.connector.keystoreFile>
         <cargo.tomcat.connector.keystorePass>changeit</cargo.tomcat.connector.keystorePass>
         <cargo.tomcat.connector.keystoreType>JKS</cargo.tomcat.connector.keystoreType>
         <cargo.tomcat.connector.sslProtocol>TLS</cargo.tomcat.connector.sslProtocol>
