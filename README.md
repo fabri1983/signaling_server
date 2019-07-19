@@ -7,9 +7,9 @@
 [![Code Climate](https://codeclimate.com/github/fabri1983/signaling_server/badges/gpa.svg)](https://codeclimate.com/github/fabri1983/signaling_server)
 
 
-This project uses NextRTC Java project [NextRTC Signaling Server](https://github.com/mslosarz/nextrtc-signaling-server).
-I added custom signals to provide a complete video call context between two clients.
-It has a distributed event bus so the signaling server can be deployed in a cluster (work in progress).
+This project uses [NextRTC Signaling Server](https://github.com/mslosarz/nextrtc-signaling-server) project.
+I added custom signals to provide a complete video call solution between two clients.
+It has a distributed event bus so the signaling server can be deployed in a cluster (work in progress due to serialization issues).
 
 
 ## Create self signed certificate
