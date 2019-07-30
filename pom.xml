@@ -142,7 +142,7 @@
 		<profile>
 			<id>eventbus-hazelcast</id>
 			<properties>
-				<activeProfile>eventbus-dist</activeProfile>
+				<activeProfile>eventbus-hazelcast</activeProfile>
 			</properties>
 			<dependencies>
 				<dependency>
