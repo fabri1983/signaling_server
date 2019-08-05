@@ -1,22 +1,31 @@
 package org.fabri1983.signaling.core;
 
-import org.nextrtc.signalingserver.api.NextRTCEventBus;
-import org.nextrtc.signalingserver.api.dto.NextRTCEvent;
-import org.nextrtc.signalingserver.domain.EventContext;
-
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
+
+import org.fabri1983.signaling.util.NextRTCEventWrapper;
+import org.nextrtc.signalingserver.api.NextRTCEventBus;
+import org.nextrtc.signalingserver.api.dto.NextRTCEvent;
+import org.nextrtc.signalingserver.cases.ExchangeSignalsBetweenMembers;
+import org.nextrtc.signalingserver.cases.LeftConversation;
+import org.nextrtc.signalingserver.domain.MessageSender;
 
 /**
  * This class intended to handle a distributed event bus using a message broker solution over 
  * the already implemented {@link NextRTCEventBus} which is not distributed.
  */
-public class NextRTCDistributedEventBus extends NextRTCEventBus implements MessageListener<NextRTCEvent> {
+public class NextRTCDistributedEventBus extends NextRTCEventBus implements MessageListener<NextRTCEventWrapper> {
 
-	private ITopic<NextRTCEvent> hzcTopic;
+	private ITopic<NextRTCEventWrapper> hzcTopic;
+	private NextRTCEventBus eventBus;
+	private LeftConversation leftConversation;
+	private MessageSender messageSender;
+	private ExchangeSignalsBetweenMembers exchange;
 	
-    public NextRTCDistributedEventBus(ITopic<NextRTCEvent> hzcTopic) {
+    public NextRTCDistributedEventBus(ITopic<NextRTCEventWrapper> hzcTopic, NextRTCEventBus eventBus, 
+			LeftConversation leftConversation, MessageSender messageSender, 
+			ExchangeSignalsBetweenMembers exchange) {
         super();
         this.hzcTopic = hzcTopic;
     }
@@ -24,7 +33,8 @@ public class NextRTCDistributedEventBus extends NextRTCEventBus implements Messa
     @Override
     public void post(NextRTCEvent event) {
         super.post(event);
-        hzcTopic.publish(event);
+        NextRTCEventWrapper eventWrapper = NextRTCEventWrapper.wrap(event);
+        hzcTopic.publish(eventWrapper);
     }
 
     @Override
@@ -34,20 +44,11 @@ public class NextRTCDistributedEventBus extends NextRTCEventBus implements Messa
     }
     
     @Override
-    public void onMessage(Message<NextRTCEvent> message) {
-    	NextRTCEvent event = message.getMessageObject();
-    	// EventContext (extends NextRTCEvent) has references to manager objects, which are not serialized, so after 
-    	// deserialization phase we have to populate those managers
-    	event = populateManagers(event);
+    public void onMessage(Message<NextRTCEventWrapper> message) {
+    	NextRTCEventWrapper eventWrapper = message.getMessageObject();
+    	NextRTCEvent event = NextRTCEventWrapper.unwrapNow(eventWrapper, eventBus, leftConversation, 
+    			messageSender, exchange);
     	post(event);
     }
 
-	private NextRTCEvent populateManagers(NextRTCEvent event) {
-		if (event instanceof EventContext) {
-			// TODO complete here
-			return event;
-		} else {
-			return event;
-		}
-	}
 }

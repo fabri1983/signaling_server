@@ -11,7 +11,7 @@ import org.springframework.core.env.Environment;
 
 public class SignalingServerBanner implements Banner {
 	
-	private static final String[] BANNER = { "",
+	private final String[] BANNER = { "",
 			"  ______  _                       _   _                   ______",
 			" / _____)(_)                     | | (_)                 / _____)",
 			"( (____   _   ____  ____   _____ | |  _  ____    ____   ( (____   _____   ____  _   _  _____   ____", 
@@ -21,9 +21,9 @@ public class SignalingServerBanner implements Banner {
 			"            (_____|                            (_____|",
 			};
 
-	private static final String SPRING_BOOT = " :: Spring Boot :: ";
+	private final String SPRING_BOOT = " :: Spring Boot :: ";
 
-	private static final int STRAP_LINE_SIZE = 42;
+	private final int STRAP_LINE_SIZE = 42;
 
 	@Override
 	public void printBanner(Environment environment, Class<?> sourceClass,
