@@ -26,7 +26,7 @@
 		
 		<!-- Signaling Server -->
 		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml -->
-		<activeProfile>default</activeProfile> <!-- default spring profile. Do not change/remove this line. Used by eventbus-type profiles -->
+		<spring.profiles.active>default</spring.profiles.active> <!-- default spring profile. Do not change/remove this line. Used by eventbus-type profiles -->
 		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it removes Session usage and instead use custom Connection class -->
 		<jwt.version>3.3.0</jwt.version>
 		
@@ -129,7 +129,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<activeProfile>eventbus-local</activeProfile>
+				<spring.profiles.active>eventbus-local</spring.profiles.active>
 			</properties>
 			<dependencies>
 				<dependency>
@@ -142,7 +142,7 @@
 		<profile>
 			<id>eventbus-hazelcast</id>
 			<properties>
-				<activeProfile>eventbus-hazelcast</activeProfile>
+				<spring.profiles.active>eventbus-hazelcast</spring.profiles.active>
 			</properties>
 			<dependencies>
 				<dependency>
