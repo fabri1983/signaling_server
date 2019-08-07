@@ -1,4 +1,4 @@
-package org.fabri1983.signaling.util;
+package org.fabri1983.signaling.core.distributed.serialization;
 
 import org.nextrtc.signalingserver.api.dto.NextRTCConversation;
 import org.nextrtc.signalingserver.cases.ExchangeSignalsBetweenMembers;
@@ -7,7 +7,7 @@ import org.nextrtc.signalingserver.domain.MessageSender;
 
 public class NextRTCConversationWrapper {
 
-	public static NextRTCConversationWrapper wrap(NextRTCConversation orElse) {
+	public static NextRTCConversationWrapper wrap(NextRTCConversation conversation) {
 		// TODO Auto-generated method stub
 		return new NextRTCConversationWrapper();
 	}

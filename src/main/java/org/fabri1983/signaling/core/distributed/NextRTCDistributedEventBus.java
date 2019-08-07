@@ -1,10 +1,10 @@
-package org.fabri1983.signaling.core;
+package org.fabri1983.signaling.core.distributed;
 
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 
-import org.fabri1983.signaling.util.NextRTCEventWrapper;
+import org.fabri1983.signaling.core.distributed.serialization.NextRTCEventWrapper;
 import org.nextrtc.signalingserver.api.NextRTCEventBus;
 import org.nextrtc.signalingserver.api.dto.NextRTCEvent;
 import org.nextrtc.signalingserver.cases.ExchangeSignalsBetweenMembers;

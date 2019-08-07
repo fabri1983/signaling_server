@@ -1,4 +1,4 @@
-package org.fabri1983.signaling.util;
+package org.fabri1983.signaling.core.distributed.serialization;
 
 import java.util.Map;
 

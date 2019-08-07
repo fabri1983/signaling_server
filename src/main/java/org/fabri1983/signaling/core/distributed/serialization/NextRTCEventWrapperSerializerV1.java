@@ -1,4 +1,4 @@
-package org.fabri1983.signaling.util;
+package org.fabri1983.signaling.core.distributed.serialization;
 
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
@@ -21,11 +21,13 @@ public class NextRTCEventWrapperSerializerV1 implements StreamSerializer<NextRTC
 
 	@Override
 	public void write(ObjectDataOutput out, NextRTCEventWrapper event) throws IOException {
+		// TODO
 		// Make sure the fields are written in the same order as they are read
 	}
 
 	@Override
 	public NextRTCEventWrapper read(ObjectDataInput in) throws IOException {
+		// TODO
 		// Make sure the fields are read in the same order as they are written
 		return null;
 	}
