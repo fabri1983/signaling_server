@@ -9,16 +9,16 @@ import org.nextrtc.signalingserver.repository.MemberRepository;
 
 public class PongOperations {
 
-	public static <T extends ITask<U>, S extends ITaskManager<U>, U> TriConsumer<T, S, U> reschedule() {
+	public static <T extends ITask<String>, S extends ITaskManager<String>> TriConsumer<T, S, String> reschedule() {
 		return (task, manager, userFrom) -> {
 			manager.reschedule(task);
 		};
 	}
 
-	public static <T extends Member, S extends ITaskManager<U>, U> TriConsumer<T, S, U> createAndSchedule(
+	public static <T extends Member, S extends ITaskManager<String>> TriConsumer<T, S, String> createAndSchedule(
 			ErrorMessageSender errorSender, MemberRepository members) {
 		return (member, manager, userFrom) -> {
-			ITask<U> task = new PongCloseAllTask<U>(member, userFrom, manager, errorSender, members);
+			ITask<String> task = new PongCloseAllTask(member, userFrom, manager, errorSender, members);
 			manager.schedule(task);
 		};
 	}

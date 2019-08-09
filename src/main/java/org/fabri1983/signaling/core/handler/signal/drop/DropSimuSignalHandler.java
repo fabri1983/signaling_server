@@ -3,7 +3,6 @@ package org.fabri1983.signaling.core.handler.signal.drop;
 import javax.websocket.Session;
 
 import org.fabri1983.signaling.core.CustomSignal;
-import org.fabri1983.signaling.core.handler.signal.onhold.OnholdSignalHandler;
 import org.nextrtc.signalingserver.cases.SignalHandler;
 import org.nextrtc.signalingserver.domain.InternalMessage;
 import org.nextrtc.signalingserver.repository.ConversationRepository;
@@ -12,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 public class DropSimuSignalHandler {
 
-	private static final Logger log = LoggerFactory.getLogger(OnholdSignalHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(DropSimuSignalHandler.class);
 	
 	/**
 	 * 

@@ -2,19 +2,19 @@ package org.fabri1983.signaling.core.population;
 
 import java.util.Set;
 
-public class ConversationPopulationActuator<C, S, U> implements IConversationPopulationActuator<C, S, U>{
+public class ConversationPopulationActuator implements IConversationPopulationActuator{
 
-	private ConversationPopulation<C, S, U> population;
-	private C conversationId;
+	private ConversationPopulation population;
+	private String conversationId;
 	
-	public ConversationPopulationActuator(ConversationPopulation<C, S, U> population, C conversationId) {
+	public ConversationPopulationActuator(ConversationPopulation population, String conversationId) {
 		this.population = population;
 		this.conversationId = conversationId;
 	}
 	
 	@Override
-	public boolean hasReachedMax(S sessionId) {
-		Set<S> sessions = population.getSessionIdsByConversationId(conversationId);
+	public boolean hasReachedMax(String sessionId) {
+		Set<String> sessions = population.getSessionIdsByConversationId(conversationId);
 		return sessions.size() >= population.getMaxParticipantsPerRoom();
 	}
 	

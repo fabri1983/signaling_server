@@ -9,9 +9,9 @@ import org.nextrtc.signalingserver.repository.ConversationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OnholdSignalHandler {
+public class OnHoldSignalHandler {
 
-	private static final Logger log = LoggerFactory.getLogger(OnholdSignalHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(OnHoldSignalHandler.class);
 	
 	public static SignalHandler onhold(ConversationRepository conversations) {
 		return (msg) -> {

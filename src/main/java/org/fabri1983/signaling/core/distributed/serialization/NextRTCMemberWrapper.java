@@ -21,7 +21,7 @@ public class NextRTCMemberWrapper {
 	}
 	
 	public static NextRTCMember unwrapNow(NextRTCMemberWrapper wrapper, NextRTCEventBus eventBus, 
-			ConversationPopulation<String, String, String> population, MemberRepository members) {
+			ConversationPopulation population, MemberRepository members) {
 		
 		// TODO implement a selector in which if the instance doesn't match the selector condition then 
 		// fallback to a dummy selector which throws exception
@@ -36,8 +36,8 @@ public class NextRTCMemberWrapper {
 		}
 	}
 
-	public NextRTCMember unwrap(NextRTCEventBus eventBus, 
-			ConversationPopulation<String, String, String> population, MemberRepository members) {
+	public NextRTCMember unwrap(NextRTCEventBus eventBus, ConversationPopulation population, 
+			MemberRepository members) {
 		return NextRTCMemberWrapper.unwrapNow(this, eventBus, population, members);
 	}
 

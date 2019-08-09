@@ -15,8 +15,8 @@ public class ToggleSignalHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(ToggleSignalHandler.class);
 	
-	public static <C, S, U> SignalHandler toggle(ConversationRepository conversations, 
-			ConversationPopulation<C, S, U> population, Signal signal) {
+	public static SignalHandler toggle(ConversationRepository conversations, 
+			ConversationPopulation population, Signal signal) {
 		return (msg) -> {
 			
 			Session sessionFrom = msg.getFrom().getSession();
@@ -27,7 +27,7 @@ public class ToggleSignalHandler {
 			}
 			
 			try {
-				U userFrom = population.getUserIdBySessionId(castToGenericType(sessionFrom.getId()));
+				String userFrom = population.getUserIdBySessionId(sessionFrom.getId());
 				
 				conversations.findBy(roomId).ifPresent( c -> {
 					c.broadcast(msg.getFrom(), InternalMessage.create()
@@ -42,11 +42,6 @@ public class ToggleSignalHandler {
 						sessionFrom.getId(), e.getMessage());
 	        }
 		};
-	}
-	
-	@SuppressWarnings("unchecked")
-	private static <K> K castToGenericType(String v) {
-		return (K) v;
 	}
 	
 }

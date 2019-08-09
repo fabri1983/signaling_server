@@ -7,7 +7,6 @@ import javax.websocket.Session;
 import org.fabri1983.signaling.core.CustomSignal;
 import org.fabri1983.signaling.core.SignalingConstants;
 import org.fabri1983.signaling.core.handler.signal.SignalHandlerHelper;
-import org.fabri1983.signaling.core.handler.signal.onhold.OnholdSignalHandler;
 import org.fabri1983.signaling.core.population.ConversationPopulation;
 import org.fabri1983.signaling.util.NoopScheduledFuture;
 import org.nextrtc.signalingserver.cases.SignalHandler;
@@ -19,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class CancelCallSignalHandler {
 
-	private static final Logger log = LoggerFactory.getLogger(OnholdSignalHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(CancelCallSignalHandler.class);
 	
 	/**
 	 * When the caller decides to cancel the current call just before the callee drops it.
@@ -28,7 +27,7 @@ public class CancelCallSignalHandler {
 	 * @param population
 	 * @return
 	 */
-	public static <C, S, U> SignalHandler cancelCall(MessageSender messageSender, ConversationPopulation<C, S, U> population) {
+	public static SignalHandler cancelCall(MessageSender messageSender, ConversationPopulation population) {
 		return (msg) -> {
 			
 			if (!isValidUserTo(msg)) {
@@ -43,12 +42,12 @@ public class CancelCallSignalHandler {
 			String userTo =  msg.getCustom().get(SignalingConstants.USER_TO);
 			
 			try {
-				Session sessionTo = population.getSessionByUserId(castToGenericType(userTo));
+				Session sessionTo = population.getSessionByUserId(userTo);
 				if (sessionTo == null) {
 					return;
 				}
 				
-				U userFrom = population.getUserIdBySessionId(castToGenericType(sessionFrom.getId()));
+				String userFrom = population.getUserIdBySessionId(sessionFrom.getId());
 				
 				messageSender.send(InternalMessage.create()
 						.from(msg.getFrom())
@@ -88,11 +87,6 @@ public class CancelCallSignalHandler {
 	
 	private static boolean isNullOrEmpty(Map<String, String> map) {
 		return map == null || map.isEmpty();
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <K> K castToGenericType(String v) {
-		return (K) v;
 	}
 	
 }

@@ -34,7 +34,7 @@ public class NextRTCEventWrapper {
 	 * @return
 	 */
 	public static <T extends NextRTCEvent> NextRTCEventWrapperBuilder wrapBuilder(Class<T> targetClass, 
-			ConversationPopulation<String, String, String> population) {
+			ConversationPopulation population) {
 		return new NextRTCEventWrapperBuilder(targetClass, population);
 	}
 
@@ -44,7 +44,7 @@ public class NextRTCEventWrapper {
 	 * @param event
 	 * @return
 	 */
-	public static NextRTCEventWrapper wrap(NextRTCEvent event, ConversationPopulation<String, String, String> population) {
+	public static NextRTCEventWrapper wrap(NextRTCEvent event, ConversationPopulation population) {
 		return NextRTCEventWrapperBuilder.wrapFrom(event, event.getClass(), population);
 	}
 	
@@ -58,7 +58,7 @@ public class NextRTCEventWrapper {
      */
 	public static NextRTCEvent unwrapNow(NextRTCEventWrapper wrapper, NextRTCEventBus eventBus, 
 			LeftConversation leftConversation, MessageSender messageSender,  
-			ExchangeSignalsBetweenMembers exchange, ConversationPopulation<String, String, String> population, 
+			ExchangeSignalsBetweenMembers exchange, ConversationPopulation population, 
 			MemberRepository members) {
 		
 		// TODO implement a selector in which if the instance doesn't match the selector condition then 
@@ -83,7 +83,7 @@ public class NextRTCEventWrapper {
 	
 	public NextRTCEvent unwrap(NextRTCEventWrapper wrapper, NextRTCEventBus eventBus, 
 			LeftConversation leftConversation, MessageSender messageSender, 
-			ExchangeSignalsBetweenMembers exchange, ConversationPopulation<String, String, String> population, 
+			ExchangeSignalsBetweenMembers exchange, ConversationPopulation population, 
 			MemberRepository members) {
 		return NextRTCEventWrapper.unwrapNow(wrapper, eventBus, leftConversation, 
 				messageSender, exchange, population, members);
@@ -92,10 +92,10 @@ public class NextRTCEventWrapper {
 	public static class NextRTCEventWrapperBuilder {
 
 		private NextRTCEventWrapper newObj;
-		private ConversationPopulation<String, String, String> population;
+		private ConversationPopulation population;
 		
 		public <T extends NextRTCEvent> NextRTCEventWrapperBuilder(Class<T> targetClass, 
-				ConversationPopulation<String, String, String> population) {
+				ConversationPopulation population) {
 			newObj = new NextRTCEventWrapper();
 			newObj.targetClass = targetClass;
 			this.population = population;
@@ -151,7 +151,7 @@ public class NextRTCEventWrapper {
 		}
 		
 		public static <T extends NextRTCEvent, S extends NextRTCEvent> NextRTCEventWrapper wrapFrom(T event, 
-				Class<S> targetClass, ConversationPopulation<String, String, String> population) {
+				Class<S> targetClass, ConversationPopulation population) {
 			NextRTCMember from = event.from().orElse(null);
 			NextRTCMember to = event.to().orElse(null);
 			NextRTCEventWrapper newObj = new NextRTCEventWrapper();

@@ -28,6 +28,7 @@
 		<spring.profiles.active>default</spring.profiles.active> <!-- default spring profile. Do not change/remove this line. Used by eventbus-<type> profiles -->
 		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it removes Session usage and instead use custom Connection class -->
 		<auth0.jwt.version>3.8.1</auth0.jwt.version>
+		<hazelcast.version>3.12.2</hazelcast.version> <!-- overrides value from Spring Boot's defaults -->
 		
 		<!-- NextRTC Video Chat page -->
 		<turn.no.auth.user>turnUser</turn.no.auth.user>

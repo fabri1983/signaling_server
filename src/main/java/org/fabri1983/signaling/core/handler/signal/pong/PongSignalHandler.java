@@ -17,13 +17,13 @@ public class PongSignalHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(PongSignalHandler.class);
 	
-	public static <U> SignalHandler createOrReschedule(ITaskManager<U> taskManager, ErrorMessageSender errorSender,
+	public static SignalHandler createOrReschedule(ITaskManager<String> taskManager, ErrorMessageSender errorSender,
 			MemberRepository members) {
 		return (msg) -> {
 			Member member = msg.getFrom();
 			String userFrom = getUserFrom(msg, member);
 			log.debug("PONG signal received from user {}", userFrom);
-			TaskActuator.getTask( taskManager, member, castToGenericType(userFrom) )
+			TaskActuator.getTask( taskManager, member,userFrom )
 				.ifExist( PongOperations.reschedule() )
 				.elsse( PongOperations.createAndSchedule(errorSender, members) )
 				.go();
@@ -32,13 +32,12 @@ public class PongSignalHandler {
 
 	private static String getUserFrom(InternalMessage msg, Member member) {
 		String userFrom = isNullOrEmpty(msg.getCustom()) ? null : msg.getCustom().get(SignalingConstants.USER_FROM);
-		userFrom = isNullOrEmpty(userFrom.toString()) ? "s_"+member.getId() : userFrom;
+		userFrom = isNullOrEmpty(userFrom) ? generateSessionIdFroLog(member) : userFrom;
 		return userFrom;
 	}
 
-	@SuppressWarnings("unchecked")
-	private static <U> U castToGenericType(String v) {
-		return (U) v;
+	private static String generateSessionIdFroLog(Member member) {
+		return "s_" + member.getId();
 	}
 
 	private static boolean isNullOrEmpty(String s) {

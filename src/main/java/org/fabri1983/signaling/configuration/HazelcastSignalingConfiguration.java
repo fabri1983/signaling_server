@@ -60,7 +60,7 @@ public class HazelcastSignalingConfiguration {
     @Bean(name = Names.EVENT_BUS)
     @Primary
     public NextRTCEventBus eventBus(ITopic<NextRTCEventWrapper> hzcTopic, MessageSender messageSender, 
-    		ExchangeSignalsBetweenMembers exchange, ConversationPopulation<String, String, String> population, 
+    		ExchangeSignalsBetweenMembers exchange, ConversationPopulation population, 
     		MemberRepository members) {
 		return new NextRTCDistributedEventBus(hzcTopic, messageSender, exchange, population, members);
 	}

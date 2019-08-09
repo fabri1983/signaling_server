@@ -23,11 +23,11 @@ public class NextRTCDistributedEventBus extends NextRTCEventBus implements Messa
 	private LeftConversation leftConversation;
 	private MessageSender messageSender;
 	private ExchangeSignalsBetweenMembers exchange;
-	private ConversationPopulation<String, String, String> population;
+	private ConversationPopulation population;
 	private MemberRepository members;
 	
     public NextRTCDistributedEventBus(ITopic<NextRTCEventWrapper> hzcTopic, MessageSender messageSender, 
-    		ExchangeSignalsBetweenMembers exchange, ConversationPopulation<String, String, String> population, 
+    		ExchangeSignalsBetweenMembers exchange, ConversationPopulation population, 
     		MemberRepository members) {
         super();
         this.hzcTopic = hzcTopic;

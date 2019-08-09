@@ -1,7 +1,26 @@
 package org.fabri1983.signaling.core.handler;
 
-public class OnErrorHandler {
+import javax.inject.Inject;
+import javax.websocket.Session;
 
-	// TODO fabri: use this class as injected bean, once I solve the contextListener issue using custom Endpoint SpringConfigurator
+import org.fabri1983.signaling.core.handler.signal.drop.DropOperations;
+import org.fabri1983.signaling.endpoint.SignalingAbstractEndpoint;
+import org.nextrtc.signalingserver.repository.MemberRepository;
+
+public class OnErrorHandler {
+	
+	@Inject
+	private MemberRepository members;
+	
+	public Runnable handle(Session session, Throwable exception, SignalingAbstractEndpoint endpoint) {
+		return () -> {
+			
+			// dirty call drop: if participant is still in the room then send drop signal to all members of the room
+			DropOperations.processDirtyCallDrop(session, members);
+			
+			// process event on NextRTC framework
+			endpoint.getNextRTCEndpoint().onError(session, exception);
+		};
+	}
 	
 }

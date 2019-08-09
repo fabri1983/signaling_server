@@ -2,9 +2,12 @@ package org.fabri1983.signaling.endpoint;
 
 import java.util.function.Supplier;
 
+import javax.inject.Inject;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.fabri1983.signaling.core.IJwtVerifier;
+import org.fabri1983.signaling.core.messagesender.ErrorMessageSender;
 import org.fabri1983.signaling.endpoint.configurator.ContextAwareEndpointConfigurator;
 import org.fabri1983.signaling.http.SignalingHttpHeaderConstants;
 import org.fabri1983.signaling.http.internalstatus.ValidationStatus;
@@ -22,6 +25,12 @@ public class SignalingEndpoint extends SignalingAbstractEndpoint {
 	private static final Logger log = LoggerFactory.getLogger(SignalingEndpoint.class);
 	
 	public static final String SECURE_PATH = "s";
+	
+	@Inject
+	private IJwtVerifier jwtVerifier;
+	
+	@Inject
+	private ErrorMessageSender errorSender;
 	
 	public SignalingEndpoint() {
 		super();

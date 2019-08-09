@@ -16,18 +16,18 @@ import org.nextrtc.signalingserver.repository.MemberRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PongCloseAllTask<U> implements ITask<U> {
+public class PongCloseAllTask implements ITask<String> {
 
 	private static final Logger log = LoggerFactory.getLogger(PongCloseAllTask.class);
 	
 	private String id;
 	private Member member;
 	private MemberRepository members;
-	private U userFrom;
-	private ITaskManager<U> manager;
+	private String userFrom;
+	private ITaskManager<String> manager;
 	private ErrorMessageSender errorSender;
 
-	public PongCloseAllTask(Member member, U userFrom, ITaskManager<U> manager, ErrorMessageSender errorSender,
+	public PongCloseAllTask(Member member, String userFrom, ITaskManager<String> manager, ErrorMessageSender errorSender,
 			MemberRepository members) {
 		this.member = member;
 		this.members = members;
@@ -43,13 +43,13 @@ public class PongCloseAllTask<U> implements ITask<U> {
 	}
 
 	@Override
-	public U getUserFrom() {
+	public String getUserFrom() {
 		return userFrom;
 	}
 	
 	@Override
 	public void run() {
-		String userFromSafe = userFrom == null ? null : userFrom.toString();
+		String userFromSafe = userFrom == null ? null : userFrom;
 		UserIdMDCLogger.doWithLog(userFromSafe, closeTask());
 	}
 

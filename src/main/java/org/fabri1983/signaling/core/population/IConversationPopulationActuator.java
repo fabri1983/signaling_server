@@ -1,7 +1,7 @@
 package org.fabri1983.signaling.core.population;
 
-public interface IConversationPopulationActuator<C, S, U> {
+public interface IConversationPopulationActuator {
 
-	boolean hasReachedMax(S sessionId);
+	boolean hasReachedMax(String sessionId);
 	
 }

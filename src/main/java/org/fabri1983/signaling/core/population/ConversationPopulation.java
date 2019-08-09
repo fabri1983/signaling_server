@@ -13,20 +13,14 @@ import javax.websocket.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @param <C> conversation id type
- * @param <S> session id type
- * @param <U> user id type
- */
-public class ConversationPopulation<C, S, U> {
+public class ConversationPopulation {
 	
 	private static final Logger log = LoggerFactory.getLogger(ConversationPopulation.class);
 	
-	private Map<U, WeakReference<Session>> sessionByUserId;
-	private Map<S, U> userIdBySessionId;
-	private Map<C, Set<S>> setOfSessionIdsByConversationId;
-	private Map<S, C> roomBySessionId;
+	private Map<String, WeakReference<Session>> sessionByUserId;
+	private Map<String, String> userIdBySessionId;
+	private Map<String, Set<String>> setOfSessionIdsByConversationId;
+	private Map<String, String> roomBySessionId;
 	private int maxParticipantsPerRoom;
 	
 	public ConversationPopulation(int maxParticipantsPerRoom) {
@@ -37,42 +31,42 @@ public class ConversationPopulation<C, S, U> {
 		this.maxParticipantsPerRoom = maxParticipantsPerRoom;
 	}
 	
-	public IConversationPopulationActuator<C, S, U> at(C conversationId) {
-		return new ConversationPopulationActuator<C, S, U>(this, conversationId);
+	public IConversationPopulationActuator at(String conversationId) {
+		return new ConversationPopulationActuator(this, conversationId);
 	}
 
-	public void addSessionByUserId(Session session, S sessionId, U userId) {
-		if (userId == null || "".equals(userId.toString())) {
+	public void addSessionByUserId(Session session, String sessionId, String userId) {
+		if (userId == null || "".equals(userId)) {
 			return;
 		}
 		sessionByUserId.put(userId, new WeakReference<>(session));
 		userIdBySessionId.put(sessionId, userId);
 	}
 	
-	public Session getSessionByUserId(U userId) {
+	public Session getSessionByUserId(String userId) {
 		return Optional.ofNullable(sessionByUserId.get(userId)).map( w -> w.get() ).orElse(null);
 	}
 	
-	public U getUserIdBySessionId(S sessionId) {
+	public String getUserIdBySessionId(String sessionId) {
 		return userIdBySessionId.get(sessionId);
 	}
 	
-	public Set<S> getSessionIdsByConversationId(C conversationId) {
+	public Set<String> getSessionIdsByConversationId(String conversationId) {
 		if (conversationId == null) {
 			return Collections.emptySet();
 		}
-		Set<S> sessions = setOfSessionIdsByConversationId.get(conversationId);
+		Set<String> sessions = setOfSessionIdsByConversationId.get(conversationId);
 		return sessions == null? Collections.emptySet() : sessions;
 	}
 	
-	public void addSessionIdAtConversationId(C conversationId, S sessionId) {
+	public void addSessionIdAtConversationId(String conversationId, String sessionId) {
 		if (conversationId == null) {
 			return;
 		}
 		
-		Set<S> sessionIds = setOfSessionIdsByConversationId.get(conversationId);
+		Set<String> sessionIds = setOfSessionIdsByConversationId.get(conversationId);
 		if (sessionIds == null) {
-			sessionIds = new HashSet<S>();
+			sessionIds = new HashSet<String>();
 			sessionIds.add(sessionId);
 			setOfSessionIdsByConversationId.put(conversationId, sessionIds);
 		} else {
@@ -83,14 +77,14 @@ public class ConversationPopulation<C, S, U> {
 		roomBySessionId.put(sessionId, conversationId);
 	}
 	
-	public boolean removeSessionIdByConversationId(C conversationId, S sessionId) {
+	public boolean removeSessionIdByConversationId(String conversationId, String sessionId) {
 		removeSessionForUser(sessionId);
 		
 		if (conversationId == null) {
 			return false;
 		}
 		
-		Set<S> sessionIds = setOfSessionIdsByConversationId.get(conversationId);
+		Set<String> sessionIds = setOfSessionIdsByConversationId.get(conversationId);
 		if (sessionIds != null) {
 			sessionIds.remove(sessionId);
 			// if set is empty then remove it from the map of rooms
@@ -107,8 +101,8 @@ public class ConversationPopulation<C, S, U> {
 		return false;
 	}
 
-	public boolean removeConversationIdBySessionId(S sessionId) {
-		C conversationId = roomBySessionId.get(sessionId);
+	public boolean removeConversationIdBySessionId(String sessionId) {
+		String conversationId = roomBySessionId.get(sessionId);
 		return removeSessionIdByConversationId(conversationId, sessionId);
 	}
 	
@@ -116,8 +110,8 @@ public class ConversationPopulation<C, S, U> {
 		return maxParticipantsPerRoom;
 	}
 
-	private void removeSessionForUser(S sessionId) {
-		U userId = userIdBySessionId.remove(sessionId);
+	private void removeSessionForUser(String sessionId) {
+		String userId = userIdBySessionId.remove(sessionId);
 		if (userId != null) {
 			sessionByUserId.remove(userId);
 		}

@@ -8,6 +8,10 @@ import javax.inject.Inject;
 
 import org.fabri1983.signaling.core.IJwtVerifier;
 import org.fabri1983.signaling.core.JwtVerifier;
+import org.fabri1983.signaling.core.handler.OnCloseHandler;
+import org.fabri1983.signaling.core.handler.OnErrorHandler;
+import org.fabri1983.signaling.core.handler.OnMessageHandler;
+import org.fabri1983.signaling.core.handler.OnOpenHandler;
 import org.fabri1983.signaling.core.messagesender.ErrorMessageSender;
 import org.fabri1983.signaling.core.population.ConversationPopulation;
 import org.fabri1983.signaling.core.task.DummyTaskManager;
@@ -102,9 +106,29 @@ public class SignalingConfiguration {
 	}
 	
 	@Bean
-	public ConversationPopulation<String, String, String> population(
+	public OnOpenHandler onOpenHandler() {
+		return new OnOpenHandler();
+	}
+	
+	@Bean
+	public OnMessageHandler onMessageHandler() {
+		return new OnMessageHandler();
+	}
+	
+	@Bean
+	public OnErrorHandler onErrorHandler() {
+		return new OnErrorHandler();
+	}
+	
+	@Bean
+	public OnCloseHandler onCloseHandler() {
+		return new OnCloseHandler();
+	}
+	
+	@Bean
+	public ConversationPopulation population(
 			@Value("${nextrtc.max_participants_per_room}") int maxParticipantsPerRoom) {
-		return new ConversationPopulation<String, String, String>(maxParticipantsPerRoom);
+		return new ConversationPopulation(maxParticipantsPerRoom);
 	}
 	
 	@Bean

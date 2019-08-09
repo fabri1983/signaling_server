@@ -14,6 +14,7 @@ import org.fabri1983.signaling.endpoint.SignalingInsecureEndpoint;
 import org.fabri1983.signaling.http.SignalingHttpHeaderConstants;
 import org.fabri1983.signaling.http.exception.ValidationException;
 import org.fabri1983.signaling.http.internalstatus.ValidationStatus;
+import org.fabri1983.signaling.util.IFunctional;
 import org.fabri1983.signaling.util.UserIdMDCLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ import org.springframework.web.socket.server.standard.SpringConfigurator;
  * because this SpringBoot app extends from a Servlet Aware Context instead of other similar to Web App Servlet Aware Context).
  * Use this class as a Configurator to your Websocket Endpoints.
  */
-public class ContextAwareEndpointConfigurator extends SpringConfigurator implements ApplicationContextAware {
+public class ContextAwareEndpointConfigurator extends SpringConfigurator implements ApplicationContextAware, IFunctional {
 
 	private static final Logger log = LoggerFactory.getLogger(ContextAwareEndpointConfigurator.class);
 	
@@ -107,14 +108,6 @@ public class ContextAwareEndpointConfigurator extends SpringConfigurator impleme
 		if (isInsecuredPath(request)) {
 			log.warn("GOING THROUGH INSECURE PATH!");
 		}
-	}
-
-	private boolean isNullOrEmpty(String s) {
-		return s == null || s.isEmpty();
-	}
-	
-	private boolean isNullOrEmpty(List<String> map) {
-		return map == null || map.isEmpty();
 	}
 	
 }
