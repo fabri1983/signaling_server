@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
+import javax.inject.Inject;
+
 import org.fabri1983.signaling.core.IJwtVerifier;
 import org.fabri1983.signaling.core.JwtVerifier;
 import org.fabri1983.signaling.core.messagesender.ErrorMessageSender;
@@ -25,7 +27,6 @@ import org.nextrtc.signalingserver.Names;
 import org.nextrtc.signalingserver.NextRTCComponent;
 import org.nextrtc.signalingserver.domain.MessageSender;
 import org.nextrtc.signalingserver.property.NextRTCProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -58,7 +59,7 @@ public class SignalingConfiguration {
 
 	private static final List<String> URL_PATTERNS_FOR_FILTERS = Arrays.asList("/v1/*", "/v2/*", "/v3/*");
 	
-	@Autowired
+	@Inject
 	private ErrorAttributes errorAttributes;
 	
 	/*######################################################################################################

@@ -12,7 +12,7 @@ public class NextRTCConversationWrapper {
 		return new NextRTCConversationWrapper();
 	}
 	
-	public static NextRTCConversation unwrapNow(NextRTCConversationWrapper nextRTCConversationWrapper, 
+	public static NextRTCConversation unwrapNow(NextRTCConversationWrapper wrapper, 
 			LeftConversation leftConversation, MessageSender messageSender,
 			ExchangeSignalsBetweenMembers exchange) {
 		// TODO implement a selector in which if the instance doesn't match the selector condition then 

@@ -18,17 +18,16 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>11</java.version> <!-- overrides value from Spring Boot's defaults -->
+		<java.version>12</java.version> <!-- overrides value from Spring Boot's defaults -->
 		<maven.compiler.source>8</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
-		<maven.compiler.release>11</maven.compiler.release>
-		<tomcat.version>8.5.42</tomcat.version> <!-- activates spring boot internal servlet configuration when used as auto executable -->
+		<maven.compiler.target>12</maven.compiler.target>
+		<maven.compiler.release>12</maven.compiler.release>
 		
 		<!-- Signaling Server -->
 		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml -->
-		<spring.profiles.active>default</spring.profiles.active> <!-- default spring profile. Do not change/remove this line. Used by eventbus-type profiles -->
+		<spring.profiles.active>default</spring.profiles.active> <!-- default spring profile. Do not change/remove this line. Used by eventbus-<type> profiles -->
 		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it removes Session usage and instead use custom Connection class -->
-		<jwt.version>3.3.0</jwt.version>
+		<auth0.jwt.version>3.8.1</auth0.jwt.version>
 		
 		<!-- NextRTC Video Chat page -->
 		<turn.no.auth.user>turnUser</turn.no.auth.user>
@@ -41,7 +40,7 @@
 	</properties>
 	
 	<dependencies>
-		<!-- Logging configuration (explicitly import here, however Spring Boot's parent pom already imports them) -->
+		<!-- Logging APIs -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
@@ -69,7 +68,7 @@
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
-			<version>${jwt.version}</version>
+			<version>${auth0.jwt.version}</version>
 		</dependency>
 		<!-- NextRTC Signaling Server -->
 		<dependency>

@@ -5,11 +5,13 @@ import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 
 import org.fabri1983.signaling.core.distributed.serialization.NextRTCEventWrapper;
+import org.fabri1983.signaling.core.population.ConversationPopulation;
 import org.nextrtc.signalingserver.api.NextRTCEventBus;
 import org.nextrtc.signalingserver.api.dto.NextRTCEvent;
 import org.nextrtc.signalingserver.cases.ExchangeSignalsBetweenMembers;
 import org.nextrtc.signalingserver.cases.LeftConversation;
 import org.nextrtc.signalingserver.domain.MessageSender;
+import org.nextrtc.signalingserver.repository.MemberRepository;
 
 /**
  * This class intended to handle a distributed event bus using a message broker solution over 
@@ -18,22 +20,31 @@ import org.nextrtc.signalingserver.domain.MessageSender;
 public class NextRTCDistributedEventBus extends NextRTCEventBus implements MessageListener<NextRTCEventWrapper> {
 
 	private ITopic<NextRTCEventWrapper> hzcTopic;
-	private NextRTCEventBus eventBus;
 	private LeftConversation leftConversation;
 	private MessageSender messageSender;
 	private ExchangeSignalsBetweenMembers exchange;
+	private ConversationPopulation<String, String, String> population;
+	private MemberRepository members;
 	
-    public NextRTCDistributedEventBus(ITopic<NextRTCEventWrapper> hzcTopic, NextRTCEventBus eventBus, 
-			LeftConversation leftConversation, MessageSender messageSender, 
-			ExchangeSignalsBetweenMembers exchange) {
+    public NextRTCDistributedEventBus(ITopic<NextRTCEventWrapper> hzcTopic, MessageSender messageSender, 
+    		ExchangeSignalsBetweenMembers exchange, ConversationPopulation<String, String, String> population, 
+    		MemberRepository members) {
         super();
         this.hzcTopic = hzcTopic;
+        this.messageSender = messageSender;
+        this.exchange = exchange;
+        this.population = population;
+        this.members = members;
     }
 
-    @Override
+    public void setLeftConversation(LeftConversation leftConversation) {
+		this.leftConversation = leftConversation;
+	}
+
+	@Override
     public void post(NextRTCEvent event) {
         super.post(event);
-        NextRTCEventWrapper eventWrapper = NextRTCEventWrapper.wrap(event);
+        NextRTCEventWrapper eventWrapper = NextRTCEventWrapper.wrap(event, population);
         hzcTopic.publish(eventWrapper);
     }
 
@@ -46,8 +57,8 @@ public class NextRTCDistributedEventBus extends NextRTCEventBus implements Messa
     @Override
     public void onMessage(Message<NextRTCEventWrapper> message) {
     	NextRTCEventWrapper eventWrapper = message.getMessageObject();
-    	NextRTCEvent event = NextRTCEventWrapper.unwrapNow(eventWrapper, eventBus, leftConversation, 
-    			messageSender, exchange);
+    	NextRTCEvent event = NextRTCEventWrapper.unwrapNow(eventWrapper, this, leftConversation, 
+    			messageSender, exchange, population, members);
     	post(event);
     }
 

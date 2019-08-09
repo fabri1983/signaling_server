@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.nextrtc.signalingserver.Names;
 import org.nextrtc.signalingserver.NextRTCComponent;
@@ -26,7 +28,6 @@ import org.nextrtc.signalingserver.repository.ConversationRepository;
 import org.nextrtc.signalingserver.repository.MemberRepository;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -34,28 +35,28 @@ import org.springframework.context.ApplicationContext;
  */
 public class SpringNextRTCComponent implements NextRTCComponent {
 
-	@Autowired
+	@Inject
     private NextRTCProperties nextRTCProperties;
 	
-	@Autowired
+	@Inject
     private NextRTCEventBus eventBus;
 	
-	@Autowired
+	@Inject
 	private SpringSignalResolver springSignalResolver;
 	
-	@Autowired
+	@Inject
     private ApplicationContext context;
 	
-	@Autowired
+	@Inject
 	private MessageSender messageSender;
 	
-	@Autowired
+	@Inject
 	private MemberRepository memberRepository;
 	
-	@Autowired
+	@Inject
 	private ConversationRepository conversationRepository;
 	
-	@Autowired
+	@Inject
 	private Server server;
 	
 	@Override
