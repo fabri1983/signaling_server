@@ -9,7 +9,7 @@
 
 This project uses [NextRTC Signaling Server](https://github.com/mslosarz/nextrtc-signaling-server) project.
 I added custom signals to provide a complete video call solution between two clients.
-It has a distributed event bus so the signaling server can be deployed in a cluster (work in progress due to serialization issues).
+It has a distributed event bus so the signaling server can be deployed in a cluster (*work in progress due to serialization issues*).
 
 
 ## Create self signed certificate
@@ -76,8 +76,12 @@ When using *eventbus-hazelcast* the opposite occurs.
 
 #### Maven pom and Spring Bean Configuration setup
 - Edit *pom.xml*:  
+	- change packaging:
+		```xml
+		<packaging>jar</packaging>
+		```  
 	- add next property:  
-		```
+		```xml
 		<javax.websocket.api.version>1.1</javax.websocket.api.version>
 		```  
 	- add next dependencies:  
@@ -212,6 +216,10 @@ See **NextRTC Video Chat exmaple** section.
 
 #### Maven pom and Spring Bean Configuration setup
 - On *pom.xml*:
+	- change packaging:
+		```xml
+		<packaging>jar</packaging>
+		```  
 	- remove next dependencies (if exist):
 		```xml
 		<groupId>javax.websocket</groupId>
@@ -251,7 +259,7 @@ See **NextRTC Video Chat exmaple** section.
 	```
 - Edit *application.properties* accordingly. Be aware *server.port* value is *8443*.
 - Run:
-	- ```mvn clean install && java -jar target/signaling.war```
+	- ```mvn clean install && java -jar target/signaling.jar```
 	
 #### Access
 - From your client app access it via:
@@ -270,8 +278,48 @@ See **NextRTC Video Chat exmaple** section.
 
 _Sometimes websocket (js side) is throwing an exception and can't connect via websocket o signiling server, then try to change localhost to 127.0.0.1_
 
-
 This is a working test of the Signaling Server and the videochat client using a Chrome tab on my laptop and an Opera tab on my mobile phone. 
 Server exposed with [ngrok](https://ngrok.com/).
 
 ![videochat with local signaling](/videochat_example_ngrok.jpg?raw=true "videochat with local signaling")
+
+
+## Run with Docker and test Distributed Event Bus with Hazelcast
+- First pack the Signaling Server in a fat jar using default Spring Boot maven plugins:
+```bash
+mvn clean package -P local,eventbus-hazelcast
+```
+
+- **Create a dual layer Docker image**:
+In order to take advantage of less frequency libs changes the [Dockerfile](Dockerfile) defines a dual layer image, 
+so next time image build is fired it only updates application code:
+	- **Windows**
+	```bash
+	docker image build ^
+		--build-arg JAR_FILE=target/signaling.jar ^
+		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint ^
+		-t fabri1983dockerid/signaling-server:dev ./
+	```
+	- **Linux**
+	docker image build \
+		--build-arg JAR_FILE=target/signaling.jar \
+		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint \
+		-t fabri1983dockerid/signaling-server:dev ./
+	```
+
+- **Run 2 images**:
+```bash
+docker container run -i -p 8481:8443 --name signaling-server fabri1983dockerid/signaling-server:dev
+docker container run -i -p 8482:8443 --name signaling-server fabri1983dockerid/signaling-server:dev
+```
+- Test the Distributed Event with Hazelcast:
+	- If you are using docker in **Windows** with **Docker Tool Box** then visit:
+		- [https://192.168.99.100:8481/signaling/videochat.html](https://127.0.0.1:8481/signaling/videochat.html)
+		- [https://192.168.99.100:8482/signaling/videochat.html](https://127.0.0.1:8482/signaling/videochat.html)
+	- If on **Linux**:
+		- [https://172.17.0.2:8481/signaling/videochat.html](https://127.0.0.1:8481/signaling/videochat.html)
+		- [https://172.17.0.2:8482/signaling/videochat.html](https://127.0.0.1:8482/signaling/videochat.html)
+		- or get the running Docker ip:
+		```bash
+		docker inspect -f "{{ .NetworkSettings.IPAddress }}" <containerNameOrId>
+		```

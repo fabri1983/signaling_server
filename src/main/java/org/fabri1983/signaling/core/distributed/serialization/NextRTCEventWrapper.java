@@ -8,11 +8,10 @@ import org.nextrtc.signalingserver.api.NextRTCEvents;
 import org.nextrtc.signalingserver.api.dto.NextRTCConversation;
 import org.nextrtc.signalingserver.api.dto.NextRTCEvent;
 import org.nextrtc.signalingserver.api.dto.NextRTCMember;
-import org.nextrtc.signalingserver.cases.ExchangeSignalsBetweenMembers;
-import org.nextrtc.signalingserver.cases.LeftConversation;
 import org.nextrtc.signalingserver.domain.EventContext;
-import org.nextrtc.signalingserver.domain.MessageSender;
+import org.nextrtc.signalingserver.exception.Exceptions;
 import org.nextrtc.signalingserver.exception.SignalingException;
+import org.nextrtc.signalingserver.repository.ConversationRepository;
 import org.nextrtc.signalingserver.repository.MemberRepository;
 
 public class NextRTCEventWrapper {
@@ -57,8 +56,7 @@ public class NextRTCEventWrapper {
      * @return
      */
 	public static NextRTCEvent unwrapNow(NextRTCEventWrapper wrapper, NextRTCEventBus eventBus, 
-			LeftConversation leftConversation, MessageSender messageSender,  
-			ExchangeSignalsBetweenMembers exchange, ConversationPopulation population, 
+			ConversationPopulation population, ConversationRepository conversationRepository, 
 			MemberRepository members) {
 		
 		// TODO implement a selector in which if the instance doesn't match the selector condition then 
@@ -69,24 +67,21 @@ public class NextRTCEventWrapper {
 					.type(wrapper.type)
 					.from(wrapper.from.unwrap(eventBus, population, members))
 					.to(wrapper.to.unwrap(eventBus, population, members))
-					.conversation(wrapper.conversation.unwrap(leftConversation, 
-							messageSender, exchange))
+					.conversation(wrapper.conversation.unwrap(conversationRepository))
 					.exception(wrapper.exception)
 					.custom(wrapper.custom)
 					.content(wrapper.content)
 					.reason(wrapper.reason)
 					.build();
 		} else {
-			throw new RuntimeException("Can't create instance of unkown target class.");
+			throw Exceptions.UNKNOWN_ERROR.exception("Can't create instance of unkown target class.");
 		}
 	}
 	
 	public NextRTCEvent unwrap(NextRTCEventWrapper wrapper, NextRTCEventBus eventBus, 
-			LeftConversation leftConversation, MessageSender messageSender, 
-			ExchangeSignalsBetweenMembers exchange, ConversationPopulation population, 
+			ConversationPopulation population, ConversationRepository conversationRepository, 
 			MemberRepository members) {
-		return NextRTCEventWrapper.unwrapNow(wrapper, eventBus, leftConversation, 
-				messageSender, exchange, population, members);
+		return NextRTCEventWrapper.unwrapNow(wrapper, eventBus, population, conversationRepository, members);
 	}
 	
 	public static class NextRTCEventWrapperBuilder {

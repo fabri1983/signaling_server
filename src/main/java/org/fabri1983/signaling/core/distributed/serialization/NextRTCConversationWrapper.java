@@ -1,28 +1,33 @@
 package org.fabri1983.signaling.core.distributed.serialization;
 
 import org.nextrtc.signalingserver.api.dto.NextRTCConversation;
-import org.nextrtc.signalingserver.cases.ExchangeSignalsBetweenMembers;
-import org.nextrtc.signalingserver.cases.LeftConversation;
-import org.nextrtc.signalingserver.domain.MessageSender;
+import org.nextrtc.signalingserver.exception.Exceptions;
+import org.nextrtc.signalingserver.exception.SignalingException;
+import org.nextrtc.signalingserver.repository.ConversationRepository;
 
 public class NextRTCConversationWrapper {
 
+	private String id;
+	
 	public static NextRTCConversationWrapper wrap(NextRTCConversation conversation) {
-		// TODO Auto-generated method stub
-		return new NextRTCConversationWrapper();
+		NextRTCConversationWrapper wrapper = new NextRTCConversationWrapper();
+		wrapper.id = conversation.getId();
+		return wrapper;
 	}
 	
 	public static NextRTCConversation unwrapNow(NextRTCConversationWrapper wrapper, 
-			LeftConversation leftConversation, MessageSender messageSender,
-			ExchangeSignalsBetweenMembers exchange) {
-		// TODO implement a selector in which if the instance doesn't match the selector condition then 
-		// fallback to a dummy selector which throws exception
-		return null;
+			ConversationRepository conversationRepository) {
+		return conversationRepository.findBy(wrapper.id)
+				.orElseThrow( () -> errorConversationNotFound(wrapper) );
 	}
 
-	public NextRTCConversation unwrap(LeftConversation leftConversation, MessageSender messageSender,
-			ExchangeSignalsBetweenMembers exchange) {
-		return NextRTCConversationWrapper.unwrapNow(this, leftConversation, messageSender, exchange);
+	public NextRTCConversation unwrap(ConversationRepository conversationRepository) {
+		return NextRTCConversationWrapper.unwrapNow(this, conversationRepository);
+	}
+
+	private static SignalingException errorConversationNotFound(NextRTCConversationWrapper wrapper) {
+		return Exceptions.CONVERSATION_NOT_FOUND.exception(
+				String.format("Conversation id %s couldn't be found, so no unwrap operation will be performed.", wrapper.id));
 	}
 
 }

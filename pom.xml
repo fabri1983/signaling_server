@@ -6,7 +6,7 @@
 	<artifactId>signaling</artifactId>
 	<groupId>org.fabri1983</groupId>
 	<version>1.0.0</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>signaling</name>
 	<description>Signaling Server for WebRTC</description>
 	
@@ -207,6 +207,21 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>${start-class}</mainClass>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<archive>
@@ -229,16 +244,12 @@
 				</configuration>
 	        </plugin>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
 				<groupId>org.eluder.coveralls</groupId>
 				<artifactId>coveralls-maven-plugin</artifactId>
 				<version>4.3.0</version>
 				<configuration>
 					<timestampFormat>EpochMillis</timestampFormat>
-					<!-- token provided by -D argument on .travis.yml from environment variable set up on Travis CI account -->
+					<!-- token provided by -D argument on .travis.yml from environment variable set up on Travis CI settings -->
 					<repoToken></repoToken>
 				</configuration>
 			</plugin>

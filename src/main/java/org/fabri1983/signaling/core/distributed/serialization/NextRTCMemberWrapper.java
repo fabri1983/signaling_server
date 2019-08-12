@@ -6,6 +6,7 @@ import org.fabri1983.signaling.core.population.ConversationPopulation;
 import org.nextrtc.signalingserver.api.NextRTCEventBus;
 import org.nextrtc.signalingserver.api.dto.NextRTCMember;
 import org.nextrtc.signalingserver.domain.Member;
+import org.nextrtc.signalingserver.exception.Exceptions;
 import org.nextrtc.signalingserver.repository.MemberRepository;
 
 public class NextRTCMemberWrapper {
@@ -32,7 +33,7 @@ public class NextRTCMemberWrapper {
 			member.setEventBus(eventBus);
 			return member;
 		} else {
-			throw new RuntimeException("Can't create instance of unkown target class.");
+			throw Exceptions.UNKNOWN_ERROR.exception("Can't create instance of unkown target class.");
 		}
 	}
 

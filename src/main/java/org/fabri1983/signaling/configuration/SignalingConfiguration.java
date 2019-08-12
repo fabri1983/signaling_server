@@ -47,15 +47,15 @@ import org.springframework.scheduling.concurrent.ScheduledExecutorFactoryBean;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 @Configuration
-@Import( value = { LocalSignalingConfiguration.class, HazelcastSignalingConfiguration.class })
+@Import(value = { LocalSignalingConfiguration.class, HazelcastSignalingConfiguration.class })
 // The next @ComponentScan annotation used only to let Spring creates all the necessary beans except for the
 // NextRTCEndpoint bean which we don't want to instantiate due to its static instance creation logic which disables
 // completely the use of custom SignalResolver instances.
 @ComponentScan(
 		basePackages = {
-				"org.nextrtc.signalingserver.cases", "org.nextrtc.signalingserver.domain", 
+				"org.nextrtc.signalingserver.cases",    "org.nextrtc.signalingserver.domain", 
 				"org.nextrtc.signalingserver.eventbus", "org.nextrtc.signalingserver.factory",
-				"org.nextrtc.signalingserver.modules", "org.nextrtc.signalingserver.property",
+				"org.nextrtc.signalingserver.modules",  "org.nextrtc.signalingserver.property",
 				"org.nextrtc.signalingserver.repository"}
 )
 @PropertySource(value={"classpath:application.properties", "classpath:nextrtc.properties"})

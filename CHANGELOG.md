@@ -7,8 +7,10 @@ All notable changes to the Signaling Server project will be documented in this f
 **Tag**: signaling_r1_v2
 
 ## Modified
+- Finished serialization for some classes which participate in the distirbuted event bus.
+- Package refactor.
+- Add Dockerfile and steps for image creation and execution.
 - Updated README.md to reflect several build and execution schemas.
-- Minor package refactor.
 
  
 -------------------------------------------------------------------------------------------------------------------
