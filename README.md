@@ -301,6 +301,7 @@ so next time image build is fired it only updates application code:
 		-t fabri1983dockerid/signaling-server:dev ./
 	```
 	- **Linux**
+	```bash
 	docker image build \
 		--build-arg JAR_FILE=target/signaling.jar \
 		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint \
