@@ -290,20 +290,24 @@ Server exposed with [ngrok](https://ngrok.com/).
 mvn clean package -P local,eventbus-hazelcast
 ```
 
-- **Create a dual layer Docker image**:
-In order to take advantage of less frequency libs changes the [Dockerfile](Dockerfile) defines a dual layer image, 
+- **Create a multi layer Docker image**:
+In order to take advantage of less frequency libs changes the [Dockerfile](Dockerfile) defines a multi layer image, 
 so next time image build is fired it only updates application code:
 	- **Windows**
 	```bash
+	mkdir target\dependencies
+	(cd target\dependencies && jar -xf ..\signaling.jar && cd ..\..)
 	docker image build ^
-		--build-arg JAR_FILE=target/signaling.jar ^
+		--build-arg DEPENDENCIES=target/dependencies ^
 		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint ^
 		-t fabri1983dockerid/signaling-server:dev ./
 	```
 	- **Linux**
 	```bash
+	mkdir target/dependencies
+	(cd target/dependencies; jar -xf ../signaling.jar; cd ../..)
 	docker image build \
-		--build-arg JAR_FILE=target/signaling.jar \
+		--build-arg DEPENDENCIES=target/dependencies \
 		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint \
 		-t fabri1983dockerid/signaling-server:dev ./
 	```
