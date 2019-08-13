@@ -323,13 +323,13 @@ so next time image build is fired it only updates application code:
 	- if on Linux: the classpath entries separator is **:**.
 	- The use of wildcard _*_ only considers jar files, otherwise only includes class files.
 
-- **Run 2 images**:
+- **Run 2 instances of the image**:
 ```bash
 docker container run -i -p 8481:8443 --name signaling-server-1 fabri1983dockerid/signaling-server:dev
 docker container run -i -p 8482:8443 --name signaling-server-2 fabri1983dockerid/signaling-server:dev
 ```
-(or use a *docker-compose.yml*)  
-Replace *-i* by *-d* if you want to detach the process and let it run on background.  
+Replace *-i* by *-d* if you want to detach the process and let it run on background.
+You can use a *docker-compose.yml*.  
 
 Test the Distributed Event Bus with Hazelcast:
 - If you are using docker in **Windows** with **Docker Tool Box** then visit:
