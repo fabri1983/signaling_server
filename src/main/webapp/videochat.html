@@ -287,7 +287,7 @@
 
 	var resetEndpointUrl = function(){
 		var hostname = location.hostname.toLowerCase();
-		var defaultWsURL = 'wss://' + hostname + (location.port ? ':'+location.port : '') + '${signaling.insecure.path}';
+		var defaultWsURL = 'wss://' + hostname + (location.port ? ':'+location.port : '') + '@signaling.insecure.path@';
 		$('#endpointUrlId').val(defaultWsURL);
 	};
 	

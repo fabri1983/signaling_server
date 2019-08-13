@@ -176,6 +176,13 @@
 					<include>*.jks</include>
 				</includes>
 			</resource>
+            <resource>
+                <directory>src/main/webapp</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
 		</resources>
 		<plugins>
 			<plugin>
@@ -231,17 +238,6 @@
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 						</manifest>
 					</archive>
-					<webResources>
-						<resource>
-							<filtering>true</filtering>
-							<directory>src/main/webapp</directory>
-							<includes>
-								<include>js/common.js</include>
-								<include>videochat.html</include>
-								<include>callTo.html</include>
-							</includes>
-						</resource>
-					</webResources>
 				</configuration>
 	        </plugin>
 			<plugin>

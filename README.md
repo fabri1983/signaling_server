@@ -12,18 +12,24 @@ I added custom signals to provide a complete video call solution between two cli
 It has a distributed event bus so the signaling server can be deployed in a cluster (*work in progress due to serialization issues*).
 
 
+Runs on **Java 12**. If you want to use 8 then you need to:
+- change [Dockerfile](src/main/docker/Dockerfile) in order to reflect the location of the *jre keystore*.
+	- **NOTE**: Dockerfile import cert command is commented out because this project uses custom keystore.jks. 
+- edit *pom.xml* ```properties``` section.
+
+
 ## Create self signed certificate
 *(skip this step if you already have your own certificate in your keystore, but do not forget to edit application.properties and docker-compose-local.yml files accordingly)*
 
-Enter to directory ```src/main/resources``` and generate self signed certificate (current certificate might be expired!):
+Enter to directory ```src/main/resources``` and generate self-signed certificate into custom keystore (current certificate might be expired!):
 ```bash
-keytool -genkey -alias tomcat -keyalg RSA -keystore keystore.jks
+keytool -genkey -alias tomcat -keyalg RSA -keystore keystore.jks -validity 365 -keysize 2048
 ```
-```
+```bash
 Enter keystore password: changeit
 Re-enter new password: changeit
 What is your first and last name?
-  [Unknown]:  Local Name
+  [Unknown]:  127.0.0.1
 What is the name of your organizational unit?
   [Unknown]:  Engineering
 What is the name of your organization?
@@ -41,7 +47,12 @@ Enter key password for <tomcat>
   (RETURN if same as keystore password): <RETURN>
 ```
 
-Edit *application.properties* accordingly.
+Export certificate file in X.509 for Dockerfile internal command:
+```bash
+keytool -export -rfc -alias tomcat -file signaling-self.crt -keystore keystore.jks
+```
+ 
+Edit *application.properties* accordingly if you change any of above information.
 
 
 ## Create key pair for JWT (Json Web Token)
@@ -285,7 +296,6 @@ Server exposed with [ngrok](https://ngrok.com/).
 
 
 ## Run with Docker and test Distributed Event Bus with Hazelcast
-**NOTE: currently not working since self-signed certificate needs to be added in Docker container jre keystore. WIP**
 - First pack the Signaling Server in a fat jar using default Spring Boot maven plugins:
 ```bash
 mvn clean package -P local,eventbus-hazelcast
@@ -318,13 +328,13 @@ so next time image build is fired it only updates application code:
 	```
 
 - You can **manually test** the *Dockerfile's ENTRYPOINT* doing as next:
-	- unzip the signaling.jar file into folder target/signaling and then run: 
+	- unzip the signaling.jar file into folder target/docker-dependencies and then run: 
 	```bash
-	java -cp "target/signaling/BOOT-INF/classes;target/signaling/BOOT-INF/lib/*" org.fabri1983.signaling.entrypoint.SignalingEntryPoint
+	java -cp "target/docker-dependencies/BOOT-INF/classes;target/docker-dependencies/BOOT-INF/lib/*" org.fabri1983.signaling.entrypoint.SignalingEntryPoint
 	```
 	- if on Windows: the classpath entries separator is **;**.
 	- if on Linux: the classpath entries separator is **:**.
-	- The use of wildcard _*_ includes only jar files, otherwise includes only class files.
+	- The use of wildcard _*_ includes only jar files, otherwise includes class files.
 
 - **Run 2 instances of the image**:
 ```bash
@@ -343,11 +353,11 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 
 Test the Distributed Event Bus with Hazelcast:
 - If you are using docker in **Windows** with **Docker Tool Box** then visit:
-	- [https://192.168.99.100:8481/signaling/videochat.html](https://192.168.99.100:8481/signaling/videochat.html)
-	- [https://192.168.99.100:8482/signaling/videochat.html](https://192.168.99.100:8482/signaling/videochat.html)
+	- [videochat-1](https://192.168.99.100:8481/signaling/videochat.html)
+	- [videochat-2](https://192.168.99.100:8482/signaling/videochat.html)
 - If on **Linux**:
-	- [https://172.17.0.2:8481/signaling/videochat.html](https://172.17.0.2:8481/signaling/videochat.html)
-	- [https://172.17.0.3:8482/signaling/videochat.html](https://172.17.0.3:8482/signaling/videochat.html)
+	- [videochat-1](https://172.17.0.2:8481/signaling/videochat.html)
+	- [videochat-2](https://172.17.0.3:8482/signaling/videochat.html)
 	- or get the running Docker ip:
 	```bash
 	docker inspect -f "{{ .NetworkSettings.IPAddress }}" <containerNameOrId>

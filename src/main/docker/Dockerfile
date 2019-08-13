@@ -10,6 +10,14 @@ COPY ${DEPENDENCIES}/BOOT-INF/lib      /staging/app/BOOT-INF/lib
 COPY ${DEPENDENCIES}/META-INF          /staging/app/META-INF
 COPY ${DEPENDENCIES}/BOOT-INF/classes  /staging/app/BOOT-INF/classes
 
+# Java 8: add self-signed certificate into Java 8 keystore
+#RUN keytool -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias tomcat \
+#  -file /staging/app/BOOT-INF/classes/signaling-self.crt
+
+# Java 12: add self-signed certificate into Java 12 keystore
+#RUN keytool -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias tomcat \
+#  -file /staging/app/BOOT-INF/classes/signaling-self.crt
+
 
 FROM openjdk:12-jdk-alpine
 ARG JAVA_MAIN_CLASS
