@@ -18,6 +18,8 @@ FROM openjdk:12-jdk-alpine
 
 VOLUME /tmp
 
+ENV JAVA_MODULES_HAZELCAST="--add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
+
 # Create the individual layers
 COPY --from=staging /staging/app/BOOT-INF/lib      /app/lib
 COPY --from=staging /staging/app/META-INF          /app/META-INF
@@ -28,4 +30,4 @@ COPY --from=staging /staging/app/BOOT-INF/classes  /app
 # Windows: ; is the classpath entries separator
 # Linux: : is the classpath entries separator
 # NOTE: the use of wildcard * only considers jar files, otherwise only includes class files.
-ENTRYPOINT ["java","-cp","app:app/lib/*","${JAVA_MAIN_CLASS}"]
+ENTRYPOINT ["java","${JAVA_MODULES_HAZELCAST}","-cp","app:app/lib/*","${JAVA_MAIN_CLASS}"]
