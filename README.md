@@ -9,13 +9,13 @@
 
 This project uses [NextRTC Signaling Server](https://github.com/mslosarz/nextrtc-signaling-server) project.
 I added custom signals to provide a complete video call solution between two clients.
-It has a distributed event bus so the signaling server can be deployed in a cluster (*work in progress due to serialization issues*).
+It has a distributed event bus so the signaling server can be deployed in a cluster with auto discovery.
 
 
-Runs on **Java 12**. If you want to use 8 then you need to:
+Runs on **Java 12**. If you want to use Java 8 then you need to:
 - change [Dockerfile](src/main/docker/Dockerfile) in order to reflect the location of the *jre keystore*.
 	- **NOTE**: Dockerfile import cert command is commented out because this project uses custom keystore.jks. 
-- edit *pom.xml* ```properties``` section.
+- edit *pom.xml* ```<properties>``` section.
 
 
 ## Create self signed certificate
@@ -217,9 +217,9 @@ Add next plugin on *build* section:
 
 #### Access
 - From your client app access it via:
-	- [wss://localhost:8443/signaling/s-insecure](wss://localhost:8443/signaling/v1/s-insecure)
+	- [wss://127.0.0.1:8443/signaling/s-insecure](wss://127.0.0.1:8443/signaling/v1/s-insecure)
 - Or the secured endpoint which after HTTP Upgrade to Websocket it expects and validates headers *vcuser* and *vctoken*:
-	- [wss://localhost:8443/signaling/s](wss://localhost:8443/signaling/s)
+	- [wss://127.0.0.1:8443/signaling/s](wss://127.0.0.1:8443/signaling/s)
 See **NextRTC Video Chat exmaple** section.
 
 
@@ -270,13 +270,13 @@ See **NextRTC Video Chat exmaple** section.
 	```
 - Edit *application.properties* accordingly. Be aware *server.port* value is *8443*.
 - Run:
-	- ```mvn clean install && java -jar target/signaling.jar```
+	- ```mvn clean package && java -jar target/signaling.jar```
 	
 #### Access
 - From your client app access it via:
-	- [wss://localhost:8443/signaling/v1/s-insecure](wss://localhost:8443/signaling/v1/s-insecure)
+	- [wss://127.0.0.1:8443/signaling/v1/s-insecure](wss://127.0.0.1:8443/signaling/v1/s-insecure)
 - Or the secured endpoint which after HTTP Upgrade to Websocket it expects and validates headers *vcuser* and *vctoken*:
-	- [wss://localhost:8443/signaling/v1/s](wss://localhost:8443/signaling/v1/s)
+	- [wss://127.0.0.1:8443/signaling/v1/s](wss://127.0.0.1:8443/signaling/v1/s)
 See **NextRTC Video Chat exmaple** section.
 
 
@@ -341,13 +341,17 @@ so next time image build is fired it only updates application code:
 docker container run -i -p 8481:8443 --name signaling-server-1 fabri1983dockerid/signaling-server:dev
 docker container run -i -p 8482:8443 --name signaling-server-2 fabri1983dockerid/signaling-server:dev
 (replace -i by -d if you want to detach the process and let it run on background)
-then manage it with:
+```
+Then manage it with:
+```bash
 docker container stop|start <container-name> 
 ```
 Or you can use the [docker-compose-local.yml](src/main/docker/docker-compose-local.yml):
 ```bash
 docker-compose -f src/main/docker/docker-compose-local.yml up
-then manage it with:
+```
+Then manage it with:
+```bash
 docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 ```
 
