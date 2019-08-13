@@ -355,14 +355,15 @@ Then manage it with:
 docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 ```
 
-Test the Distributed Event Bus with Hazelcast:
-- If you are using docker in **Windows** with **Docker Tool Box** then visit:
-	- [videochat-1](https://192.168.99.100:8481/signaling/videochat.html)
-	- [videochat-2](https://192.168.99.100:8482/signaling/videochat.html)
-- If on **Linux**:
-	- [videochat-1](https://172.17.0.2:8481/signaling/videochat.html)
-	- [videochat-2](https://172.17.0.3:8482/signaling/videochat.html)
-	- or get the running Docker ip:
-	```bash
-	docker inspect -f "{{ .NetworkSettings.IPAddress }}" <containerNameOrId>
-	```
+- Test the Distributed Event Bus with Hazelcast:
+(**NOTE**: work in progress due to missing page, which is totally strange since locally works flawlessly)
+	- If you are using docker in **Windows** with **Docker Tool Box** then visit:
+		- [videochat-1](https://192.168.99.100:8481/signaling/videochat.html)
+		- [videochat-2](https://192.168.99.100:8482/signaling/videochat.html)
+	- If on **Linux**:
+		- [videochat-1](https://172.17.0.2:8481/signaling/videochat.html)
+		- [videochat-2](https://172.17.0.3:8482/signaling/videochat.html)
+		- or get the running Docker ip:
+		```bash
+		docker inspect -f "{{ .NetworkSettings.IPAddress }}" <containerNameOrId>
+		```
