@@ -314,14 +314,14 @@ so next time image build is fired it only updates application code:
 	docker history fabri1983dockerid/signaling-server:dev
 	```
 
-You can test the *Dockerfile's ENTRYPOINT* locally doing as next:
-- unzip the signaling.jar file into folder target/signaling and then run: 
-```bash
-java -cp "target/signaling/BOOT-INF/classes:target/signaling/BOOT-INF/lib/*" org.fabri1983.signaling.entrypoint.SignalingEntryPoint
-```
-- if on Windows: the classpath entries separator is **;**.
-- if on Linux: the classpath entries separator is **:**.
-- The use of wildcard _*_ only considers jar files, otherwise only includes class files.
+- You can manually test the *Dockerfile's ENTRYPOINT* doing as next:
+	- unzip the signaling.jar file into folder target/signaling and then run: 
+	```bash
+	java -cp "target/signaling/BOOT-INF/classes:target/signaling/BOOT-INF/lib/*" org.fabri1983.signaling.entrypoint.SignalingEntryPoint
+	```
+	- if on Windows: the classpath entries separator is **;**.
+	- if on Linux: the classpath entries separator is **:**.
+	- The use of wildcard _*_ only considers jar files, otherwise only includes class files.
 
 - **Run 2 images**:
 ```bash
@@ -329,7 +329,7 @@ docker container run -i -p 8481:8443 --name signaling-server-1 fabri1983dockerid
 docker container run -i -p 8482:8443 --name signaling-server-2 fabri1983dockerid/signaling-server:dev
 ```
 (or use a *docker-compose.yml*)  
-Replace *-i* by *-d* if you want to detach the process and let it run on background.
+Replace *-i* by *-d* if you want to detach the process and let it run on background.  
 
 Test the Distributed Event Bus with Hazelcast:
 - If you are using docker in **Windows** with **Docker Tool Box** then visit:
