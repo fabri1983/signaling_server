@@ -301,6 +301,7 @@ so next time image build is fired it only updates application code:
 		--build-arg DEPENDENCIES=target/docker-dependencies ^
 		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint ^
 		-t fabri1983dockerid/signaling-server:dev ./
+	docker history fabri1983dockerid/signaling-server:dev
 	```
 	- **Linux**
 	```bash
@@ -310,6 +311,7 @@ so next time image build is fired it only updates application code:
 		--build-arg DEPENDENCIES=target/docker-dependencies \
 		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint \
 		-t fabri1983dockerid/signaling-server:dev ./
+	docker history fabri1983dockerid/signaling-server:dev
 	```
 You can test the *Dockerfile's ENTRYPOINT* locally doing as next:
 - unzip the signaling.jar file into folder target/signaling and then run: 
@@ -325,13 +327,14 @@ java -cp "target/signaling/BOOT-INF/classes:target/signaling/BOOT-INF/lib/*" org
 docker container run -i -p 8481:8443 --name signaling-server fabri1983dockerid/signaling-server:dev
 docker container run -i -p 8482:8443 --name signaling-server fabri1983dockerid/signaling-server:dev
 ```
+Replace -i by -d if you want to detach the process and let it run on background
 - Test the Distributed Event Bus with Hazelcast:
 	- If you are using docker in **Windows** with **Docker Tool Box** then visit:
-		- [https://192.168.99.100:8481/signaling/videochat.html](https://127.0.0.1:8481/signaling/videochat.html)
-		- [https://192.168.99.100:8482/signaling/videochat.html](https://127.0.0.1:8482/signaling/videochat.html)
+		- [https://192.168.99.100:8481/signaling/videochat.html](https://192.168.99.100:8481/signaling/videochat.html)
+		- [https://192.168.99.100:8482/signaling/videochat.html](https://192.168.99.100:8482/signaling/videochat.html)
 	- If on **Linux**:
-		- [https://172.17.0.2:8481/signaling/videochat.html](https://127.0.0.1:8481/signaling/videochat.html)
-		- [https://172.17.0.2:8482/signaling/videochat.html](https://127.0.0.1:8482/signaling/videochat.html)
+		- [https://172.17.0.2:8481/signaling/videochat.html](https://72.17.0.2:8481/signaling/videochat.html)
+		- [https://172.17.0.2:8482/signaling/videochat.html](https://72.17.0.2:8482/signaling/videochat.html)
 		- or get the running Docker ip:
 		```bash
 		docker inspect -f "{{ .NetworkSettings.IPAddress }}" <containerNameOrId>
