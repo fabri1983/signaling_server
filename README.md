@@ -317,7 +317,7 @@ so next time image build is fired it only updates application code:
 docker container run -i -p 8481:8443 --name signaling-server fabri1983dockerid/signaling-server:dev
 docker container run -i -p 8482:8443 --name signaling-server fabri1983dockerid/signaling-server:dev
 ```
-- Test the Distributed Event with Hazelcast:
+- Test the Distributed Event Bus with Hazelcast:
 	- If you are using docker in **Windows** with **Docker Tool Box** then visit:
 		- [https://192.168.99.100:8481/signaling/videochat.html](https://127.0.0.1:8481/signaling/videochat.html)
 		- [https://192.168.99.100:8482/signaling/videochat.html](https://127.0.0.1:8482/signaling/videochat.html)
