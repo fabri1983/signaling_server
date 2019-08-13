@@ -24,6 +24,7 @@
 		<maven.compiler.release>12</maven.compiler.release>
 		
 		<!-- Signaling Server -->
+		<start-class>org.fabri1983.signaling.entrypoint.SignalingEntryPoint</start-class>
 		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml -->
 		<spring.profiles.active>default</spring.profiles.active> <!-- default spring profile. Do not change/remove this line. Used by eventbus-<type> profiles -->
 		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it removes Session usage and instead use custom Connection class -->

@@ -295,22 +295,30 @@ In order to take advantage of less frequency libs changes the [Dockerfile](Docke
 so next time image build is fired it only updates application code:
 	- **Windows**
 	```bash
-	mkdir target\dependencies
-	(cd target\dependencies && jar -xf ..\signaling.jar && cd ..\..)
+	mkdir target\docker-dependencies
+	(cd target\docker-dependencies && jar -xf ..\signaling.jar && cd ..\..)
 	docker image build ^
-		--build-arg DEPENDENCIES=target/dependencies ^
+		--build-arg DEPENDENCIES=target/docker-dependencies ^
 		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint ^
 		-t fabri1983dockerid/signaling-server:dev ./
 	```
 	- **Linux**
 	```bash
-	mkdir target/dependencies
-	(cd target/dependencies; jar -xf ../signaling.jar; cd ../..)
+	mkdir target/docker-dependencies
+	(cd target/docker-dependencies; jar -xf ../signaling.jar; cd ../..)
 	docker image build \
-		--build-arg DEPENDENCIES=target/dependencies \
+		--build-arg DEPENDENCIES=target/docker-dependencies \
 		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint \
 		-t fabri1983dockerid/signaling-server:dev ./
 	```
+You can test the *Dockerfile's ENTRYPOINT* locally doing as next:
+- unzip the signaling.jar file into folder target/signaling and then run: 
+```bash
+java -cp "target/signaling/BOOT-INF/classes:target/signaling/BOOT-INF/lib/*" org.fabri1983.signaling.entrypoint.SignalingEntryPoint
+```
+- if on Windows: the classpath entries separator is **;**.
+- if on Linux: the classpath entries separator is **:**.
+- The use of wildcard _*_ only considers jar files, otherwise only includes class files.
 
 - **Run 2 images**:
 ```bash
