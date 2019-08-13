@@ -13,7 +13,7 @@ It has a distributed event bus so the signaling server can be deployed in a clus
 
 
 ## Create self signed certificate
-*(skip this step if you already have your own certificate in your keystore, and edit application.properties accordingly)*
+*(skip this step if you already have your own certificate in your keystore, but do not forget to edit application.properties and docker-compose-local.yml files accordingly)*
 
 Enter to directory ```src/main/resources``` and generate self signed certificate (current certificate might be expired!):
 ```bash
@@ -285,13 +285,14 @@ Server exposed with [ngrok](https://ngrok.com/).
 
 
 ## Run with Docker and test Distributed Event Bus with Hazelcast
+**NOTE: currently not working since self-signed certificate needs to be added in Docker container jre keystore. WIP**
 - First pack the Signaling Server in a fat jar using default Spring Boot maven plugins:
 ```bash
 mvn clean package -P local,eventbus-hazelcast
 ```
 
 - **Create a multi layer Docker image**:
-In order to take advantage of less frequency libs changes the [Dockerfile](Dockerfile) defines a multi layer image, 
+In order to take advantage of less frequency libs changes the [Dockerfile](src/main/docker/Dockerfile) defines a multi layer image, 
 so next time image build is fired it only updates application code:
 	- **Windows**
 	```bash
@@ -300,7 +301,8 @@ so next time image build is fired it only updates application code:
 	docker image build ^
 		--build-arg DEPENDENCIES=target/docker-dependencies ^
 		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint ^
-		-t fabri1983dockerid/signaling-server:dev ./
+		-t fabri1983dockerid/signaling-server:dev ^
+		-f ./src/main/docker/Dockerfile ./
 	docker history fabri1983dockerid/signaling-server:dev
 	```
 	- **Linux**
@@ -310,26 +312,34 @@ so next time image build is fired it only updates application code:
 	docker image build \
 		--build-arg DEPENDENCIES=target/docker-dependencies \
 		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint \
-		-t fabri1983dockerid/signaling-server:dev ./
+		-t fabri1983dockerid/signaling-server:dev \
+		-f ./src/main/docker/Dockerfile ./
 	docker history fabri1983dockerid/signaling-server:dev
 	```
 
-- You can manually test the *Dockerfile's ENTRYPOINT* doing as next:
+- You can **manually test** the *Dockerfile's ENTRYPOINT* doing as next:
 	- unzip the signaling.jar file into folder target/signaling and then run: 
 	```bash
-	java -cp "target/signaling/BOOT-INF/classes:target/signaling/BOOT-INF/lib/*" org.fabri1983.signaling.entrypoint.SignalingEntryPoint
+	java -cp "target/signaling/BOOT-INF/classes;target/signaling/BOOT-INF/lib/*" org.fabri1983.signaling.entrypoint.SignalingEntryPoint
 	```
 	- if on Windows: the classpath entries separator is **;**.
 	- if on Linux: the classpath entries separator is **:**.
-	- The use of wildcard _*_ only considers jar files, otherwise only includes class files.
+	- The use of wildcard _*_ includes only jar files, otherwise includes only class files.
 
 - **Run 2 instances of the image**:
 ```bash
 docker container run -i -p 8481:8443 --name signaling-server-1 fabri1983dockerid/signaling-server:dev
 docker container run -i -p 8482:8443 --name signaling-server-2 fabri1983dockerid/signaling-server:dev
+(replace -i by -d if you want to detach the process and let it run on background)
+then manage it with:
+docker container stop|start <container-name> 
 ```
-Replace *-i* by *-d* if you want to detach the process and let it run on background.
-You can use a *docker-compose.yml*.  
+Or you can use the [docker-compose-local.yml](src/main/docker/docker-compose-local.yml):
+```bash
+docker-compose -f src/main/docker/docker-compose-local.yml up
+then manage it with:
+docker-compose -f src/main/docker/docker-compose-local.yml stop|start
+```
 
 Test the Distributed Event Bus with Hazelcast:
 - If you are using docker in **Windows** with **Docker Tool Box** then visit:
