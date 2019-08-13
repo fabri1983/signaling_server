@@ -24,5 +24,5 @@ COPY --from=staging /staging/app/BOOT-INF/lib      /app/lib
 COPY --from=staging /staging/app/META-INF          /app/META-INF
 COPY --from=staging /staging/app/BOOT-INF/classes  /app
 
-#ENTRYPOINT ["java", ${ENV_JAVA_MODULES_HAZELCAST}, "-cp","app:app/lib/*", ${ENV_JAVA_MAIN_CLASS}]
-ENTRYPOINT ["java", "-cp","app:app/lib/*", "org.fabri1983.signaling.entrypoint.SignalingEntryPoint"]
+# Entry with exec so jvm flags are correctly gathered
+ENTRYPOINT exec java ${ENV_JAVA_MODULES_HAZELCAST} -cp app:app/lib/* ${ENV_JAVA_MAIN_CLASS}

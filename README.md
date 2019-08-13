@@ -336,8 +336,8 @@ Test the Distributed Event Bus with Hazelcast:
 	- [https://192.168.99.100:8481/signaling/videochat.html](https://192.168.99.100:8481/signaling/videochat.html)
 	- [https://192.168.99.100:8482/signaling/videochat.html](https://192.168.99.100:8482/signaling/videochat.html)
 - If on **Linux**:
-	- [https://172.17.0.2:8481/signaling/videochat.html](https://72.17.0.2:8481/signaling/videochat.html)
-	- [https://172.17.0.2:8482/signaling/videochat.html](https://72.17.0.2:8482/signaling/videochat.html)
+	- [https://172.17.0.2:8481/signaling/videochat.html](https://172.17.0.2:8481/signaling/videochat.html)
+	- [https://172.17.0.3:8482/signaling/videochat.html](https://172.17.0.3:8482/signaling/videochat.html)
 	- or get the running Docker ip:
 	```bash
 	docker inspect -f "{{ .NetworkSettings.IPAddress }}" <containerNameOrId>
