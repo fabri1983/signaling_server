@@ -8,18 +8,16 @@ RUN mkdir -p /staging/app/
 # Stage dependencies and classes
 COPY ${DEPENDENCIES}/WEB-INF/lib/*            /staging/app/lib/
 COPY ${DEPENDENCIES}/WEB-INF/lib-provided/*   /staging/app/lib/
-COPY ${DEPENDENCIES}/WEB-INF/classes/*        /staging/app/
-COPY ${DEPENDENCIES}/WEB-INF/web.xml          /staging/app/WEB-INF
-COPY ${DEPENDENCIES}/META-INF                 /staging/app/META-INF
+COPY ${DEPENDENCIES}/WEB-INF/classes/.        /staging/app/
 COPY ${DEPENDENCIES}/js                       /staging/app/js
-COPY ${DEPENDENCIES}/callTo.html              /staging/app/callTo.html
-COPY ${DEPENDENCIES}/general-error.jsp        /staging/app/general-error.jsp
-COPY ${DEPENDENCIES}/index.html               /staging/app/index.html
-COPY ${DEPENDENCIES}/videochat.html           /staging/app/videochat.html
+COPY ${DEPENDENCIES}/callTo.html              /staging/app/
+COPY ${DEPENDENCIES}/general-error.jsp        /staging/app/
+COPY ${DEPENDENCIES}/index.html               /staging/app/
+COPY ${DEPENDENCIES}/videochat.html           /staging/app/
 
 # Java 12: add self-signed certificate into Java 12 keystore
-#RUN keytool -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias tomcat \
-#  -file /staging/app/BOOT-INF/classes/signaling-self.crt
+#RUN keytool -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt -trustcacerts 
+#  -importcert -alias tomcat -file /staging/app/signaling-self.crt
 
 
 FROM adoptopenjdk/openjdk12:alpine-jre
@@ -34,4 +32,4 @@ VOLUME /tmp
 COPY --from=STAGING /staging/app   /app
 
 # Entry with exec so jvm flags are correctly gathered
-ENTRYPOINT exec java ${ENV_JAVA_MODULES_HAZELCAST} -cp app:app/lib/* ${ENV_JAVA_MAIN_CLASS}
+ENTRYPOINT exec java ${ENV_JAVA_MODULES_HAZELCAST} -cp /app:/app/lib/* ${ENV_JAVA_MAIN_CLASS}
