@@ -30,8 +30,10 @@ hs_err_pid*
 # Others
 #########
 *.orig
+*.original
 *.eclipse-pmd
 *.stackdump
+*.old
 logs/
 log/
 

@@ -24,8 +24,6 @@ public class SignalingResourceLoader {
 
 	private final static Logger log = LoggerFactory.getLogger(SignalingResourceLoader.class);
 	
-	public final static String catalinaHome = System.getProperty("catalina.home");
-	
 	/**
 	 * Create RSA Key from a Public X509 Encoded key.
 	 * 

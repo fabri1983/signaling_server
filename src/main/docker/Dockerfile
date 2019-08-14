@@ -6,14 +6,13 @@ VOLUME /tmp
 RUN mkdir -p /staging/app/
 
 # Stage dependencies and classes
-COPY ${DEPENDENCIES}/WEB-INF/lib/*            /staging/app/lib/
-COPY ${DEPENDENCIES}/WEB-INF/lib-provided/*   /staging/app/lib/
-COPY ${DEPENDENCIES}/WEB-INF/classes/.        /staging/app/
-COPY ${DEPENDENCIES}/js                       /staging/app/js
-COPY ${DEPENDENCIES}/callTo.html              /staging/app/
-COPY ${DEPENDENCIES}/general-error.jsp        /staging/app/
-COPY ${DEPENDENCIES}/index.html               /staging/app/
-COPY ${DEPENDENCIES}/videochat.html           /staging/app/
+COPY ${DEPENDENCIES}/js                   /staging/app/js
+COPY ${DEPENDENCIES}/META-INF             /staging/app/META-INF
+COPY ${DEPENDENCIES}/WEB-INF              /staging/app/WEB-INF
+COPY ${DEPENDENCIES}/callTo.html          /staging/app/
+COPY ${DEPENDENCIES}/general-error.jsp    /staging/app/
+COPY ${DEPENDENCIES}/index.html           /staging/app/
+COPY ${DEPENDENCIES}/videochat.html       /staging/app/
 
 # Java 12: add self-signed certificate into Java 12 keystore
 #RUN keytool -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt -trustcacerts 
@@ -32,4 +31,4 @@ VOLUME /tmp
 COPY --from=STAGING /staging/app   /app
 
 # Entry with exec so jvm flags are correctly gathered
-ENTRYPOINT exec java ${ENV_JAVA_MODULES_HAZELCAST} -cp /app:/app/lib/* ${ENV_JAVA_MAIN_CLASS}
+ENTRYPOINT exec java ${ENV_JAVA_MODULES_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}

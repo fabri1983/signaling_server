@@ -293,7 +293,7 @@ Server exposed with [ngrok](https://ngrok.com/).
 mvn clean package -P local,eventbus-hazelcast
 ```
 
-- **Create a multi layer Docker image**:
+- **Create a multi layer Docker image for Spring Boot app**:
 In order to take advantage of less frequency libs changes the [Dockerfile](src/main/docker/Dockerfile) defines a multi layer image, 
 so next time image build is fired it only updates application code:
 	- **Windows**
@@ -337,7 +337,7 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 ```
 
 - Test the Distributed Event Bus with Hazelcast:
-(**NOTE**: work in progress due to missing page, which is totally strange since locally works flawlessly)
+(**NOTE**: work in progress due serialization issues)
 	- If you are using docker in **Windows** with **Docker Tool Box** then visit:
 		- [videochat-1](https://192.168.99.100:8481/signaling/videochat.html)
 		- [videochat-2](https://192.168.99.100:8482/signaling/videochat.html)

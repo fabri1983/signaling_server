@@ -1,5 +1,12 @@
 package org.fabri1983.signaling.core;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
@@ -12,14 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.Claim;
-import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class JwtVerifier implements IJwtVerifier {
 
@@ -44,23 +43,25 @@ public class JwtVerifier implements IJwtVerifier {
 		}
 	}
 	
-	private void initAlgorithm(String publicKeyFileName, String privateKeyFileName) 
-			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException  {
-		
+	private void initAlgorithm(String publicKeyFileName, String privateKeyFileName)
+			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+
 		// Define the location of the file in order of prevalence from low to high
-		Resource[] resourceLocationPublicKey = new Resource[]{
-		            new ClassPathResource("/" + publicKeyFileName),
-		            new UrlResource("file:" + SignalingResourceLoader.catalinaHome + "/conf/" + publicKeyFileName)};
-		
+		Resource[] resourceLocationPublicKey = new Resource[] {
+				new ClassPathResource("/" + publicKeyFileName)
+				//new UrlResource("file:" + "/conf/" + publicKeyFileName)
+				};
+
 		// Define the location of the file in order of prevalence from low to high
-		Resource[] resourceLocationPrivateKey = new Resource[]{
-	            new ClassPathResource("/" + privateKeyFileName),
-	            new UrlResource("file:" + SignalingResourceLoader.catalinaHome + "/conf/" + privateKeyFileName)};
-		
+		Resource[] resourceLocationPrivateKey = new Resource[] {
+				new ClassPathResource("/" + privateKeyFileName)
+				//new UrlResource("file:" + "/conf/" + privateKeyFileName)
+				};
+
 		// get the keys
 		RSAPublicKey pubKey = SignalingResourceLoader.getRSAPublicKeyEncoded(resourceLocationPublicKey);
 		RSAPrivateKey privKey = SignalingResourceLoader.getRSAPrivateKeyEncoded(resourceLocationPrivateKey);
-		
+
 		algorithm = Algorithm.RSA256(pubKey, privKey);
 	}
 	
