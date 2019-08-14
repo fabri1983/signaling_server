@@ -87,10 +87,6 @@ When using *eventbus-hazelcast* the opposite occurs.
 
 #### Maven pom and Spring Bean Configuration setup
 - Edit *pom.xml*:  
-	- change packaging:
-		```xml
-		<packaging>jar</packaging>
-		```  
 	- add next property:  
 		```xml
 		<javax.websocket.api.version>1.1</javax.websocket.api.version>
@@ -227,10 +223,6 @@ See **NextRTC Video Chat exmaple** section.
 
 #### Maven pom and Spring Bean Configuration setup
 - On *pom.xml*:
-	- change packaging:
-		```xml
-		<packaging>jar</packaging>
-		```  
 	- remove next dependencies (if exist):
 		```xml
 		<groupId>javax.websocket</groupId>
@@ -270,7 +262,7 @@ See **NextRTC Video Chat exmaple** section.
 	```
 - Edit *application.properties* accordingly. Be aware *server.port* value is *8443*.
 - Run:
-	- ```mvn clean package && java -jar target/signaling.jar```
+	- ```mvn clean package && java -jar target/signaling.war```
 	
 #### Access
 - From your client app access it via:
@@ -306,35 +298,24 @@ In order to take advantage of less frequency libs changes the [Dockerfile](src/m
 so next time image build is fired it only updates application code:
 	- **Windows**
 	```bash
-	mkdir target\docker-dependencies
-	(cd target\docker-dependencies && jar -xf ..\signaling.jar && cd ..\..)
+	mkdir target\docker-workdir
+	(cd target\docker-workdir && jar -xf ..\signaling.war && cd ..\..)
 	docker image build ^
-		--build-arg DEPENDENCIES=target/docker-dependencies ^
+		--build-arg DEPENDENCIES=docker-workdir ^
 		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint ^
-		-t fabri1983dockerid/signaling-server:dev ^
-		-f ./src/main/docker/Dockerfile ./
+		-f target/Dockerfile -t fabri1983dockerid/signaling-server:dev ./target
 	docker history fabri1983dockerid/signaling-server:dev
 	```
 	- **Linux**
 	```bash
-	mkdir target/docker-dependencies
-	(cd target/docker-dependencies; jar -xf ../signaling.jar; cd ../..)
+	mkdir target/docker-workdir
+	(cd target/docker-workdir; jar -xf ../signaling.war; cd ../..)
 	docker image build \
-		--build-arg DEPENDENCIES=target/docker-dependencies \
+		--build-arg DEPENDENCIES=docker-workdir \
 		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint \
-		-t fabri1983dockerid/signaling-server:dev \
-		-f ./src/main/docker/Dockerfile ./
+		-f target/Dockerfile -t fabri1983dockerid/signaling-server:dev ./target
 	docker history fabri1983dockerid/signaling-server:dev
 	```
-
-- You can **manually test** the *Dockerfile's ENTRYPOINT* doing as next:
-	- unzip the signaling.jar file into folder target/docker-dependencies and then run: 
-	```bash
-	java -cp "target/docker-dependencies/BOOT-INF/classes;target/docker-dependencies/BOOT-INF/lib/*" org.fabri1983.signaling.entrypoint.SignalingEntryPoint
-	```
-	- if on Windows: the classpath entries separator is **;**.
-	- if on Linux: the classpath entries separator is **:**.
-	- The use of wildcard _*_ includes only jar files, otherwise includes class files.
 
 - **Run 2 instances of the image**:
 ```bash

@@ -1,0 +1,15 @@
+# Ignore folders inside target folder to avoid sending them into Docker daemon
+classes
+generated-sources
+generated-test-sources
+m2e-wtp
+maven-archiver
+maven-status
+surefire-reports
+test-classes
+
+# folders and files related to this project
+signaling
+signaling.jar
+signaling.war
+*.original

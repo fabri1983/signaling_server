@@ -1,25 +1,28 @@
-FROM openjdk:12-jdk-alpine as staging
-ARG DEPENDENCIES=target/docker-dependencies
+FROM adoptopenjdk/openjdk12:alpine-jre AS STAGING
+ARG DEPENDENCIES=docker-workdir
 
 VOLUME /tmp
 
 RUN mkdir -p /staging/app/
 
 # Stage dependencies and classes
-COPY ${DEPENDENCIES}/BOOT-INF/lib      /staging/app/BOOT-INF/lib
-COPY ${DEPENDENCIES}/META-INF          /staging/app/META-INF
-COPY ${DEPENDENCIES}/BOOT-INF/classes  /staging/app/BOOT-INF/classes
-
-# Java 8: add self-signed certificate into Java 8 keystore
-#RUN keytool -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias tomcat \
-#  -file /staging/app/BOOT-INF/classes/signaling-self.crt
+COPY ${DEPENDENCIES}/WEB-INF/lib/*            /staging/app/lib/
+COPY ${DEPENDENCIES}/WEB-INF/lib-provided/*   /staging/app/lib/
+COPY ${DEPENDENCIES}/WEB-INF/classes/*        /staging/app/
+COPY ${DEPENDENCIES}/WEB-INF/web.xml          /staging/app/WEB-INF
+COPY ${DEPENDENCIES}/META-INF                 /staging/app/META-INF
+COPY ${DEPENDENCIES}/js                       /staging/app/js
+COPY ${DEPENDENCIES}/callTo.html              /staging/app/callTo.html
+COPY ${DEPENDENCIES}/general-error.jsp        /staging/app/general-error.jsp
+COPY ${DEPENDENCIES}/index.html               /staging/app/index.html
+COPY ${DEPENDENCIES}/videochat.html           /staging/app/videochat.html
 
 # Java 12: add self-signed certificate into Java 12 keystore
 #RUN keytool -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias tomcat \
 #  -file /staging/app/BOOT-INF/classes/signaling-self.crt
 
 
-FROM openjdk:12-jdk-alpine
+FROM adoptopenjdk/openjdk12:alpine-jre
 ARG JAVA_MAIN_CLASS
 
 ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS}
@@ -28,9 +31,7 @@ ENV ENV_JAVA_MODULES_HAZELCAST="--add-modules java.se --add-exports java.base/jd
 VOLUME /tmp
 
 # Create the individual layers
-COPY --from=staging /staging/app/BOOT-INF/lib      /app/lib
-COPY --from=staging /staging/app/META-INF          /app/META-INF
-COPY --from=staging /staging/app/BOOT-INF/classes  /app
+COPY --from=STAGING /staging/app   /app
 
 # Entry with exec so jvm flags are correctly gathered
 ENTRYPOINT exec java ${ENV_JAVA_MODULES_HAZELCAST} -cp app:app/lib/* ${ENV_JAVA_MAIN_CLASS}

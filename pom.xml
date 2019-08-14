@@ -6,7 +6,7 @@
 	<artifactId>signaling</artifactId>
 	<groupId>org.fabri1983</groupId>
 	<version>1.0.0</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<name>signaling</name>
 	<description>Signaling Server for WebRTC</description>
 	
@@ -176,13 +176,6 @@
 					<include>*.jks</include>
 				</includes>
 			</resource>
-            <resource>
-                <directory>src/main/webapp</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
 		</resources>
 		<plugins>
 			<plugin>
@@ -212,22 +205,31 @@
 							<destinationFile>${project.build.outputDirectory}/jwt_public.key</destinationFile>
 						</configuration>
 					</execution>
+					<!-- copy Docker related files to target -->
+					<execution>
+						<id>copy-docker-files</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<fileSets>
+								<fileSet>
+									<sourceFile>src/main/docker/.dockerignore</sourceFile>
+									<destinationFile>target/.dockerignore</destinationFile>
+								</fileSet>
+								<fileSet>
+									<sourceFile>src/main/docker/Dockerfile</sourceFile>
+									<destinationFile>target/Dockerfile</destinationFile>
+								</fileSet>
+							</fileSets>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>${start-class}</mainClass>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-					</archive>
-				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
@@ -238,6 +240,17 @@
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 						</manifest>
 					</archive>
+					<webResources>
+						<resource>
+							<filtering>true</filtering>
+							<directory>src/main/webapp</directory>
+							<includes>
+								<include>js/common.js</include>
+								<include>videochat.html</include>
+								<include>callTo.html</include>
+							</includes>
+						</resource>
+					</webResources>
 				</configuration>
 	        </plugin>
 			<plugin>
