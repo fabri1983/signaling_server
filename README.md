@@ -306,7 +306,7 @@ Script **docker-build.<bat|sh>** is located at *target* folder after repackage i
 It decompress the war file and creates the multi layer Docker image.  
 Keep an eye on the context size sent to Docker's context:
 ```bash
-Sending build context to Docker daemon  36.61MB
+Sending build context to Docker daemon  35.08MB
 ```  
 Once the image build finishes use next command to check layers size:
 ```bash
@@ -333,7 +333,7 @@ docker container run -i -p 8482:8443 --name signaling-server-2 fabri1983dockerid
 ```
 Then manage it with:
 ```bash
-docker container stop|start <container-name> 
+docker container stop|start <container-name>
 ```
 Or you can use the [docker-compose-local.yml](src/main/docker/docker-compose-local.yml):
 ```bash
