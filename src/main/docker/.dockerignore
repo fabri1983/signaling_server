@@ -5,6 +5,8 @@ generated-test-sources
 m2e-wtp
 maven-archiver
 maven-status
+protoc-dependencies
+protoc-plugins
 surefire-reports
 test-classes
 

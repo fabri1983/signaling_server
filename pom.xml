@@ -26,8 +26,8 @@
 		<!-- Signaling Server -->
 		<start-class>org.fabri1983.signaling.entrypoint.SignalingEntryPoint</start-class>
 		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml -->
-		<spring.profiles.active>default</spring.profiles.active> <!-- default spring profile. Do not change/remove this line. Used by eventbus-<type> profiles -->
-		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it removes Session usage and instead use custom Connection class -->
+		<spring.profiles.active>default</spring.profiles.active> <!-- default spring profile. Overridden by eventbus-<type> profiles -->
+		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it replaces Session dependency by custom Connection class -->
 		<auth0.jwt.version>3.8.1</auth0.jwt.version>
 		<hazelcast.version>3.12.2</hazelcast.version> <!-- overrides value from Spring Boot's defaults -->
 		
@@ -152,6 +152,28 @@
 				</dependency>
 			</dependencies>
 		</profile>
+		<profile>
+			<id>Windows</id>
+			<activation>
+				<os>
+					<family>Windows</family>
+				</os>
+			</activation>
+			<properties>
+				<script.extension>.bat</script.extension>
+			</properties>
+		</profile>
+		<profile>
+			<id>Unix</id>
+			<activation>
+				<os>
+					<family>unix</family>
+				</os>
+			</activation>
+			<properties>
+				<script.extension>.sh</script.extension>
+			</properties>
+		</profile>
 	</profiles>
 	
 	<build>
@@ -190,7 +212,7 @@
 							<goal>copy</goal>
 						</goals>
 						<configuration>
-							<sourceFile>src/main/resources/profiles/${private.key.jwt}</sourceFile>
+							<sourceFile>${project.basedir}/src/main/resources/profiles/${private.key.jwt}</sourceFile>
 							<destinationFile>${project.build.outputDirectory}/jwt_private.key</destinationFile>
 						</configuration>
 					</execution>
@@ -201,7 +223,7 @@
 							<goal>copy</goal>
 						</goals>
 						<configuration>
-							<sourceFile>src/main/resources/profiles/${public.key.jwt}</sourceFile>
+							<sourceFile>${project.basedir}/src/main/resources/profiles/${public.key.jwt}</sourceFile>
 							<destinationFile>${project.build.outputDirectory}/jwt_public.key</destinationFile>
 						</configuration>
 					</execution>
@@ -215,12 +237,16 @@
 						<configuration>
 							<fileSets>
 								<fileSet>
-									<sourceFile>src/main/docker/.dockerignore</sourceFile>
-									<destinationFile>target/.dockerignore</destinationFile>
+									<sourceFile>${project.basedir}/src/main/docker/.dockerignore</sourceFile>
+									<destinationFile>${project.build.directory}/.dockerignore</destinationFile>
 								</fileSet>
 								<fileSet>
-									<sourceFile>src/main/docker/Dockerfile</sourceFile>
-									<destinationFile>target/Dockerfile</destinationFile>
+									<sourceFile>${project.basedir}/src/main/docker/Dockerfile</sourceFile>
+									<destinationFile>${project.build.directory}/Dockerfile</destinationFile>
+								</fileSet>
+								<fileSet>
+									<sourceFile>${project.basedir}/src/main/docker/docker-build${script.extension}</sourceFile>
+									<destinationFile>${project.build.directory}/docker-build${script.extension}</destinationFile>
 								</fileSet>
 							</fileSets>
 						</configuration>
@@ -253,6 +279,23 @@
 					</webResources>
 				</configuration>
 	        </plugin>
+	        <plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>decompress ${project.build.finalName}.war and build Docker image</id>
+						<phase>package</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>${project.build.directory}/docker-build${script.extension}</executable>
+							<commandlineArgs></commandlineArgs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.eluder.coveralls</groupId>
 				<artifactId>coveralls-maven-plugin</artifactId>

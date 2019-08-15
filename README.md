@@ -12,10 +12,12 @@ I added custom signals to provide a complete video call solution between two cli
 It has a distributed event bus so the signaling server can be deployed in a cluster with auto discovery.
 
 
-Runs on **Java 12**. If you want to use Java 8 then you need to:
-- change [Dockerfile](src/main/docker/Dockerfile) in order to reflect the location of the *jre keystore*.
-	- **NOTE**: Dockerfile import cert command is commented out because this project uses custom keystore.jks. 
-- edit *pom.xml* ```<properties>``` section.
+- Runs on **Java 12**. If you want to use Java 8 then you need to:
+	- change [Dockerfile](src/main/docker/Dockerfile) in order to reflect the location of the *jre keystore*.
+		- **NOTE**: Dockerfile import cert command is commented out because this project uses custom keystore.jks. 
+	- edit *pom.xml* ```<properties>``` section.
+- Uses Maven 3.6.x
+- After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
 
 
 ## Create self signed certificate
@@ -295,27 +297,17 @@ mvn clean package -P local,eventbus-hazelcast
 
 - **Create a multi layer Docker image for Spring Boot app**:
 In order to take advantage of less frequency libs changes the [Dockerfile](src/main/docker/Dockerfile) defines a multi layer image, 
-so next time image build is fired it only updates application code:
-	- **Windows**
-	```bash
-	mkdir target\docker-workdir
-	(cd target\docker-workdir && jar -xf ..\signaling.war && cd ..\..)
-	docker image build ^
-		--build-arg DEPENDENCIES=docker-workdir ^
-		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint ^
-		-f target/Dockerfile -t fabri1983dockerid/signaling-server:dev ./target
-	docker history fabri1983dockerid/signaling-server:dev
-	```
-	- **Linux**
-	```bash
-	mkdir target/docker-workdir
-	(cd target/docker-workdir; jar -xf ../signaling.war; cd ../..)
-	docker image build \
-		--build-arg DEPENDENCIES=docker-workdir \
-		--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint \
-		-f target/Dockerfile -t fabri1983dockerid/signaling-server:dev ./target
-	docker history fabri1983dockerid/signaling-server:dev
-	```
+so next time image build is fired it only updates application code.  
+Script **docker-build.<bat|sh>** is located at *target* folder after repackage is done.   
+It decompress the war file and creates the multi layer Docker image.  
+Keep an eye on the context size sent to Docker's context:
+```bash
+Sending build context to Docker daemon  36.61MB
+```  
+Once the image build finishes use next command to check layers size:
+```bash
+docker history fabri1983dockerid/signaling-server:dev
+```
 
 - **Run 2 instances of the image**:
 ```bash

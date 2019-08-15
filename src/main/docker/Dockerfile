@@ -28,7 +28,7 @@ ENV ENV_JAVA_MODULES_HAZELCAST="--add-modules java.se --add-exports java.base/jd
 VOLUME /tmp
 
 # Create the individual layers
-COPY --from=STAGING /staging/app   /app
+COPY --from=STAGING /staging/app  /app
 
 # Entry with exec so jvm flags are correctly gathered
 ENTRYPOINT exec java ${ENV_JAVA_MODULES_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
