@@ -302,7 +302,7 @@ mvn clean package -P local,eventbus-hazelcast
 - **Create a multi layer Docker image for Spring Boot app**:
 In order to take advantage of less frequency changes the [Dockerfile](src/main/docker/Dockerfile) defines a multi layer image, 
 so next time image build is fired it only updates application code.  
-Script **docker-build.<bat|sh>** is located at *target* folder after repackage is done.  
+Script **docker-build.<bat|sh>** is moved to ```target``` folder after repackage is done.  
 It decompress the war file and creates the multi layer Docker image.  
 Keep an eye on the context size sent to Docker's context:
 ```bash
@@ -317,11 +317,11 @@ A Java process is a regular Windows/Linux process. How much actual physical memo
 Or in other words: what is the **Resident Set Size (RSS)** value for running a Java process?
 
 Theoretically, in the case of a Java application, a required RSS size can be calculated by:
-
 ```
 RSS = Heap size + MetaSpace + OffHeap size
-where OffHeap consists of thread stacks, direct buffers, mapped files (libraries and jars) and JVM code itself.
 ```
+where OffHeap consists of thread stacks, direct buffers, mapped files (libraries and jars) and JVM code itself.
+
 See this article to beter understand how Java memory is used in Docker:
 http://trustmeiamadeveloper.com/2016/03/18/where-is-my-memory-java/
 
