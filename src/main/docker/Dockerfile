@@ -1,8 +1,6 @@
 FROM adoptopenjdk/openjdk12:alpine-jre AS STAGING
 ARG DEPENDENCIES=docker-workdir
 
-VOLUME /tmp
-
 RUN mkdir -p /staging/app/
 
 # Stage dependencies and classes

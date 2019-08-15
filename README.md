@@ -21,7 +21,7 @@ It has a distributed event bus so the signaling server can be deployed in a clus
 		- remove ```<maven.compiler.release>```
 - Uses Maven 3.6.x
 - After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
-Use ```-Dskip.docker.build=true``` to skip the docker build.
+If not installed then se ```-Dskip.docker.build=true``` to skip the docker build.
 
 
 ## Create self signed certificate
@@ -312,6 +312,18 @@ Once the image build finishes use next command to check layers size:
 ```bash
 docker history fabri1983dockerid/signaling-server:dev
 ```
+
+A Java process is a regular Windows/Linux process. How much actual physical memory this process is consuming?
+Or in other words: what is the **Resident Set Size (RSS)** value for running a Java process?
+
+Theoretically, in the case of a Java application, a required RSS size can be calculated by:
+
+```
+RSS = Heap size + MetaSpace + OffHeap size
+where OffHeap consists of thread stacks, direct buffers, mapped files (libraries and jars) and JVM code itself.
+```
+See this article to beter understand how Java memory is used in Docker:
+http://trustmeiamadeveloper.com/2016/03/18/where-is-my-memory-java/
 
 - **Run 2 instances of the image**:
 ```bash
