@@ -30,6 +30,7 @@
 		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it replaces Session dependency by custom Connection class -->
 		<auth0.jwt.version>3.8.1</auth0.jwt.version>
 		<hazelcast.version>3.12.2</hazelcast.version> <!-- overrides value from Spring Boot's defaults -->
+		<skip.docker.build>false</skip.docker.build>
 		
 		<!-- NextRTC Video Chat page -->
 		<turn.no.auth.user>turnUser</turn.no.auth.user>
@@ -290,6 +291,7 @@
 							<goal>exec</goal>
 						</goals>
 						<configuration>
+							<skip>${skip.docker.build}</skip>
 							<executable>${project.build.directory}/docker-build${script.extension}</executable>
 							<commandlineArgs></commandlineArgs>
 						</configuration>

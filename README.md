@@ -1,4 +1,4 @@
-# Signaling Server with Spring Boot Websockets
+# Signaling Server with Spring Boot Websockets and Docker
 
 [![Build Status](https://travis-ci.org/fabri1983/signaling_server.svg?branch=master)](https://travis-ci.org/fabri1983/signaling_server?branch=master)
 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -13,11 +13,15 @@ It has a distributed event bus so the signaling server can be deployed in a clus
 
 
 - Runs on **Java 12**. If you want to use Java 8 then you need to:
-	- change [Dockerfile](src/main/docker/Dockerfile) in order to reflect the location of the *jre keystore*.
-		- **NOTE**: Dockerfile import cert command is commented out because this project uses custom keystore.jks. 
-	- edit *pom.xml* ```<properties>``` section.
+	- change [Dockerfile](src/main/docker/Dockerfile):
+		- reflect the location of the *jre keystore*. **NOTE**: import cert command is commented out because this project uses custom keystore.jks.
+		- remove any use of ${ENV_JAVA_MODULES_FOR_HAZELCAST}
+	- edit *pom.xml* ```<properties>``` section:
+		- change ```<java.version>``` and ```<maven.compiler.target>``` 
+		- remove ```<maven.compiler.release>```
 - Uses Maven 3.6.x
 - After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
+Use ```-Dskip.docker.build=true``` to skip the docker build.
 
 
 ## Create self signed certificate
@@ -296,9 +300,9 @@ mvn clean package -P local,eventbus-hazelcast
 ```
 
 - **Create a multi layer Docker image for Spring Boot app**:
-In order to take advantage of less frequency libs changes the [Dockerfile](src/main/docker/Dockerfile) defines a multi layer image, 
+In order to take advantage of less frequency changes the [Dockerfile](src/main/docker/Dockerfile) defines a multi layer image, 
 so next time image build is fired it only updates application code.  
-Script **docker-build.<bat|sh>** is located at *target* folder after repackage is done.   
+Script **docker-build.<bat|sh>** is located at *target* folder after repackage is done.  
 It decompress the war file and creates the multi layer Docker image.  
 Keep an eye on the context size sent to Docker's context:
 ```bash
@@ -329,7 +333,7 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 ```
 
 - Test the Distributed Event Bus with Hazelcast:
-(**NOTE**: work in progress due serialization issues)
+(**NOTE**: work in progress due to serialization issues)
 	- If you are using docker in **Windows** with **Docker Tool Box** then visit:
 		- [videochat-1](https://192.168.99.100:8481/signaling/videochat.html)
 		- [videochat-2](https://192.168.99.100:8482/signaling/videochat.html)
