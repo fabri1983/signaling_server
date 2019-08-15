@@ -13,15 +13,15 @@ branches:
 install:
   - java -version
   - /usr/local/maven/bin/mvn --version
-  - sudo /usr/local/maven/bin/mvn --batch-mode clean install -Dskip.docker.build=true
+  - sudo /usr/local/maven/bin/mvn --batch-mode clean install -P local,eventbus-local -Dskip.docker.build=true
 
 # overrides travis 'script' step
 script:
-  - sudo /usr/local/maven/bin/mvn --batch-mode clean package -Dskip.docker.build=true
+  - sudo /usr/local/maven/bin/mvn --batch-mode clean package -P local,eventbus-local -Dskip.docker.build=true
 
 after_success:
   # using environment variable $repo_token set in travis web site
-  - sudo /usr/local/maven/bin/mvn clean test jacoco:report coveralls:report -DrepoToken=$repo_token -Dskip.docker.build=true
+  - sudo /usr/local/maven/bin/mvn clean test -P local,eventbus-local jacoco:report coveralls:report -DrepoToken=$repo_token -Dskip.docker.build=true
   
 notifications:
   email: false
