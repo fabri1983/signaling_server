@@ -352,7 +352,7 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 	- If on **Linux**:
 		- [videochat-1](https://172.17.0.2:8481/signaling/videochat.html)
 		- [videochat-2](https://172.17.0.3:8482/signaling/videochat.html)
-		- or get the running Docker ip:
+		- in case you need running Docker ip:
 		```bash
 		docker inspect -f "{{ .NetworkSettings.IPAddress }}" <containerNameOrId>
 		```
