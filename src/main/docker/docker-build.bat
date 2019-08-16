@@ -18,9 +18,12 @@ ECHO Wrong number of arguments. You need to specify war final name (without .war
 GOTO DONE
 
 :ACTION
+
 ECHO -----------------------------
 ECHO Decompressing %1.war
 ECHO -----------------------------
+:: NOTE: when using Spring Boot uber WAR we always need to decompress the WAR file since 
+:: it comes with provided jars needed to start Tomcat or the selected Servlet engine.
 
 :: decompress war file
 mkdir target\docker-workdir
@@ -29,7 +32,7 @@ jar -xf ..\%1.war
 cd ..\..
 
 ECHO -----------------------------
-ECHO Buidling Docker image
+ECHO Building Docker image
 ECHO -----------------------------
 
 :: create Docker image

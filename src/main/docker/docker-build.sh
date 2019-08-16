@@ -21,7 +21,7 @@ jar -xf ../$1.war
 cd ../..
 
 echo -----------------------------
-echo Buidling Docker image
+echo Building Docker image
 echo -----------------------------
 
 # create Docker image
