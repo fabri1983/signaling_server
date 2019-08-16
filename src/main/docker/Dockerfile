@@ -23,8 +23,6 @@ ARG JAVA_MAIN_CLASS
 ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS} \
     ENV_JAVA_MODULES_FOR_HAZELCAST="--add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
 
-VOLUME /tmp
-
 # Create the individual layers
 COPY --from=STAGING /staging/app  /app
 
