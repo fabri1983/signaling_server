@@ -1,12 +1,8 @@
 #!/bin/sh
 # If you need to change permissions for execution then do: sudo chmod 775 docker-build.sh
 
-if [[ $# -eq 0 ]] ; then
-  echo "No arguments supplied. You need to specify war final name (without .war)"
-  exit 1
-fi
-if [[ $# -gt 1 ]] ; then
-  echo "Wrong number of arguments. You need to specify war final name (without .war)"
+if [[ $# -ne 2 ]] ; then
+  echo "No arguments supplied. You need to specify war final name (without .war) and tag name"
   exit 1
 fi
 
@@ -28,7 +24,7 @@ echo -----------------------------
 docker image build \
 	--build-arg DEPENDENCIES=docker-workdir \
 	--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint \
-	-f target/Dockerfile -t fabri1983dockerid/$1-server:dev ./target
+	-f target/Dockerfile -t fabri1983dockerid/$1:$2 ./target
 
 echo ---------
 echo Finished!

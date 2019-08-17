@@ -16,18 +16,18 @@ It has a distributed event bus so the signaling server can be deployed in a clus
 	- change [Dockerfile](src/main/docker/Dockerfile):
 		- reflect the location of the *jre keystore*. **NOTE**: import cert command is commented out because this project uses custom keystore.jks.
 		- remove any use of ${ENV_JAVA_MODULES_FOR_HAZELCAST}
-	- edit *pom.xml* ```<properties>``` section:
-		- change ```<java.version>``` and ```<maven.compiler.target>``` 
-		- remove ```<maven.compiler.release>```
+	- edit *pom.xml* `<properties>` section:
+		- change `<java.version>` and `<maven.compiler.target>` 
+		- remove `<maven.compiler.release>`
 - Uses Maven 3.6.x
 - After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
-If not installed then se ```-Dskip.docker.build=true``` to skip the docker build.
+If not installed then se `-Dskip.docker.build=true` to skip the docker build.
 
 
 ## Create self signed certificate
 *(skip this step if you already have your own certificate in your keystore, but do not forget to edit application.properties and docker-compose-local.yml files accordingly)*
 
-Enter to directory ```src/main/resources``` and generate self-signed certificate into custom keystore (current certificate might be expired!):
+Enter to directory `src/main/resources` and generate self-signed certificate into custom keystore (current certificate might be expired!):
 ```bash
 keytool -genkey -alias tomcat -keyalg RSA -keystore keystore.jks -validity 365 -keysize 2048
 ```
@@ -62,7 +62,7 @@ Edit *application.properties* accordingly if you change any of above information
 
 
 ## Create key pair for JWT (Json Web Token)
-Enter to directory ```src/main/resources/profiles```.
+Enter to directory `src/main/resources/profiles`.
 ```bash
 openssl genrsa -out jwt_local_private.key 2048
 ```
@@ -78,14 +78,14 @@ rm -f jwt_local_private.key
 
 ## Maven Profiles
 **Profiles**  
-- ```local``` (active by default)  
+- `local` (active by default)  
 Set JWT's signer and verifier private and public keys.
 
 **Additional profiles**  
-- ```eventbus-local``` (active by default)  
-- ```eventbus-hazelcast```  
+- `eventbus-local` (active by default)  
+- `eventbus-hazelcast`  
 Remove/add additional dependencies and disable/enable a Spring profile which allow the use of a distributed eventbus.
-When using *eventbus-local* some dependencies are removed and the beans defined in ```DistributedSignalingConfiguration``` are not created.
+When using *eventbus-local* some dependencies are removed and the beans defined in `DistributedSignalingConfiguration` are not created.
 When using *eventbus-hazelcast* the opposite occurs.
 
 
@@ -138,7 +138,7 @@ When using *eventbus-hazelcast* the opposite occurs.
 		<artifactId>spring-boot-maven-plugin</artifactId>
 		```  
 - Then remnove next beans (if exist) in *SignalingConfiguration* class:
-	- ```ServerEndpointExporter serverEndpointExporter()```
+	- `ServerEndpointExporter serverEndpointExporter()`
 - Edit *application.properties* accordingly. Be aware *server.port* value is *8443*.
 
 #### Eclipse IDE
@@ -146,8 +146,8 @@ When using *eventbus-hazelcast* the opposite occurs.
 - Configure Dynamic Web project: *Properties -> Project Facets*
 - Set context root to **signaling**: 
 	- *Properties -> Web Project Settings*
-- Active profiles: using ```ALT+SHIFT+P``` select *local* and *eventbus-local* profiles.
-- Build project: ```CTRL+B```
+- Active profiles: using `ALT+SHIFT+P` select *local* and *eventbus-local* profiles.
+- Build project: `CTRL+B`
 
 #### Deploy on external Tomcat installation
 - Use next configuration on your *<CATALINA_BASE>/conf/server.xml*:
@@ -268,7 +268,7 @@ See **NextRTC Video Chat exmaple** section.
 	```
 - Edit *application.properties* accordingly. Be aware *server.port* value is *8443*.
 - Run:
-	- ```mvn clean package && java -jar target/signaling.war```
+	- `mvn clean package && java -jar target/signaling.war`
 	
 #### Access
 - From your client app access it via:
@@ -302,15 +302,15 @@ mvn clean package -P local,eventbus-hazelcast
 - **Create a multi layer Docker image for Spring Boot app**:
 In order to take advantage of less frequency changes the [Dockerfile](src/main/docker/Dockerfile) defines a multi layer image, 
 so next time image build is fired it only updates application code.  
-Script **docker-build.<bat|sh>** is moved to ```target``` folder after repackage is done.  
+Script **docker-build.<bat|sh>** is moved to `target` folder after repackage is done.  
 It decompress the war file and creates the multi layer Docker image.  
 Keep an eye on the context size sent to Docker's context:
 ```bash
-Sending build context to Docker daemon  35.08MB
+Sending build context to Docker daemon  35.09MB
 ```  
 Once the image build finishes use next command to check layers size:
 ```bash
-docker history fabri1983dockerid/signaling-server:dev
+docker history fabri1983dockerid/signaling:dev
 ```
 
 A Java process is a regular Windows/Linux process. How much actual physical memory this process is consuming?
@@ -327,8 +327,8 @@ http://trustmeiamadeveloper.com/2016/03/18/where-is-my-memory-java/
 
 - **Run 2 instances of the image**:
 ```bash
-docker container run -i -p 8481:8443 --name signaling-server-1 fabri1983dockerid/signaling-server:dev
-docker container run -i -p 8482:8443 --name signaling-server-2 fabri1983dockerid/signaling-server:dev
+docker container run -i -p 8481:8443 --name signaling-1 fabri1983dockerid/signaling:dev
+docker container run -i -p 8482:8443 --name signaling-2 fabri1983dockerid/signaling:dev
 (replace -i by -d if you want to detach the process and let it run on background)
 ```
 Then manage it with:

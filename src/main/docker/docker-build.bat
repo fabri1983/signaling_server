@@ -3,18 +3,21 @@
 IF "%1"=="" (
   GOTO NO_ARGS
 )
-IF NOT "%2"=="" (
+IF "%2"=="" (
+  GOTO NO_ARGS
+)
+IF NOT "%3"=="" (
   GOTO WRONG_ARGS
 )
 
 GOTO ACTION
 
 :NO_ARGS
-ECHO No arguments supplied. You need to specify war final name (without .war)
+ECHO No arguments supplied. You need to specify war final name (without .war) and tag name
 GOTO DONE
 
 :WRONG_ARGS
-ECHO Wrong number of arguments. You need to specify war final name (without .war)
+ECHO Wrong number of arguments. You need to specify war final name (without .war) and tag name
 GOTO DONE
 
 :ACTION
@@ -39,7 +42,7 @@ ECHO -----------------------------
 docker image build ^
 	--build-arg DEPENDENCIES=docker-workdir ^
 	--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint ^
-	-f target/Dockerfile -t fabri1983dockerid/%1-server:dev ./target
+	-f target/Dockerfile -t fabri1983dockerid/%1:%2 ./target
 
 ECHO -----------------------------
 ECHO Finished!

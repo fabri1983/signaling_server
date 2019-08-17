@@ -1,12 +1,12 @@
 version: "3.7"
 services:
-  signaling-server-1:
-    image: fabri1983dockerid/signaling-server:dev
-    container_name: signaling-server-1
+  signaling-1:
+    image: fabri1983dockerid/signaling:dev
+    container_name: signaling-1
     ports:
      - 8481:8443
-  signaling-server-2:
-    image: fabri1983dockerid/signaling-server:dev
-    container_name: signaling-server-2
+  signaling-2:
+    image: fabri1983dockerid/signaling:dev
+    container_name: signaling-2
     ports:
      - 8482:8443

@@ -303,7 +303,7 @@
 						<configuration>
 							<skip>${skip.docker.build}</skip>
 							<executable>${project.build.directory}/docker-build${script.extension}</executable>
-							<commandlineArgs>${project.build.finalName}</commandlineArgs>
+							<commandlineArgs>${project.build.finalName} dev</commandlineArgs>
 						</configuration>
 					</execution>
 				</executions>
