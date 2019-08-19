@@ -7,9 +7,9 @@
 [![Code Climate](https://codeclimate.com/github/fabri1983/signaling_server/badges/gpa.svg)](https://codeclimate.com/github/fabri1983/signaling_server)
 
 
-This project uses [NextRTC Signaling Server](https://github.com/mslosarz/nextrtc-signaling-server) project.
-I added custom signals to provide a complete video call solution between two clients.
-It has a distributed event bus so the signaling server can be deployed in a cluster with auto discovery.
+This project uses [NextRTC Signaling Server](https://github.com/mslosarz/nextrtc-signaling-server) project (which is no longer maintained).
+I added custom signals, room max participants limit, and other constraints, to provide a complete video call solution between two+ clients.
+It is cluster aware by using a distributed event bus backed by *Hazelcast* with auto discovery.
 
 
 - Runs on **Java 12**. If you want to use Java 8 then you need to:
@@ -21,7 +21,7 @@ It has a distributed event bus so the signaling server can be deployed in a clus
 		- remove `<maven.compiler.release>`
 - Uses Maven 3.6.x
 - After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
-If not installed then se `-Dskip.docker.build=true` to skip the docker build.
+If not Docker installed then use `-Dskip.docker.build=true` to skip the docker build.
 
 
 ## Create self signed certificate
