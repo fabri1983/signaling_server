@@ -26,6 +26,12 @@ docker image build \
 	--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint \
 	-f target/Dockerfile -t fabri1983dockerid/$1:$2 ./target
 
-echo ---------
-echo Finished!
-echo ---------
+if [[ $? -eq 0 ]] ; then
+	echo -----------------------------
+	echo Finished!
+	echo -----------------------------
+else
+	echo -----------------------------
+	echo Failed!
+	echo -----------------------------
+fi
