@@ -14,7 +14,6 @@ It is cluster aware by using a distributed event bus backed by *Hazelcast* with 
 
 - Runs on **Java 12**. If you want to use Java 8 then you need to:
 	- change [Dockerfile](src/main/docker/Dockerfile):
-		- reflect the location of the *jre keystore*. **NOTE**: import cert command is commented out because this project uses custom keystore.jks.
 		- remove any use of ${ENV_JAVA_MODULES_FOR_HAZELCAST}
 	- edit *pom.xml* `<properties>` section:
 		- change `<java.version>` and `<maven.compiler.target>` 
