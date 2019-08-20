@@ -1,4 +1,4 @@
-# OpenJDK 12 alpine jdk/jre uses alpine 3.10. See last FROM command.
+# OpenJDK 12 alpine jdk/jre/slim uses alpine 3.10.
 # Visit https://github.com/AdoptOpenJDK/openjdk-docker/blob/master/12/jre/alpine/Dockerfile.hotspot.releases.full
 
 ######################################################################################################
