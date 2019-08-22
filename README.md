@@ -12,15 +12,18 @@ I added custom signals, room max participants limit, and other constraints, to p
 It is cluster aware by using a distributed event bus backed by *Hazelcast* with auto discovery.
 
 
-- Runs on **Java 12**. If you want to use Java 8 then you need to:
-	- change [Dockerfile](src/main/docker/Dockerfile):
-		- remove any use of ${ENV_JAVA_MODULES_FOR_HAZELCAST}
-	- edit *pom.xml* `<properties>` section:
-		- change `<java.version>` and `<maven.compiler.target>` 
-		- remove `<maven.compiler.release>`
-- Uses Maven 3.6.x
+- Uses Maven 3.6.x.
 - After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
 If not Docker installed then use `-Dskip.docker.build=true` to skip the docker build.
+- Runs on **Java 12**. If you want to use **Java 8** then you need to:
+	- change [Dockerfile](src/main/docker/Dockerfile):
+		- remove intermediate stage STAGING-OPENJDK12-MINI
+		- in the final stage use adoptopenjdk/openjdk12:alpine-jre instead of alpine:3.10
+		- in the final stage remove the download of apks for Java 12 and the copy of custom jre
+		- in the final stage remove any use of ${ENV_JAVA_MODULES_FOR_HAZELCAST}
+	- edit *pom.xml* `<properties>` section:
+		- change `<java.version>` and `<maven.compiler.target>`
+		- remove `<maven.compiler.release>`
 
 
 ## Create self signed certificate
@@ -34,7 +37,7 @@ keytool -genkey -alias tomcat -keyalg RSA -keystore keystore.jks -validity 365 -
 Enter keystore password: changeit
 Re-enter new password: changeit
 What is your first and last name?
-  [Unknown]:  127.0.0.1
+  [Unknown]:  Signaling Server
 What is the name of your organizational unit?
   [Unknown]:  Engineering
 What is the name of your organization?
@@ -52,10 +55,11 @@ Enter key password for <tomcat>
   (RETURN if same as keystore password): <RETURN>
 ```
 
-Export certificate file in X.509 for Dockerfile internal command:
+Export certificate file in X.509 in case you need to import it in an exist:
 ```bash
 keytool -export -rfc -alias tomcat -file signaling-self.crt -keystore keystore.jks
 ```
+The rfc keyword specifies base64-encoded output.
  
 Edit *application.properties* accordingly if you change any of above information.
 
@@ -278,22 +282,57 @@ See **NextRTC Video Chat exmaple** section.
 
 
 ## NextRTC Video Chat usage
-- Enter [https://127.0.0.1:8443/signaling/videochat.html](https://127.0.0.1:8443/signaling/videochat.html) in your favourite browser
-(**https** is important, because default http handler isn't configured).
-* Accept untrusted certificate.
-* You can use query param *forceTurn=true* in order to force relay ICE Transport Policy and so test your TURN server:
+
+- Enter [https://127.0.0.1:8443/signaling/videochat.html](https://127.0.0.1:8443/signaling/videochat.html) in any browser.
+The use of **https** is important because default http handler isn't configured.
+
+- Accept untrusted certificate.
+
+- You can use query param *forceTurn=true* in order to force relay ICE Transport Policy and so test your TURN server:
 [https://127.0.0.1:8443/signaling/videochat.html?forceTurn=true](https://127.0.0.1:8443/signaling/videochat.html?forceTurn=true)
-
+  
 _Sometimes websocket (js side) is throwing an exception and can't connect via websocket o signiling server, then try to change localhost to 127.0.0.1_
-
+  
 This is a working test of the Signaling Server and the videochat client using a Chrome tab on my laptop and an Opera tab on my mobile phone. 
 Server exposed with [ngrok](https://ngrok.com/).
 
 ![videochat with local signaling](/videochat_example_ngrok.jpg?raw=true "videochat with local signaling")
 
 
+
+## jdeps on a Spring Boot fat WAR file
+
+Use `jdeps` to know which java modules the final application needs to run. Note that we are using `--multi-release=12`.
+
+- *NOTE*: this guide is only valid for Spring Boot fat WAR due to internal WAR structure.
+
+- Windows:
+```bash
+mkdir target\docker-workdir
+cd target\docker-workdir && jar -xf ..\signaling.war && cd ..\..
+jdeps --add-modules=ALL-MODULE-PATH --ignore-missing-deps --multi-release=12 --print-module-deps ^
+  -cp target\docker-workdir\WEB-INF\lib\*;target\docker-workdir\WEB-INF\lib-provided\* target\docker-workdir\WEB-INF\classes
+```
+
+- Linux:
+```bash
+mkdir target\docker-workdir
+cd target\docker-workdir && jar -xf ..\signaling.war && cd ..\..
+jdeps --add-modules=ALL-MODULE-PATH --ignore-missing-deps --multi-release=12 --print-module-deps \
+  -cp target/docker-workdir/WEB-INF/lib/*;target/docker-workdir/WEB-INF/lib-provided/* target/docker-workdir/WEB-INF/classes
+```
+
+- Example Output:
+```bash
+java.base,java.compiler,java.desktop,java.instrument,java.management.rmi,java.naming,java.prefs,java.scripting,java.security.jgss,java.sql,jdk.httpserver,jdk.unsupported
+```
+
+
 ## Run with Docker and test Distributed Event Bus with Hazelcast
-- First pack the Signaling Server in a fat jar using default Spring Boot maven plugins:
+
+- *NOTE*: this guide is only valid for Spring Boot fat WAR due to internal WAR structure.
+
+- First pack the Signaling Server in a fat war using Spring Boot maven plugin:
 ```bash
 mvn clean package -P local,eventbus-hazelcast
 ```
@@ -305,7 +344,7 @@ Script **docker-build.<bat|sh>** is moved to `target` folder after repackage is 
 It decompress the war file and creates the multi layer Docker image.  
 Keep an eye on the context size sent to Docker's context:
 ```bash
-Sending build context to Docker daemon  35.09MB
+Sending build context to Docker daemon  35.09MB   (this is the size with hazelcast libs)
 ```  
 Once the image build finishes use next command to check layers size:
 ```bash
@@ -329,17 +368,15 @@ http://trustmeiamadeveloper.com/2016/03/18/where-is-my-memory-java/
 docker container run -i -p 8481:8443 --name signaling-1 fabri1983dockerid/signaling:dev
 docker container run -i -p 8482:8443 --name signaling-2 fabri1983dockerid/signaling:dev
 (replace -i by -d if you want to detach the process and let it run on background)
-```
+
 Then manage it with:
-```bash
 docker container stop|start <container-name>
 ```
 Or you can use the [docker-compose-local.yml](src/main/docker/docker-compose-local.yml):
 ```bash
 docker-compose -f src/main/docker/docker-compose-local.yml up
-```
+
 Then manage it with:
-```bash
 docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 ```
 
