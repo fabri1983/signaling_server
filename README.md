@@ -53,24 +53,25 @@ Script `chain_certificate.<sh|bat>` generates a chain certificate signed by a ro
 `localhost, 127.0.0.1, 192.168.99.100, 172.17.0.2, 172.17.0.3`.  
 Last three ips belongs to Docker host ips in Windows and Linux.
 
+**Linux:**
 ```bash
-Linux:
 cd src/main/resources/scripts
 chain_certificate.sh
 cd ..
 mv -f scripts/local-keystore.jks local-keystore.jks
+```
 
-Windows:
+**Windows:**
+```bash
 NOTE: currently not working due to encoding issues due to redirect operator | and output operator >  
 cd src\main\resources\scripts
 chain_certificate.bat
 cd ..
-move /Y /B scripts\local-keystore.jks local-keystore.jks
-	/Y forces overwrite exisitng file
-	/B indicates it's a binary file
+move /Y scripts\local-keystore.jks local-keystore.jks
+	Option /Y forces overwrite exisitng file
 ```
 
-Edit `application.properties` accordingly if you have changed `chain-certificate.sh` script.
+Edit `application.properties` accordingly if you have changed `chain-certificate.<sh|bat>` script.
 
 
 ## Create key pair for JWT (Json Web Token)

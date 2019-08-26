@@ -1,8 +1,9 @@
 #!/bin/bash
 # If you need to change permissions for execution then do: sudo chmod 775 chain-certificate.sh
 
+rm -f local-keystore.jks 2> /dev/null
 rm -f rootca.jks localca.jks serverca.jks 2> /dev/null
-rm -f rootca.pem localca.pem serverca.pem 2> /dev/null
+rm -f rootca.pem localca.pem localca_temp.pem serverca.pem serverca_temp.pem 2> /dev/null
 
 echo "==================================================="
 echo "Creating fake third-party chain rootca with localca"
@@ -16,8 +17,8 @@ keytool -genkeypair -alias localca -dname "cn=Local Development" -validity 1095 
 keytool -exportcert -rfc -alias rootca -keystore rootca.jks -storepass rootcapass -file rootca.pem
 
 # generate chain local certificate signed by root (rootca -> localca)
-keytool -keystore localca.jks -storepass localcapass -certreq -alias localca \
-| keytool -keystore rootca.jks -storepass rootcapass -gencert -alias rootca -ext bc=0 -ext san=dns:ca -rfc > localca.pem
+keytool -keystore localca.jks -storepass localcapass -certreq -alias localca -file localca_temp.pem
+keytool -keystore rootca.jks -storepass rootcapass -gencert -alias rootca -ext bc=0 -ext san=dns:ca -rfc -infile localca_temp.pem -outfile localca.pem
 
 # import ca cert chain (rootca -> localca) into localca.jks
 keytool -keystore localca.jks -storepass localcapass -importcert -trustcacerts -noprompt -alias rootca -file rootca.pem
@@ -31,9 +32,9 @@ echo "======================================================================="
 keytool -genkeypair -alias serverca -dname cn=Server -validity 1095 -keyalg RSA -keysize 2048 -keystore local-keystore.jks -keypass servercapass -storepass servercapass
 
 # generate chain certificate for server signed by local (rootca -> localca -> serverca)
-keytool -keystore local-keystore.jks -storepass servercapass -certreq -alias serverca \
-| keytool -keystore localca.jks -storepass localcapass -gencert -alias localca -ext ku:c=dig,keyEnc \
--ext "san=dns:localhost,ip:127.0.0.1,ip:192.168.99.100,ip:172.17.0.2,ip:172.17.0.3" -ext eku=sa,ca -rfc > serverca.pem
+keytool -keystore local-keystore.jks -storepass servercapass -certreq -alias serverca -file serverca_temp.pem
+keytool -keystore localca.jks -storepass localcapass -gencert -alias localca -ext ku:c=dig,keyEnc \
+  -ext "san=dns:localhost,ip:127.0.0.1,ip:192.168.99.100,ip:172.17.0.2,ip:172.17.0.3" -ext eku=sa,ca -rfc -infile serverca_temp.pem -outfile serverca.pem
 
 # import server cert chain into local-keystore.jks
 keytool -keystore local-keystore.jks -storepass servercapass -importcert -trustcacerts -noprompt -alias rootca -file rootca.pem
@@ -41,4 +42,4 @@ keytool -keystore local-keystore.jks -storepass servercapass -importcert -alias 
 keytool -keystore local-keystore.jks -storepass servercapass -importcert -alias serverca -file serverca.pem
 
 rm -f rootca.jks localca.jks serverca.jks 2> /dev/null
-rm -f rootca.pem localca.pem serverca.pem 2> /dev/null
+rm -f rootca.pem localca.pem localca_temp.pem serverca.pem serverca_temp.pem 2> /dev/null
