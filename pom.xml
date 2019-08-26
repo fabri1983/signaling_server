@@ -183,6 +183,7 @@
 				<filtering>true</filtering>
 				<excludes>
 					<exclude>profiles/*</exclude>
+					<exclude>scripts/*</exclude>
 					<exclude>*.der</exclude>
 					<exclude>*.key</exclude>
 					<exclude>*.jks</exclude>

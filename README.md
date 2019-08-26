@@ -27,37 +27,17 @@ If not Docker installed then use `-Dskip.docker.build=true` to skip the docker b
 
 
 ## Create self signed certificate
-*(skip this step if you already have your own certificate in your keystore, but do not forget to edit application.properties and docker-compose-local.yml files accordingly)*
+*(skip this step if you want to use current self signed certificate or already have your own certificate in your keystore.*
+*Don't forget to edit application.properties file accordingly)*
 
-Enter to directory `src/main/resources` and generate self-signed certificate into custom keystore (current certificate might be expired!):
+Enter to directory `src/main/resources` to generate self-signed certificate and import it into custom keystore:
 ```bash
-keytool -genkey -alias tomcat -keyalg RSA -keystore keystore.jks -validity 365 -keysize 2048
-```
-```bash
-Enter keystore password: changeit
-Re-enter new password: changeit
-What is your first and last name?
-  [Unknown]:  Signaling Server
-What is the name of your organizational unit?
-  [Unknown]:  Engineering
-What is the name of your organization?
-  [Unknown]:  Fabri Corp
-What is the name of your City or Locality?
-  [Unknown]:  CABA
-What is the name of your State or Province?
-  [Unknown]:  Buenos Aires
-What is the two-letter country code for this unit?
-  [Unknown]:  AR
-Is CN=Local Name, OU=Engineering, O=Fabri Corp, L=CABA, ST=Buenos Aires, C=AR correct?
-  [no]: yes
-
-Enter key password for <tomcat>
-  (RETURN if same as keystore password): <RETURN>
+keytool -genkey -alias serverca -validity 1095 -keyalg RSA -keysize 2048 -dname "cn=Local Development" -ext bc:c -keystore local-keystore.jks -keypass servercapass -storepass servercapass
 ```
 
 Export certificate file in X.509 in case you need to import it in an exist:
 ```bash
-keytool -export -rfc -alias tomcat -file signaling-self.crt -keystore keystore.jks
+keytool -export -rfc -alias serverca -keystore local-keystore.jks -storepass servercapass -file signaling-self.crt
 ```
 The rfc keyword specifies base64-encoded output.
  
