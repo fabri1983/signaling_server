@@ -34,7 +34,7 @@ Generate a self-signed certificate and import it into custom keystore:
 ```bash
 cd src/main/resources
 rm -f local-keystore.jks
-keytool -genkey -alias serverca -validity 1095 -keyalg RSA -keysize 2048 -dname "cn=Local Development" -ext bc:c -keystore local-keystore.jks -keypass servercapass -storepass servercapass
+keytool -genkey -alias serverca -validity 1095 -keyalg RSA -keysize 2048 -dname "cn=Server" -ext bc:c -keystore local-keystore.jks -keypass servercapass -storepass servercapass
 ```
 Edit `application.properties` accordingly if you have changed any of above information.  
 
