@@ -187,14 +187,13 @@
 					<exclude>*.der</exclude>
 					<exclude>*.key</exclude>
 					<exclude>*.jks</exclude>
+					<exclude>*.pem</exclude>
 				</excludes>
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>false</filtering>
 				<includes>
-					<include>*.der</include>
-					<include>*.key</include>
 					<include>*.jks</include>
 				</includes>
 			</resource>

@@ -26,22 +26,40 @@ If not Docker installed then use `-Dskip.docker.build=true` to skip the docker b
 		- remove `<maven.compiler.release>`
 
 
-## Create self signed certificate
+## Create self signed certificate (no chain ca, no SAN -Subject Alternative Names-)
 *(skip this step if you want to use current self signed certificate or already have your own certificate in your keystore.*
 *Don't forget to edit application.properties file accordingly)*
 
-Enter to directory `src/main/resources` to generate self-signed certificate and import it into custom keystore:
+Generate a self-signed certificate and import it into custom keystore:
 ```bash
+cd src/main/resources
+rm -f local-keystore.jks
 keytool -genkey -alias serverca -validity 1095 -keyalg RSA -keysize 2048 -dname "cn=Local Development" -ext bc:c -keystore local-keystore.jks -keypass servercapass -storepass servercapass
 ```
+Edit `application.properties` accordingly if you have changed any of above information.  
 
-Export certificate file in X.509 in case you need to import it in an exist:
+*Optional*: Export certificate file in X.509 format:
 ```bash
 keytool -export -rfc -alias serverca -keystore local-keystore.jks -storepass servercapass -file signaling-self.crt
 ```
 The rfc keyword specifies base64-encoded output.
- 
-Edit *application.properties* accordingly if you change any of above information.
+
+
+## Create self signed certificate (chain ca, with SAN -Subject Alternative Names-)
+*(skip this step if you want to use current self signed certificate or already have your own certificate in your keystore.*
+*Don't forget to edit application.properties file accordingly)*
+
+This script will generate a chain certificate signed by a root certificate. Provides SAN info to certificate local domains as:
+`localhost, 127.0.0.1, 192.168.99.100, 172.17.0.2, 172.17.0.3`.  
+Last three ips belongs to Docker host ips in Windows and Linux.
+
+```bash
+cd src/main/resources
+rm -f local-keystore.jks scripts/*.pem scripts/*.jks
+scripts/chain-certificate.sh
+```
+
+Edit `application.properties` accordingly if you have changed `chain-certificate.sh` script.
 
 
 ## Create key pair for JWT (Json Web Token)
@@ -136,10 +154,11 @@ When using *eventbus-hazelcast* the opposite occurs.
 - Use next configuration on your *<CATALINA_BASE>/conf/server.xml*:
 	```xml
 	<Connector port="8443" protocol="org.apache.coyote.http11.Http11Nio2Protocol" 
-		SSLEnabled="true" clientAuth="false" keyAlias="tomcat" keystoreFile="conf/keystore.jks" 
-		keystorePass="changeit" scheme="https" secure="true" sslProtocol="TLS" />
+		SSLEnabled="true" clientAuth="false" keyAlias="serverca" keystoreFile="conf/local-keystore.jks" 
+		keystorePass="<keystore-pass>" scheme="https" secure="true" sslProtocol="TLS" />
 	```
-	- Don't forget to copy the certificate into *<CATALINA_BASE>/conf/* folder.
+	- You will need to copy local-keystore.jsk into *<CATALINA_BASE>/conf/* folder.
+	- In case you already have a keystore in Tomcat *<CATALINA_BASE>/conf/* folder then you will need to import the signaling certificate into it.
 - Then create Server in Eclipse and choose existing Tomcat installation.
 - Deploy from *Eclipse's Server tab*.
 
@@ -178,9 +197,9 @@ Add next plugin on *build* section:
         <cargo.servlet.port>8443</cargo.servlet.port>
         <cargo.protocol>https</cargo.protocol>
         <cargo.tomcat.connector.clientAuth>false</cargo.tomcat.connector.clientAuth>
-        <cargo.tomcat.connector.keyAlias>tomcat</cargo.tomcat.connector.keyAlias>
-        <cargo.tomcat.connector.keystoreFile>${project.basedir}/conf/keystore.jks</cargo.tomcat.connector.keystoreFile>
-        <cargo.tomcat.connector.keystorePass>changeit</cargo.tomcat.connector.keystorePass>
+        <cargo.tomcat.connector.keyAlias>serverca</cargo.tomcat.connector.keyAlias>
+        <cargo.tomcat.connector.keystoreFile>${project.basedir}/src/main/resources/local-keystore.jks</cargo.tomcat.connector.keystoreFile>
+        <cargo.tomcat.connector.keystorePass>servercapass</cargo.tomcat.connector.keystorePass>
         <cargo.tomcat.connector.keystoreType>JKS</cargo.tomcat.connector.keystoreType>
         <cargo.tomcat.connector.sslProtocol>TLS</cargo.tomcat.connector.sslProtocol>
         <cargo.tomcat.httpSecure>true</cargo.tomcat.httpSecure>
