@@ -34,7 +34,8 @@ keytool -genkeypair -alias serverca -dname cn=Server -validity 1095 -keyalg RSA 
 # generate chain certificate for server signed by local (rootca -> localca -> serverca)
 keytool -keystore local-keystore.jks -storepass servercapass -certreq -alias serverca -file serverca_temp.pem
 keytool -keystore localca.jks -storepass localcapass -gencert -alias localca -ext ku:c=dig,keyEnc \
-  -ext "san=dns:localhost,ip:127.0.0.1,ip:192.168.99.100,ip:172.17.0.2,ip:172.17.0.3" -ext eku=sa,ca -rfc -infile serverca_temp.pem -outfile serverca.pem
+  -ext "san=dns:localhost,ip:127.0.0.1,ip:192.168.99.100,ip:192.168.99.101,ip:192.168.99.102,ip:172.17.0.2,ip:172.17.0.3" \
+  -ext eku=sa,ca -rfc -infile serverca_temp.pem -outfile serverca.pem
 
 # import server cert chain into local-keystore.jks
 keytool -keystore local-keystore.jks -storepass servercapass -importcert -trustcacerts -noprompt -alias rootca -file rootca.pem

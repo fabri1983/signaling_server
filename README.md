@@ -62,8 +62,7 @@ mv -f scripts/local-keystore.jks local-keystore.jks
 ```
 
 **Windows:**
-```bash
-NOTE: currently not working due to encoding issues due to redirect operator | and output operator >  
+```bash  
 cd src\main\resources\scripts
 chain_certificate.bat
 cd ..
