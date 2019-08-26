@@ -61,6 +61,7 @@ cd ..
 mv -f scripts/local-keystore.jks local-keystore.jks
 
 Windows:
+NOTE: currently not working due to encoding issues due to redirect operator | and output operator >  
 cd src\main\resources\scripts
 chain_certificate.bat
 cd ..
