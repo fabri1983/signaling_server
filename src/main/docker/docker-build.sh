@@ -11,6 +11,7 @@ echo Decompressing $1.war
 echo -----------------------------
 
 # decompress war file
+rm -rf target/docker-workdir 2> /dev/null
 mkdir target/docker-workdir
 cd target/docker-workdir
 jar -xf ../$1.war

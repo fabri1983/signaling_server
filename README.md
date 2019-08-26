@@ -49,14 +49,24 @@ The rfc keyword specifies base64-encoded output.
 *(skip this step if you want to use current self signed certificate or already have your own certificate in your keystore.*
 *Don't forget to edit application.properties file accordingly)*
 
-This script will generate a chain certificate signed by a root certificate. Provides SAN info to certificate local domains as:
+Script `chain_certificate.<sh|bat>` generates a chain certificate signed by a root certificate. Provides SAN info to validate local domains as:
 `localhost, 127.0.0.1, 192.168.99.100, 172.17.0.2, 172.17.0.3`.  
 Last three ips belongs to Docker host ips in Windows and Linux.
 
 ```bash
-cd src/main/resources
-rm -f local-keystore.jks scripts/*.pem scripts/*.jks
-scripts/chain-certificate.sh
+Linux:
+cd src/main/resources/scripts
+chain_certificate.sh
+cd ..
+mv -f scripts/local-keystore.jks local-keystore.jks
+
+Windows:
+cd src\main\resources\scripts
+chain_certificate.bat
+cd ..
+move /Y /B scripts\local-keystore.jks local-keystore.jks
+	/Y forces overwrite exisitng file
+	/B indicates it's a binary file
 ```
 
 Edit `application.properties` accordingly if you have changed `chain-certificate.sh` script.

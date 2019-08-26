@@ -29,10 +29,11 @@ ECHO -----------------------------
 :: it comes with provided jars needed to start Tomcat or the selected Servlet engine.
 
 :: decompress war file
-mkdir target\docker-workdir
-cd target\docker-workdir
+RMDIR /Q /S target\docker-workdir > NUL 2>&1
+MKDIR target\docker-workdir
+CD target\docker-workdir
 jar -xf ..\%1.war
-cd ..\..
+CD ..\..
 
 ECHO -----------------------------
 ECHO Building Docker image
