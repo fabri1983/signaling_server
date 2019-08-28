@@ -10,6 +10,7 @@ fi
 
 # download spring-boot-graal-feature and build it as jar
 echo :::::::: Download spring-boot-graal-feature
+rm -rf target/spring-boot-graal-feature 2> /dev/null
 git clone --single-branch --branch graal_19_2_0_dev https://github.com/aclement/spring-boot-graal-feature.git target/spring-boot-graal-feature
 
 echo :::::::: Building spring-boot-graal-feature

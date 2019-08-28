@@ -10,6 +10,7 @@ if "%GRAALVM_HOME%"=="" (
 
 :: download spring-boot-graal-feature and build it as jar
 echo :::::::: Download spring-boot-graal-feature
+rmdir /Q /S target\spring-boot-graal-feature > NUL 2>&1
 git clone --single-branch --branch graal_19_2_0_dev https://github.com/aclement/spring-boot-graal-feature.git target/spring-boot-graal-feature
 
 echo :::::::: Building spring-boot-graal-feature
