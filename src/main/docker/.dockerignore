@@ -1,4 +1,5 @@
 # Ignore folders inside target folder to avoid sending them into Docker daemon
+antrun
 classes
 generated-sources
 generated-test-sources
@@ -15,3 +16,5 @@ signaling
 signaling.jar
 signaling.war
 *.original
+spring-boot-graal-feature
+graal-build

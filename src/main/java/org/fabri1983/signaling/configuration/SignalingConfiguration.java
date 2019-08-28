@@ -6,6 +6,8 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Inject;
 
+import org.apache.catalina.Context;
+import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.fabri1983.signaling.core.IJwtVerifier;
 import org.fabri1983.signaling.core.JwtVerifier;
 import org.fabri1983.signaling.core.handler.OnCloseHandler;
@@ -33,6 +35,7 @@ import org.nextrtc.signalingserver.domain.MessageSender;
 import org.nextrtc.signalingserver.property.NextRTCProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
@@ -48,7 +51,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 @Configuration
 @Import(value = { LocalSignalingConfiguration.class, HazelcastSignalingConfiguration.class })
-// The next @ComponentScan annotation used only to let Spring creates all the necessary beans except for the
+// The next @ComponentScan annotation is used only to let Spring creates all the necessary beans except for the
 // NextRTCEndpoint bean which we don't want to instantiate due to its static instance creation logic which disables
 // completely the use of custom SignalResolver instances.
 @ComponentScan(
@@ -63,6 +66,19 @@ public class SignalingConfiguration {
 
 	private static final List<String> URL_PATTERNS_FOR_FILTERS = Arrays.asList("/v1/*", "/v2/*", "/v3/*");
 	
+	/**
+	 * Disable Tomcat's scan jars feature.
+	 */
+	@Bean
+	public TomcatServletWebServerFactory tomcatFactory() {
+		return new TomcatServletWebServerFactory() {
+			@Override
+			protected void postProcessContext(Context context) {
+				((StandardJarScanner) context.getJarScanner()).setScanManifest(false);
+			}
+		};
+	}
+
 	@Inject
 	private ErrorAttributes errorAttributes;
 	

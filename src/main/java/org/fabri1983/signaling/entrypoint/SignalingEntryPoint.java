@@ -9,9 +9,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Configuration
-// Might happen that a missing web.xml of Servlet Container v3.1+ causes sometimes Spring doesn't scan classes, 
-// so here we explicit declare the import of configuration class.
-@Import( value = { SignalingConfiguration.class })
+@Import(value = { SignalingConfiguration.class })
 public class SignalingEntryPoint extends SpringBootServletInitializer {
 
 	@Override
