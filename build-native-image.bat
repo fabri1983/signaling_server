@@ -1,18 +1,14 @@
 @echo off
 setlocal enableextensions enabledelayedexpansion
 
-:: NOTE: you first need to build the project and generate the WAR artifact targeting Java 8. Update pom.xml.
+:: NOTE: you first need to build the signaling project and generate the WAR artifact targeting Java 8. Update pom.xml accordingly.
  
 if "%GRAALVM_HOME%"=="" (
 	echo Variable GRAALVM_HOME is NOT defined
 	exit /b
 )
 
-:: download spring-boot-graal-feature and build it as jar
-echo :::::::: Download spring-boot-graal-feature
-rmdir /Q /S target\spring-boot-graal-feature > NUL 2>&1
-git clone --single-branch --branch graal_19_2_0_dev https://github.com/aclement/spring-boot-graal-feature.git target/spring-boot-graal-feature
-
+:: build spring boot graal feature project
 echo :::::::: Building spring-boot-graal-feature
 cd target/spring-boot-graal-feature
 call mvn clean package

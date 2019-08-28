@@ -24,6 +24,7 @@ If not Docker installed then use `-Dskip.docker.build=true` to skip the docker b
 	- edit *pom.xml* `<properties>` section:
 		- change `<java.version>` and `<maven.compiler.target>`
 		- remove `<maven.compiler.release>`
+- Native image generation using GraalVM.
 
 
 ## Create self signed certificate (no chain ca, no SAN -Subject Alternative Names-)
@@ -392,13 +393,34 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 
 - Test the Distributed Event Bus with Hazelcast:
 (**NOTE**: work in progress due to serialization issues)
-	- If you are using docker in **Windows** with **Docker Tool Box** then visit:
-		- [videochat-1](https://192.168.99.100:8481/signaling/videochat.html)
-		- [videochat-2](https://192.168.99.100:8482/signaling/videochat.html)
-	- If on **Linux**:
-		- [videochat-1](https://172.17.0.2:8481/signaling/videochat.html)
-		- [videochat-2](https://172.17.0.3:8482/signaling/videochat.html)
-		- in case you need running Docker ip:
-		```bash
-		docker inspect -f "{{ .NetworkSettings.IPAddress }}" <containerNameOrId>
-		```
+  - If you are using docker in **Windows** with **Docker Tool Box** then visit:
+    - [videochat-1](https://192.168.99.100:8481/signaling/videochat.html)
+    - [videochat-2](https://192.168.99.100:8482/signaling/videochat.html)
+  - If on **Linux**:
+    - [videochat-1](https://172.17.0.2:8481/signaling/videochat.html)
+    - [videochat-2](https://172.17.0.3:8482/signaling/videochat.html)
+    - in case you need running Docker ip:
+    ```bash
+    docker inspect -f "{{ .NetworkSettings.IPAddress }}" <containerNameOrId>
+    ```
+
+## Native Image generation with GraalVM
+(**NOTE**: work in progress due to logging api issues on image build time generation phase)
+- You first need to build the signaling project and generate the WAR artifact targeting Java 8. 
+  - Update `pom.xml` accordingly to build targeting Java 8.
+  - `mvn clean package -P local,eventbus-hazelcast -Dskip.docker.build=true`
+- Locate at project root dir and download the [Spring-Boot-Graal-Feature](https://github.com/aclement/spring-boot-graal-feature.git target/spring-boot-graal-feature) project:
+```bash
+Windows:
+  clone-spring-boot-graal-feature.bat
+Linux
+  clone-spring-boot-graal-feature.sh
+```
+- Apply modifications in downloaded project as indicated in file `native-image-mising-features.txt`.
+- Generate native image from WAR artifact:
+```bash
+Windows:
+  build-native-image.bat
+Linux
+  build-native-image.sh
+```

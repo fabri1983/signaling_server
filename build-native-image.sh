@@ -1,18 +1,14 @@
 #!/bin/bash
 # If you need to change permissions for execution then do: sudo chmod 775 build-native-image.sh
 
-# NOTE: you first need to build the project and generate the WAR artifact targeting Java 8. Update pom.xml.
+# NOTE: you first need to build the signaling project and generate the WAR artifact targeting Java 8. Update pom.xml accordingly.
 
 if [ -z "$GRAALVM_HOME" ] ; then
   echo "Please set GRAALVM_HOME to point to your graalvm installation"
   exit
 fi
 
-# download spring-boot-graal-feature and build it as jar
-echo :::::::: Download spring-boot-graal-feature
-rm -rf target/spring-boot-graal-feature 2> /dev/null
-git clone --single-branch --branch graal_19_2_0_dev https://github.com/aclement/spring-boot-graal-feature.git target/spring-boot-graal-feature
-
+# build spring boot graal feature project
 echo :::::::: Building spring-boot-graal-feature
 cd target/spring-boot-graal-feature
 mvn clean package
