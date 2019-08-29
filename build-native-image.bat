@@ -46,7 +46,7 @@ set CP=%CP%;%FEATURES_JAR%
 :: compile with graal native-image
 echo :::::::: Compiling with graal native-image
 call %GRAALVM_HOME%\bin\native-image ^
-  -J-Xmx4000m ^
+  -J-Xmx4500m ^
   -H:+ReportExceptionStackTraces ^
   -H:+TraceClassInitialization ^
   -Dio.netty.noUnsafe=true ^
@@ -56,7 +56,7 @@ call %GRAALVM_HOME%\bin\native-image ^
   --allow-incomplete-classpath ^
   --report-unsupported-elements-at-runtime ^
   -cp %CP% -jar ..\%WAR%
-  
+
 if %ERRORLEVEL% == 0 (
 	echo :::::::: Native image located at target\graal-build\
 ) else (

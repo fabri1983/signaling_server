@@ -2,25 +2,30 @@ You need to change the feature files coming with the source code of project spri
 
 Add at initialization.json:
 under "runtimeInitialization":
-{"class": "org.apache.logging.log4j.core.pattern.JAnsiTextRenderer"},
+	{"class": "com.hazelcast.instance.DefaultNodeExtension"},
+	{"class": "org.apache.logging.log4j.core.pattern.JAnsiTextRenderer"},
 under "buildTimeInitialization":
-{"class": "org.springframework.aop.framework.Advised"},
-{"class": "org.springframework.aop.Advisor"},
-{"class": "org.springframework.aop.Advisor$1"},
-{"class": "org.springframework.aop.TargetSource"},
-{"class": "org.aopalliance.aop.Advice"},
-{"class": "org.springframework.core.DecoratingProxy"},
-{"class": "org.apache.logging.slf4j.SLF4JLogger"},
-{"class": "ch.qos.logback.core.rolling.RollingFileAppender"},
-{"class": "ch.qos.logback.core.recovery.ResilientFileOutputStream"},
-{"class": "ch.qos.logback.core.Appender"},
-{"class": "ch.qos.logback.core.Appender[]"},
-{"class": "org.slf4j.Logger"},
-{"class": "java.io.FileDescriptor"},
-{"class": "java.io.FileOutputStream"},
-{"class": "java.lang.Object"},
-{"class": "java.lang.Object[]"},
-{"class": "java.util.ArrayList"},
+	{"package": "org.hibernate.validator.internal.engine.messageinterpolation"},
+	{"package": "ch.qos.logback.core.status"},
+	{"class": "org.springframework.validation.beanvalidation.LocaleContextMessageInterpolator"},
+	{"class": "org.springframework.aop.framework.Advised"},
+	{"class": "org.springframework.aop.Advisor"},
+	{"class": "org.springframework.aop.Advisor$1"},
+	{"class": "org.springframework.aop.TargetSource"},
+	{"class": "org.aopalliance.aop.Advice"},
+	{"class": "org.springframework.core.DecoratingProxy"},
+	{"class": "org.apache.logging.slf4j.SLF4JLogger"},
+	{"class": "ch.qos.logback.core.rolling.RollingFileAppender"},
+	{"class": "ch.qos.logback.core.recovery.ResilientFileOutputStream"},
+	{"class": "ch.qos.logback.core.Appender"},
+	{"class": "ch.qos.logback.core.Appender[]"},
+	{"class": "org.slf4j.Logger"},
+	{"class": "org.hibernate.validator.internal.util.logging.logger"},
+	{"class": "java.io.FileDescriptor"},
+	{"class": "java.io.FileOutputStream"},
+	{"class": "java.lang.Object"},
+	{"class": "java.lang.Object[]"},
+	{"class": "java.util.ArrayList"},
 
 
 Add at resources.json:
@@ -31,30 +36,311 @@ Add at resources.json:
 
 
 Add at reflect.json
+	{
+		"name": "org.jboss.logging.DelegatingBasicLogger",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.util.logging.Log_$logger",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.util.logging.logger",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.util.Contracts",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.classic.PatternLayout",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.core.ConsoleAppender",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.core.rolling.RollingFileAppender",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.apache.logging.slf4j.SLF4JLogger",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.jboss.logging.Log4j2Logger",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+    {
+		"name": "org.slf4j.impl.StaticLoggerBinder",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.classic.util.ContextSelectorStaticBinder",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.core.status.StatusBase",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.core.status.InfoStatus",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.core.status.ErrorStatus",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.core.status.WarnStatus",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.core.BasicStatusManager",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.classic.LoggerContext",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.util.ReflectionHelper",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
     {
 		"name": "org.hibernate.validator.internal.engine.valueextraction.ValueExtractorDescriptor",
-		"allDeclaredConstructors": true,
-		"allDeclaredMethods": true
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.engine.messageinterpolation.parser.MessageState",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.engine.messageinterpolation.parser.EscapedState",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.engine.messageinterpolation.parser.ELState",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.engine.messageinterpolation.parser.InterpolationTermState",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.engine.messageinterpolation.parser.TokenCollector",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
 	},
 	{
 		"name": "org.hibernate.validator.internal.xml.config.ResourceLoaderHelper",
-		"allDeclaredConstructors": true,
-		"allDeclaredMethods": true
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
 	},
 	{
 		"name": "org.hibernate.validator.internal.engine.messageinterpolation.InterpolationTerm",
-		"allDeclaredConstructors": true,
-		"allDeclaredMethods": true
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
 	},
 	{
 		"name": "org.hibernate.validator.internal.engine.messageinterpolation.ParameterTermResolver",
-		"allDeclaredConstructors": true,
-		"allDeclaredMethods": true
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.engine.messageinterpolation.ElTermResolver",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.engine.messageinterpolation.InterpolationTerm",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.engine.messageinterpolation.TermResolver",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.engine.messageinterpolation.InterpolationTermType",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.springframework.validation.beanvalidation.LocaleContextMessageInterpolator",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
 	},
 	{
 		"name": "java.lang.reflect.AnnotatedParameterizedType",
-		"allDeclaredConstructors": true,
-		"allDeclaredMethods": true
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.engine.MessageInterpolatorContext",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
 	},
     {
 		"name": "java.util.logging.FileHandler",

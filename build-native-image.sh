@@ -39,7 +39,7 @@ export CP=$CP:../spring-boot-graal-feature/target/spring-boot-graal-feature-0.5.
 # compile with graal native-image
 echo :::::::: Compiling with graal native-image
 $GRAALVM_HOME/bin/native-image \
-  -J-Xmx4000m \
+  -J-Xmx4500m \
   -H:+ReportExceptionStackTraces \
   -H:+TraceClassInitialization \
   -Dio.netty.noUnsafe=true \

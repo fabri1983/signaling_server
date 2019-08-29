@@ -417,7 +417,7 @@ Linux
   clone-spring-boot-graal-feature.sh
 ```
 - Apply modifications in downloaded project as indicated in file `native-image-mising-features.txt`.
-- Generate native image from WAR artifact:
+- Generate native image from WAR artifact (**you will need 4.5GB of free memory**):
 ```bash
 Windows:
   build-native-image.bat
