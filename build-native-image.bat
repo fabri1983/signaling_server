@@ -22,7 +22,7 @@ echo :::::::: Decompressing %WAR% file to build a classpath with jars and classe
 rmdir /Q /S target\graal-build > NUL 2>&1
 mkdir target\graal-build
 cd target\graal-build
-jar -xf ../%WAR%
+jar -xf ..\%WAR%
 xcopy /E /Q /Y /S META-INF\* WEB-INF\classes\META-INF\
  
 :: build classpath with all jars and classes
