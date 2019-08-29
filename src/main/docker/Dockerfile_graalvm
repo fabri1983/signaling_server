@@ -1,5 +1,6 @@
 # This dockerfile intended to run the Signaling Server under GraalVM with an agentlib for 
 # produce native image configuraiton files for later usage on a native image build.
+# Produced json files must be located later at .../META-INF/native-image folder in the Signaling project. 
  
 ######################################################################################################
 FROM oracle/graalvm-ce:19.2.0 AS STAGING-WAR
