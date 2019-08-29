@@ -23,6 +23,7 @@ rm -rf target/graal-build 2> /dev/null
 mkdir target/graal-build
 cd target/graal-build
 jar -xf ../$WAR
+cp -R META-INF BOOT-INF/classes
 
 # build classpath with all jars and classes
 cd WEB-INF/classes
@@ -43,12 +44,14 @@ $GRAALVM_HOME/bin/native-image \
   -H:+ReportExceptionStackTraces \
   -H:+TraceClassInitialization \
   -Dio.netty.noUnsafe=true \
+  -DremoveUnusedAutoconfig=true \
   -H:Name=$IMAGE_NAME \
   -H:IncludeResources=".*.properties|.*.jks|.*.key|.*.xml|.*.js|.*.html|.*.jsp" \
   --no-fallback \
   --allow-incomplete-classpath \
   --report-unsupported-elements-at-runtime \
   -cp $CP -jar ../$WAR
+#  -cp $CP org.fabri1983.signaling.entrypoint.SignalingEntryPoint
 
 if [[ $? -eq 0 ]] ; then
 	echo :::::::: Native image located at target/graal-build/
