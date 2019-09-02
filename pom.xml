@@ -282,7 +282,7 @@
 					<proguardInclude>${basedir}/proguard.conf</proguardInclude>
 					<outputDirectory>${project.build.directory}</outputDirectory>
 					<injar>${project.build.finalName}.war</injar>
-					<inFilter>!WEB-INF/lib/*</inFilter>
+					<inFilter>!WEB-INF/lib/**</inFilter>
 					<outjar>${project.build.finalName}.war</outjar>
 					<options>
 						<option>-target ${maven.compiler.target}</option>
