@@ -23,6 +23,10 @@
 		<maven.compiler.target>12</maven.compiler.target>
 		<maven.compiler.release>12</maven.compiler.release>
 		
+		<!-- default flag values -->
+		<skip.docker.build>false</skip.docker.build>
+		<skip.proguard>true</skip.proguard>
+		
 		<!-- Signaling Server -->
 		<start-class>org.fabri1983.signaling.entrypoint.SignalingEntryPoint</start-class>
 		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml -->
@@ -30,7 +34,6 @@
 		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it replaces Session dependency by custom Connection class -->
 		<auth0.jwt.version>3.8.1</auth0.jwt.version>
 		<hazelcast.version>3.12.2</hazelcast.version> <!-- overrides value from Spring Boot's defaults -->
-		<skip.docker.build>false</skip.docker.build>
 		
 		<!-- NextRTC Video Chat page -->
 		<turn.no.auth.user>turnUser</turn.no.auth.user>
@@ -100,8 +103,17 @@
 		</dependency>
 		<!-- Library which provides tag c for jsp pages. Eg: general-error.jsp -->
 		<dependency>
+			<!--groupId>jstl</groupId-->
+			<!--groupId>javax.servlet.jsp.jstl</groupId-->
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
+		</dependency>
+		<!-- Library needed by jstl implementation -->
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.2.1-b03</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	
@@ -252,6 +264,40 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>com.github.wvengen</groupId>
+				<artifactId>proguard-maven-plugin</artifactId>
+				<version>2.1.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>proguard</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<skip>${skip.proguard}</skip>
+					<proguardVersion>6.1.1</proguardVersion>
+					<proguardInclude>${basedir}/proguard.conf</proguardInclude>
+					<outputDirectory>${project.build.directory}</outputDirectory>
+					<injar>${project.build.finalName}.war</injar>
+					<inFilter>!WEB-INF/lib/*</inFilter>
+					<outjar>${project.build.finalName}.war</outjar>
+					<options>
+						<option>-target ${maven.compiler.target}</option>
+					</options>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>net.sf.proguard</groupId>
+						<artifactId>proguard-base</artifactId>
+						<version>6.1.1</version>
+						<scope>runtime</scope>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<!-- If using Proguard Maven plugin then put the spring-boot-maven-plugin after proguard plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
