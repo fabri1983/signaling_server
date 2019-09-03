@@ -6,6 +6,7 @@ under "runtimeInitialization":
 	{"class": "org.apache.logging.log4j.core.pattern.JAnsiTextRenderer"},
 under "buildTimeInitialization":
 	{"package": "org.hibernate.validator.internal.engine.messageinterpolation"},
+	{"package": "org.hibernate.validator.internal.engine.resolver"},
 	{"package": "ch.qos.logback.core.status"},
 	{"class": "org.springframework.validation.beanvalidation.LocaleContextMessageInterpolator"},
 	{"class": "org.springframework.aop.framework.Advised"},
@@ -33,9 +34,55 @@ Add at resources.json:
     {"pattern":"META-INF/services/org.apache.logging.log4j.spi.Provider"}, 
     {"pattern":"META-INF/services/org.apache.logging.log4j.util.PropertySource"}, 
     {"pattern":"org/slf4j/impl/StaticLoggerBinder.class"},
+	{"pattern":"org.hibernate.validator.spi.resourceloading.ResourceBundleLocator"},
 
 
 Add at reflect.json
+	{
+		"name": "java.util.Locale",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.io.FileDescriptor",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.io.FileOutputStream",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.util.privilegedactions.GetMethod",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.util.privilegedactions.LoadClass",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
 	{
 		"name": "org.jboss.logging.DelegatingBasicLogger",
 		"allDeclaredConstructors" : true,
@@ -92,6 +139,24 @@ Add at reflect.json
 	},
 	{
 		"name": "ch.qos.logback.core.rolling.RollingFileAppender",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.core.Appender",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.core.recovery.ResilientFileOutputStream",
 		"allDeclaredConstructors" : true,
 		"allPublicConstructors" : true,
 		"allDeclaredMethods" : true,
@@ -182,6 +247,15 @@ Add at reflect.json
 	},
 	{
 		"name": "ch.qos.logback.classic.LoggerContext",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "ch.qos.logback.classic.Logger",
 		"allDeclaredConstructors" : true,
 		"allPublicConstructors" : true,
 		"allDeclaredMethods" : true,
@@ -326,6 +400,105 @@ Add at reflect.json
 	},
 	{
 		"name": "java.lang.reflect.AnnotatedParameterizedType",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.lang.reflect.Constructor",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.lang.reflect.Executable",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.lang.reflect.Field",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.lang.reflect.GenericArrayType",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.lang.reflect.InvocationTargetException",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.lang.reflect.Member",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.lang.reflect.Method",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.lang.reflect.ParameterizedType",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.lang.reflect.Type",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.lang.reflect.TypeVariable",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.lang.reflect.WildcardType",
 		"allDeclaredConstructors" : true,
 		"allPublicConstructors" : true,
 		"allDeclaredMethods" : true,
