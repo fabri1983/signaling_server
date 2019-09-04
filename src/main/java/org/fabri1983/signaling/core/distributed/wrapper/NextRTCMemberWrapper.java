@@ -1,4 +1,4 @@
-package org.fabri1983.signaling.core.distributed.serialization;
+package org.fabri1983.signaling.core.distributed.wrapper;
 
 import javax.websocket.Session;
 
@@ -26,8 +26,11 @@ public class NextRTCMemberWrapper {
 		
 		// TODO implement a selector in which if the instance doesn't match the selector condition then 
 		// fallback to a dummy selector which throws exception
-		
-		if (wrapper.targetClass.equals(Member.class)) {
+
+		if (wrapper == null || wrapper.userId == null) {
+			return null;
+		}
+		else if (wrapper.targetClass.equals(Member.class)) {
 			Session session = population.getSessionByUserId(wrapper.userId);
 			Member member = members.findBy(session.getId()).orElse(null);
 			member.setEventBus(eventBus);
@@ -40,6 +43,22 @@ public class NextRTCMemberWrapper {
 	public NextRTCMember unwrap(NextRTCEventBus eventBus, ConversationPopulation population, 
 			MemberRepository members) {
 		return NextRTCMemberWrapper.unwrapNow(this, eventBus, population, members);
+	}
+
+	public Class<? extends NextRTCMember> getTargetClass() {
+		return targetClass;
+	}
+
+	public void setTargetClass(Class<? extends NextRTCMember> targetClass) {
+		this.targetClass = targetClass;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 }

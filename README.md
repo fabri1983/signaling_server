@@ -406,7 +406,7 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 
 ## Native Image generation with GraalVM
 (**NOTE**: work in progress due to logging api issues on image build time generation phase)
-- You first need to build the signaling project and generate the WAR artifact targeting Java 8. 
+- You first need to build the signaling project and generate the WAR artifact targeting Java 8, and change Spring Boot version to 2.2.0-M5.
   - Update `pom.xml` accordingly to build targeting Java 8.
   - `mvn clean package -P local,eventbus-hazelcast -Dskip.docker.build=true`
 - Locate at project root dir and download the [Spring-Boot-Graal-Feature](https://github.com/aclement/spring-boot-graal-feature.git target/spring-boot-graal-feature) project:

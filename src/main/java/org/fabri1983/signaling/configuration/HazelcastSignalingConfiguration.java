@@ -10,8 +10,12 @@ import com.hazelcast.core.ITopic;
 import javax.annotation.PostConstruct;
 
 import org.fabri1983.signaling.core.distributed.NextRTCDistributedEventBus;
-import org.fabri1983.signaling.core.distributed.serialization.NextRTCEventWrapper;
+import org.fabri1983.signaling.core.distributed.serialization.NextRTCConversationWrapperSerializerV1;
 import org.fabri1983.signaling.core.distributed.serialization.NextRTCEventWrapperSerializerV1;
+import org.fabri1983.signaling.core.distributed.serialization.NextRTCMemberWrapperSerializerV1;
+import org.fabri1983.signaling.core.distributed.wrapper.NextRTCConversationWrapper;
+import org.fabri1983.signaling.core.distributed.wrapper.NextRTCEventWrapper;
+import org.fabri1983.signaling.core.distributed.wrapper.NextRTCMemberWrapper;
 import org.fabri1983.signaling.core.population.ConversationPopulation;
 import org.nextrtc.signalingserver.Names;
 import org.nextrtc.signalingserver.api.NextRTCEventBus;
@@ -26,19 +30,19 @@ import org.springframework.context.annotation.Profile;
 @Profile( {"eventbus-hazelcast"} )
 public class HazelcastSignalingConfiguration {
 
-	private final String TOPIC_CONFIG_NAME = "signaling-hzc";
-	private final String RELIABLE_TOPIC_CONFIG_NAME = "signaling-topic";
-	private final boolean registerCustomSerializers = false;
+	private final String HZ_INSTANCE_NAME = "signaling-hzc";
+	private final String TOPIC_CONFIG_NAME = "signaling-hzc-topic";
 	
     @Bean
     public ReliableTopicConfig hazelCastTopicConfig() {
-    	ReliableTopicConfig topicConfig = new ReliableTopicConfig(RELIABLE_TOPIC_CONFIG_NAME);
+    	// In the reliable topic, global order is always maintained
+    	ReliableTopicConfig topicConfig = new ReliableTopicConfig(TOPIC_CONFIG_NAME);
     	return topicConfig;
     }
 
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     public HazelcastInstance hazelCastInstance(ReliableTopicConfig hzcTopicConfig) {
-    	Config config = new Config(TOPIC_CONFIG_NAME);
+    	Config config = new Config(HZ_INSTANCE_NAME);
     	config.addReliableTopicConfig(hzcTopicConfig);
     	registerSerializers(config);
         HazelcastInstance hzcInstance = Hazelcast.getOrCreateHazelcastInstance(config);
@@ -47,7 +51,7 @@ public class HazelcastSignalingConfiguration {
 
 	@Bean
     public ITopic<NextRTCEventWrapper> hazelCastTopic(HazelcastInstance hzcInstance) {
-    	return hzcInstance.getReliableTopic(RELIABLE_TOPIC_CONFIG_NAME);
+    	return hzcInstance.getReliableTopic(TOPIC_CONFIG_NAME);
     }
 
 	/**
@@ -56,22 +60,29 @@ public class HazelcastSignalingConfiguration {
 	 */
     @Bean(name = Names.EVENT_BUS)
     @Primary
-    public NextRTCEventBus eventBus(ITopic<NextRTCEventWrapper> hzcTopic, ConversationPopulation population, 
-    		ConversationRepository conversationRepository, MemberRepository members) {
-		return new NextRTCDistributedEventBus(hzcTopic, population, conversationRepository, members);
+    public NextRTCEventBus eventBus(HazelcastInstance hazelcastInstance, ITopic<NextRTCEventWrapper> hzcTopic, 
+    		ConversationPopulation population, ConversationRepository conversationRepository, 
+    		MemberRepository members) {
+		return new NextRTCDistributedEventBus(hazelcastInstance, hzcTopic, population, 
+				conversationRepository, members);
 	}
 
 	private void registerSerializers(Config config) {
-		if (!registerCustomSerializers) {
-			return;
-		}
-		
-		SerializerConfig eventContextSc = new SerializerConfig()
+		SerializerConfig eventSc = new SerializerConfig()
 			    .setImplementation(new NextRTCEventWrapperSerializerV1())
 			    .setTypeClass(NextRTCEventWrapper.class);
-		config.getSerializationConfig().addSerializerConfig(eventContextSc);
 		
-		// TODO here we can add more custom serializers for the many different types defined in NextRTCEventWrapper
+		SerializerConfig memberSc = new SerializerConfig()
+			    .setImplementation(new NextRTCMemberWrapperSerializerV1())
+			    .setTypeClass(NextRTCMemberWrapper.class);
+		
+		SerializerConfig conversationSc = new SerializerConfig()
+			    .setImplementation(new NextRTCConversationWrapperSerializerV1())
+			    .setTypeClass(NextRTCConversationWrapper.class);
+		
+		config.getSerializationConfig().addSerializerConfig(eventSc);
+		config.getSerializationConfig().addSerializerConfig(memberSc);
+		config.getSerializationConfig().addSerializerConfig(conversationSc);
 	}
 
 	/**

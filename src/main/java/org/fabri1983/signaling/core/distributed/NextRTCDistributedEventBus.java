@@ -1,10 +1,11 @@
 package org.fabri1983.signaling.core.distributed;
 
+import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 
-import org.fabri1983.signaling.core.distributed.serialization.NextRTCEventWrapper;
+import org.fabri1983.signaling.core.distributed.wrapper.NextRTCEventWrapper;
 import org.fabri1983.signaling.core.population.ConversationPopulation;
 import org.nextrtc.signalingserver.api.NextRTCEventBus;
 import org.nextrtc.signalingserver.api.dto.NextRTCEvent;
@@ -22,11 +23,14 @@ public class NextRTCDistributedEventBus extends NextRTCEventBus implements Messa
 	private ConversationPopulation population;
 	private ConversationRepository conversationRepository;
 	private MemberRepository members;
-	private DistributedEventTypeResolver eventTypeResolver = new DistributedEventTypeResolver();
-
-	public NextRTCDistributedEventBus(ITopic<NextRTCEventWrapper> hzcTopic, ConversationPopulation population,
-			ConversationRepository conversationRepository, MemberRepository members) {
+	private DistributedEventConditionResolver eventConditionResolver = new DistributedEventConditionResolver();
+	private String instanceId;
+	
+	public NextRTCDistributedEventBus(HazelcastInstance hazelcastInstance, ITopic<NextRTCEventWrapper> hzcTopic, 
+			ConversationPopulation population, ConversationRepository conversationRepository, 
+			MemberRepository members) {
 		super();
+		this.instanceId = hazelcastInstance.getCluster().getLocalMember().getUuid();
 		this.hzcTopic = hzcTopic;
 		this.population = population;
 		this.conversationRepository = conversationRepository;
@@ -37,8 +41,8 @@ public class NextRTCDistributedEventBus extends NextRTCEventBus implements Messa
 	public void post(NextRTCEvent event) {
 		super.post(event);
 		// only post on some specific events
-		eventTypeResolver.post(event.type(), () -> {
-			NextRTCEventWrapper eventWrapper = NextRTCEventWrapper.wrap(event, population);
+		eventConditionResolver.post(event, () -> {
+			NextRTCEventWrapper eventWrapper = NextRTCEventWrapper.wrap(event, instanceId, population);
 			hzcTopic.publish(eventWrapper);
 		});
 	}
@@ -51,7 +55,14 @@ public class NextRTCDistributedEventBus extends NextRTCEventBus implements Messa
 
 	@Override
 	public void onMessage(Message<NextRTCEventWrapper> message) {
+		
 		NextRTCEventWrapper eventWrapper = message.getMessageObject();
+		
+		// do not process message published from same instance
+		if (instanceId.equals(eventWrapper.getInstanceId())) {
+			return;
+		}
+		
 		NextRTCEvent event = NextRTCEventWrapper.unwrapNow(eventWrapper, this, population, 
 				conversationRepository, members);
 		post(event);

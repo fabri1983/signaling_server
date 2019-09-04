@@ -1,4 +1,4 @@
-package org.fabri1983.signaling.core.distributed.serialization;
+package org.fabri1983.signaling.core.distributed.wrapper;
 
 import java.util.Map;
 
@@ -16,6 +16,7 @@ import org.nextrtc.signalingserver.repository.MemberRepository;
 
 public class NextRTCEventWrapper {
 
+	private String instanceId;
 	private Class<? extends NextRTCEvent> targetClass;
 	private NextRTCEvents type;
 	private NextRTCMemberWrapper from;
@@ -33,8 +34,8 @@ public class NextRTCEventWrapper {
 	 * @return
 	 */
 	public static <T extends NextRTCEvent> NextRTCEventWrapperBuilder wrapBuilder(Class<T> targetClass, 
-			ConversationPopulation population) {
-		return new NextRTCEventWrapperBuilder(targetClass, population);
+			String instanceId, ConversationPopulation population) {
+		return new NextRTCEventWrapperBuilder(targetClass, instanceId, population);
 	}
 
 	/**
@@ -43,8 +44,8 @@ public class NextRTCEventWrapper {
 	 * @param event
 	 * @return
 	 */
-	public static NextRTCEventWrapper wrap(NextRTCEvent event, ConversationPopulation population) {
-		return NextRTCEventWrapperBuilder.wrapFrom(event, event.getClass(), population);
+	public static NextRTCEventWrapper wrap(NextRTCEvent event, String instancId, ConversationPopulation population) {
+		return NextRTCEventWrapperBuilder.wrapFrom(event, instancId, event.getClass(), population);
 	}
 	
 	/**
@@ -65,9 +66,9 @@ public class NextRTCEventWrapper {
 		if (wrapper.targetClass.equals(EventContext.class)) {
 			return EventContext.builder()
 					.type(wrapper.type)
-					.from(wrapper.from.unwrap(eventBus, population, members))
-					.to(wrapper.to.unwrap(eventBus, population, members))
-					.conversation(wrapper.conversation.unwrap(conversationRepository))
+					.from(NextRTCMemberWrapper.unwrapNow(wrapper.from, eventBus, population, members))
+					.to(NextRTCMemberWrapper.unwrapNow(wrapper.to, eventBus, population, members))
+					.conversation(NextRTCConversationWrapper.unwrapNow(wrapper.conversation, conversationRepository))
 					.exception(wrapper.exception)
 					.custom(wrapper.custom)
 					.content(wrapper.content)
@@ -84,18 +85,104 @@ public class NextRTCEventWrapper {
 		return NextRTCEventWrapper.unwrapNow(wrapper, eventBus, population, conversationRepository, members);
 	}
 	
+	public String getInstanceId() {
+		return instanceId;
+	}
+
+	public void setInstanceId(String instanceId) {
+		this.instanceId = instanceId;
+	}
+
+	public Class<? extends NextRTCEvent> getTargetClass() {
+		return targetClass;
+	}
+
+	public void setTargetClass(Class<? extends NextRTCEvent> targetClass) {
+		this.targetClass = targetClass;
+	}
+
+	public NextRTCEvents getType() {
+		return type;
+	}
+
+	public void setType(NextRTCEvents type) {
+		this.type = type;
+	}
+
+	public NextRTCMemberWrapper getFrom() {
+		return from;
+	}
+
+	public void setFrom(NextRTCMemberWrapper from) {
+		this.from = from;
+	}
+
+	public NextRTCMemberWrapper getTo() {
+		return to;
+	}
+
+	public void setTo(NextRTCMemberWrapper to) {
+		this.to = to;
+	}
+
+	public NextRTCConversationWrapper getConversation() {
+		return conversation;
+	}
+
+	public void setConversation(NextRTCConversationWrapper conversation) {
+		this.conversation = conversation;
+	}
+
+	public SignalingException getException() {
+		return exception;
+	}
+
+	public void setException(SignalingException exception) {
+		this.exception = exception;
+	}
+
+	public Map<String, String> getCustom() {
+		return custom;
+	}
+
+	public void setCustom(Map<String, String> custom) {
+		this.custom = custom;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
 	public static class NextRTCEventWrapperBuilder {
 
 		private NextRTCEventWrapper newObj;
 		private ConversationPopulation population;
 		
 		public <T extends NextRTCEvent> NextRTCEventWrapperBuilder(Class<T> targetClass, 
-				ConversationPopulation population) {
+				String instanceId, ConversationPopulation population) {
 			newObj = new NextRTCEventWrapper();
+			newObj.instanceId = instanceId;
 			newObj.targetClass = targetClass;
 			this.population = population;
 		}
 
+		public <T extends NextRTCEvent> NextRTCEventWrapperBuilder instanceId(String instanceId) {
+			newObj.instanceId = instanceId;
+			return this;
+		}
+		
 		public <T extends NextRTCEvent> NextRTCEventWrapperBuilder targetClass(Class<T> targetClass) {
 			newObj.targetClass = targetClass;
 			return this;
@@ -146,15 +233,20 @@ public class NextRTCEventWrapper {
 		}
 		
 		public static <T extends NextRTCEvent, S extends NextRTCEvent> NextRTCEventWrapper wrapFrom(T event, 
-				Class<S> targetClass, ConversationPopulation population) {
-			NextRTCMember from = event.from().orElse(null);
-			NextRTCMember to = event.to().orElse(null);
+				String instanceId, Class<S> targetClass, ConversationPopulation population) {
 			NextRTCEventWrapper newObj = new NextRTCEventWrapper();
+			newObj.instanceId = instanceId;
 			newObj.targetClass = targetClass;
 			newObj.type = event.type();
-			newObj.from = NextRTCMemberWrapper.wrap(from, population.getUserIdBySessionId(from.getId()));
-			newObj.to = NextRTCMemberWrapper.wrap(to, population.getUserIdBySessionId(to.getId()));
-			newObj.conversation = NextRTCConversationWrapper.wrap(event.conversation().orElse(null));
+			event.from().ifPresent( from -> {
+				newObj.from = NextRTCMemberWrapper.wrap(from, population.getUserIdBySessionId(from.getId()));
+			});
+			event.to().ifPresent( to -> {
+				newObj.to = NextRTCMemberWrapper.wrap(to, population.getUserIdBySessionId(to.getId()));
+			});
+			event.conversation().ifPresent( conversation -> {
+				newObj.conversation = NextRTCConversationWrapper.wrap(conversation);
+			});
 			newObj.exception = event.exception().orElse(null);
 			newObj.custom = event.custom();
 			newObj.content = event.content().orElse(null);

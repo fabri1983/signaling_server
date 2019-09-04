@@ -1,4 +1,4 @@
-package org.fabri1983.signaling.core.distributed.serialization;
+package org.fabri1983.signaling.core.distributed.wrapper;
 
 import org.nextrtc.signalingserver.api.dto.NextRTCConversation;
 import org.nextrtc.signalingserver.exception.Exceptions;
@@ -17,12 +17,23 @@ public class NextRTCConversationWrapper {
 	
 	public static NextRTCConversation unwrapNow(NextRTCConversationWrapper wrapper, 
 			ConversationRepository conversationRepository) {
+		if (wrapper == null) {
+			return null;
+		}
 		return conversationRepository.findBy(wrapper.id)
 				.orElseThrow( () -> errorConversationNotFound(wrapper) );
 	}
 
 	public NextRTCConversation unwrap(ConversationRepository conversationRepository) {
 		return NextRTCConversationWrapper.unwrapNow(this, conversationRepository);
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	private static SignalingException errorConversationNotFound(NextRTCConversationWrapper wrapper) {
