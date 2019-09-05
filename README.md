@@ -8,8 +8,8 @@
 
 
 This project uses [NextRTC Signaling Server](https://github.com/mslosarz/nextrtc-signaling-server) project (which is no longer maintained).
-I added custom signals, room max participants limit, and other constraints, to provide a complete video call solution between two+ clients.
-It is cluster aware by using a distributed event bus backed by *Hazelcast* with auto discovery.
+I added custom signals, room max participants limit, and other constraints, to provide a complete video call solution between two clients.
+It is cluster aware by using a distributed event bus backed by *Hazelcast* with node auto discovery.
 
 
 - Uses Maven 3.6.x.
@@ -18,17 +18,17 @@ If not Docker installed then use `-Dskip.docker.build=true` to skip the docker b
 - Runs on **Java 12**. If you want to use **Java 8** then you need to:
 	- change [Dockerfile](src/main/docker/Dockerfile):
 		- remove intermediate stage STAGING-OPENJDK12-MINI
-		- in the final stage use adoptopenjdk/openjdk12:alpine-jre instead of alpine:3.10
-		- in the final stage remove the download of apks for Java 12 and the copy of custom jre
+		- in the final stage use adoptopenjdk/openjdk8:alpine-jre instead of alpine:3.10
+		- in the final stage remove the download of apks for Java 12 and the `COPY` command of custom jre
 		- in the final stage remove any use of ${ENV_JAVA_MODULES_FOR_HAZELCAST}
 	- edit *pom.xml* `<properties>` section:
 		- change `<java.version>` and `<maven.compiler.target>`
 		- remove `<maven.compiler.release>`
-- Native image generation using GraalVM.
+- Native image generation using GraalVM: currently struggling with Spring Boot 2.2.0.M5 and Spring Boot Graal Features plugin to correctly compile a native image.
 
 
 ## Create self signed certificate (no chain ca, no SAN -Subject Alternative Names-)
-*(skip this step if you want to use current self signed certificate or already have your own certificate in your keystore.*
+*(Skip this step if you want to use current self signed certificate or already have your own certificate in your keystore.*
 *Don't forget to edit application.properties file accordingly)*
 
 Generate a self-signed certificate and import it into custom keystore:
@@ -37,7 +37,7 @@ cd src/main/resources
 rm -f local-keystore.jks
 keytool -genkey -alias serverca -validity 1095 -keyalg RSA -keysize 2048 -dname "cn=Server" -ext bc:c -keystore local-keystore.jks -keypass servercapass -storepass servercapass
 ```
-Edit `application.properties` accordingly if you have changed any of above information.  
+Edit `application.properties` accordingly if you have made changes on any of above information.  
 
 *Optional*: Export certificate file in X.509 format:
 ```bash
@@ -47,7 +47,7 @@ The rfc keyword specifies base64-encoded output.
 
 
 ## Create self signed certificate (chain ca, with SAN -Subject Alternative Names-)
-*(skip this step if you want to use current self signed certificate or already have your own certificate in your keystore.*
+*(Skip this step if you want to use current self signed certificate or already have your own certificate in your keystore.*
 *Don't forget to edit application.properties file accordingly)*
 
 Script `chain_certificate.<sh|bat>` generates a chain certificate signed by a root certificate. Provides SAN info to validate local domains as:
@@ -71,23 +71,44 @@ move /Y scripts\local-keystore.jks local-keystore.jks
 	Option /Y forces overwrite exisitng file
 ```
 
-Edit `application.properties` accordingly if you have changed `chain-certificate.<sh|bat>` script.
+Edit `application.properties` accordingly if you have made changes on `chain-certificate.<sh|bat>` script.
 
 
 ## Create key pair for JWT (Json Web Token)
-Enter to directory `src/main/resources/profiles`.
+*(This step is optional since the provided videochat example uses an insecure endpoint which skips authorization)*
+We are going to generate pblic and private key pair using RSA algorithm.  
+Enter into `profiles` folder.
+```bash
+cd src/main/resources/profiles
+```
+Ouput private key in PEM or base64 format:
 ```bash
 openssl genrsa -out jwt_local_private.key 2048
 ```
-Convert private Key to PKCS#8 format (so Java can read it)
+Convert private Key to PKCS#8 format (so Java can read it):
 ```bash
 openssl pkcs8 -topk8 -inform PEM -outform DER -in jwt_local_private.key -out jwt_local_private.der -nocrypt
 ```
-Output public key portion in DER format (so Java can read it)
+Output public key portion in PEM or base64 format:
 ```bash
-openssl rsa -in jwt_local_private.key -pubout -outform DER -out jwt_local_public.der
+openssl rsa -in jwt_local_private.key -pubout -out jwt_local_public.key
 rm -f jwt_local_private.key
 ```
+Output public key portion in DER format (so Java can read it):
+```bash
+openssl rsa -in jwt_local_private.key -pubout -outform DER -out jwt_local_public.der
+```
+
+### Generate valid token for secure endpoint usage
+Current videochat example uses insecure endpoint so any authorization is skipped.  
+If you want to use the secure endpoint then you will need to generate a valid JWT.  
+- First you need to get your user id. You can obtain it directly from the `User Id` input textbox form the videochat example page.
+- If you have opened a second window/tab for videochat then keep that new `User Id` too.
+- Visit [jwt.io](https://jwt.io) Debugger section, and generate a RSA token. Use next image as a reference:
+![jwt token generation](/jwt_token_generation.jpg?raw=true "jwt token generation")
+- Use that token to populate HTTP Header `vctoken` (on browsers you will need a plugin).
+- Use the first *User Id* token to populate HTTP Header `vcuser` (on browsers you will need a plugin). 
+
 
 ## Maven Profiles
 **Profiles**  
@@ -406,8 +427,8 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 ## Native Image generation with GraalVM
 (**NOTE**: work in progress due to logging api issues on image build time generation phase)
 - You first need to build the signaling project and generate the WAR artifact targeting Java 8, and change Spring Boot version to 2.2.0.M5 or later.
-  - Update `pom.xml` properties accordingly to build targeting Java 8.
-  - Update `pom.xml` Spring Boot parent version to 2.2.0.M5.
+  - Update `pom.xml` modifying properties accordingly to build targeting Java 8 (see instructions at the top of this document).
+  - Update `pom.xml` modifying Spring Boot version to 2.2.0.M5.
   - Update `pom.xml` adding repository:
   ```xml
 	<repositories>

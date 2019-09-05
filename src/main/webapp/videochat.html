@@ -25,6 +25,11 @@
 <div style="clear:both; float:left;">
 	User Id: <input id="userId" type="text" style="width:300px;" value=""/>
 	<br/>
+	(if using secure endpoint: you have to set the User Id as a Browser's Header, named <b>vcuser</b>, using a plugin)
+	<br/>
+	(if using secure endpoint: you have to set <b>vctoken</b> as a Browser's Header using a plugin)
+	<br/>
+	<br/>
 	Websocket endpoint: <input type="text" id="endpointUrlId" style="width:450px;"/>
 	<button onclick="resetEndpointUrl()" id="btnResetEndpointUrl">Reset URL</button>
 	<br/>
