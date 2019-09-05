@@ -104,8 +104,12 @@ Current videochat example uses insecure endpoint so any authorization is skipped
 If you want to use the secure endpoint then you will need to generate a valid JWT.  
 - First you need to get your user id. You can obtain it directly from the `User Id` input textbox form the videochat example page.
 - If you have opened a second window/tab for videochat then keep that new `User Id` too.
-- Visit [jwt.io](https://jwt.io) Debugger section, and generate a RSA token. Use next image as a reference:
-![jwt token generation](/jwt_token_generation.jpg?raw=true "jwt token generation")
+- Visit [jwt.io](https://jwt.io) Debugger section, and generate a RSA token:
+ - you will need to copy content from files:
+   - `src/main/resources/profiles/jwt_local_private.key`
+   - `src/main/resources/profiles/jwt_local_public.key`
+ - use next image as a reference:
+   ![jwt token generation](/jwt_token_generation.jpg?raw=true "jwt token generation")
 - Use that token to populate HTTP Header `vctoken` (on browsers you will need a plugin).
 - Use the first *User Id* token to populate HTTP Header `vcuser` (on browsers you will need a plugin). 
 
