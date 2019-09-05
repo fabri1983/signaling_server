@@ -315,7 +315,7 @@ Server exposed with [ngrok](https://ngrok.com/).
 
 Use `jdeps` to know which java modules the final application needs to run. Note that we are using `--multi-release=12`.
 
-- *NOTE*: this guide is only valid for Spring Boot fat WAR due to internal WAR structure.
+- *NOTE*: *this guide is only valid for Spring Boot fat WAR due to internal WAR structure. For a fat jar package you will need to make some adjustments.*
 
 - Windows:
 ```bash
@@ -392,7 +392,6 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 ```
 
 - Test the Distributed Event Bus with Hazelcast:
-(**NOTE**: work in progress due to serialization issues)
   - If you are using docker in **Windows** with **Docker Tool Box** then visit:
     - [videochat-1](https://192.168.99.100:8481/signaling/videochat.html)
     - [videochat-2](https://192.168.99.100:8482/signaling/videochat.html)
@@ -406,8 +405,19 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 
 ## Native Image generation with GraalVM
 (**NOTE**: work in progress due to logging api issues on image build time generation phase)
-- You first need to build the signaling project and generate the WAR artifact targeting Java 8, and change Spring Boot version to 2.2.0-M5.
-  - Update `pom.xml` accordingly to build targeting Java 8.
+- You first need to build the signaling project and generate the WAR artifact targeting Java 8, and change Spring Boot version to 2.2.0.M5 or later.
+  - Update `pom.xml` properties accordingly to build targeting Java 8.
+  - Update `pom.xml` Spring Boot parent version to 2.2.0.M5.
+  - Update `pom.xml` adding repository:
+  ```xml
+	<repositories>
+		<repository>
+			<id>repository.spring.milestone</id>
+			<name>Spring Milestone Repository</name>
+			<url>http://repo.spring.io/milestone</url>
+		</repository>
+	</repositories>
+  ```
   - `mvn clean package -P local,eventbus-hazelcast -Dskip.docker.build=true`
 - Locate at project root dir and download the [Spring-Boot-Graal-Feature](https://github.com/aclement/spring-boot-graal-feature.git target/spring-boot-graal-feature) project:
 ```bash
