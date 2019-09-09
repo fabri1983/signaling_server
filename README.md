@@ -433,7 +433,7 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 - You first need to build the signaling project and generate the WAR artifact targeting Java 8, and change Spring Boot version to 2.2.0.M5 or later.
   - Update `pom.xml` modifying properties accordingly to build targeting Java 8 (see instructions at the top of this document).
   - Update `pom.xml` modifying Spring Boot version to 2.2.0.M5.
-  - Update `pom.xml` adding repository:
+  - Update `pom.xml` adding repositories:
   ```xml
 	<repositories>
 		<repository>
@@ -442,6 +442,13 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 			<url>http://repo.spring.io/milestone</url>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/libs-milestone</url>
+		</pluginRepository>
+	</pluginRepositories>
   ```
   - `mvn clean package -P local,eventbus-hazelcast -Dskip.docker.build=true`
 - Locate at project root dir and download the [Spring-Boot-Graal-Feature](https://github.com/aclement/spring-boot-graal-feature.git target/spring-boot-graal-feature) project:
