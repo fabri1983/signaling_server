@@ -12,7 +12,7 @@ I added custom signals, room max participants limit, and other constraints, to p
 It is cluster aware by using a distributed event bus backed by *Hazelcast* with node auto discovery.
 
 
-- Uses Maven 3.6.x.
+- Uses Maven 3.6.x. You can use `mvnw` if you don't have Maven installed in your host.
 - After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
 If not Docker installed then use `-Dskip.docker.build=true` to skip the docker build.
 - Runs on **Java 12**. If you want to use **Java 8** then you need to:
