@@ -8,9 +8,9 @@ if [ -z "$GRAALVM_HOME" ] ; then
   exit
 fi
 
-# build spring boot graal feature project
-echo :::::::: Building spring-boot-graal-feature
-cd target/spring-boot-graal-feature
+# build spring graal feature project
+echo :::::::: Building spring-graal-feature
+cd target/spring-graal-feature
 mvn clean package
 cd ../..
 
@@ -23,7 +23,7 @@ rm -rf target/graal-build 2> /dev/null
 mkdir target/graal-build
 cd target/graal-build
 jar -xf ../$WAR
-cp -R META-INF BOOT-INF/classes
+cp -R META-INF WEB-INF/classes
 
 # build classpath with all jars and classes
 cd WEB-INF/classes
@@ -34,8 +34,8 @@ export CP=.:$LIBPATH_1:$LIBPATH_2
 # go back to graal-build folder
 cd ../..
 
-# spring-boot-graal-feature being on the classpath is what triggers it
-export CP=$CP:../spring-boot-graal-feature/target/spring-boot-graal-feature-0.5.0.BUILD-SNAPSHOT.jar
+# spring-graal-feature being on the classpath is what triggers it
+export CP=$CP:../spring-graal-feature/target/spring-graal-feature-0.6.0.BUILD-SNAPSHOT.jar
 
 # compile with graal native-image
 echo :::::::: Compiling with graal native-image
@@ -47,6 +47,7 @@ $GRAALVM_HOME/bin/native-image \
   -DremoveUnusedAutoconfig=true \
   -H:Name=$IMAGE_NAME \
   -H:IncludeResources=".*.properties|.*.jks|.*.key|.*.xml|.*.js|.*.html|.*.jsp" \
+  -H:IncludeResourceBundles=javax.servlet.http.LocalStrings \
   --no-fallback \
   --allow-incomplete-classpath \
   --report-unsupported-elements-at-runtime \

@@ -8,9 +8,9 @@ if "%GRAALVM_HOME%"=="" (
 	exit /b
 )
 
-:: build spring boot graal feature project
-echo :::::::: Building spring-boot-graal-feature
-cd target/spring-boot-graal-feature
+:: build spring graal feature project
+echo :::::::: Building spring-graal-feature
+cd target/spring-graal-feature
 call mvn clean package
 cd ..\..
 
@@ -36,10 +36,10 @@ set CP=%CD%;%LIBPATH_1%;%LIBPATH_2%
 :: go back to graal-build folder
 cd ..\..
 
-:: spring-boot-graal-feature jar being on the classpath is what triggers the Spring Boot graal auto configuration.
+:: spring-graal-feature jar being on the classpath is what triggers the Spring Graal auto configuration.
 :: we need to list only the exact jar since there is another one in test-classes
 del /F /Q features_jar.txt > NUL 2>&1
-dir /S /B ..\spring-boot-graal-feature\target\spring-boot-graal-feature-0.5.0.BUILD-SNAPSHOT.jar > features_jar.txt
+dir /S /B ..\spring-graal-feature\target\spring-graal-feature-0.6.0.BUILD-SNAPSHOT.jar > features_jar.txt
 set FEATURES_JAR=
 for /f %%i in (features_jar.txt) do set FEATURES_JAR=%%i;
 set CP=%CP%;%FEATURES_JAR%
@@ -54,6 +54,7 @@ call %GRAALVM_HOME%\bin\native-image ^
   -DremoveUnusedAutoconfig=true ^
   -H:Name=%IMAGE_NAME% ^
   -H:IncludeResources=".*.properties|.*.jks|.*.key|.*.xml|.*.js|.*.html|.*.jsp" ^
+  -H:IncludeResourceBundles=javax.servlet.http.LocalStrings ^
   --no-fallback ^
   --allow-incomplete-classpath ^
   --report-unsupported-elements-at-runtime ^
