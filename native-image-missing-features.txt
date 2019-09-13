@@ -8,12 +8,8 @@ under "buildTimeInitialization":
 	{"package": "org.hibernate.validator.internal.engine.messageinterpolation"},
 	{"package": "org.hibernate.validator.internal.engine.resolver"},
 	{"package": "ch.qos.logback.core.status"},
+	{"package": "javax.persistence"},
 	{"class": "org.springframework.validation.beanvalidation.LocaleContextMessageInterpolator"},
-	{"class": "org.springframework.aop.framework.Advised"},
-	{"class": "org.springframework.aop.Advisor"},
-	{"class": "org.springframework.aop.Advisor$1"},
-	{"class": "org.springframework.aop.TargetSource"},
-	{"class": "org.aopalliance.aop.Advice"},
 	{"class": "org.springframework.core.DecoratingProxy"},
 	{"class": "org.apache.logging.slf4j.SLF4JLogger"},
 	{"class": "ch.qos.logback.core.rolling.RollingFileAppender"},
@@ -22,11 +18,17 @@ under "buildTimeInitialization":
 	{"class": "ch.qos.logback.core.Appender[]"},
 	{"class": "org.slf4j.Logger"},
 	{"class": "org.hibernate.validator.internal.util.logging.logger"},
+	{"class": "org.hibernate.validator.HibernateValidator"},
 	{"class": "java.io.FileDescriptor"},
 	{"class": "java.io.FileOutputStream"},
+	{"class": "java.io.ObjectInputStream"},
 	{"class": "java.lang.Object"},
 	{"class": "java.lang.Object[]"},
 	{"class": "java.util.ArrayList"},
+
+
+Add ta proxies.json:
+	["javax.persistence.Persistence"],
 
 
 Add at resources.json:
@@ -38,6 +40,7 @@ Add at resources.json:
 
 
 Add at reflect.json
+	// vvv logback
 	{
 		"name": "java.util.Locale",
 		"allDeclaredConstructors" : true,
@@ -58,6 +61,42 @@ Add at reflect.json
 	},
 	{
 		"name": "java.io.FileOutputStream",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "java.io.ObjectInputStream",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "javax.persistence.Persistence",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.HibernateValidator",
+		"allDeclaredConstructors" : true,
+		"allPublicConstructors" : true,
+		"allDeclaredMethods" : true,
+		"allPublicMethods" : true,
+		"allDeclaredFields" : true,
+		"allPublicFields" : true
+	},
+	{
+		"name": "org.hibernate.validator.internal.engine.ConfigurationImpl",
 		"allDeclaredConstructors" : true,
 		"allPublicConstructors" : true,
 		"allDeclaredMethods" : true,
@@ -355,15 +394,6 @@ Add at reflect.json
 	},
 	{
 		"name": "org.hibernate.validator.internal.engine.messageinterpolation.ElTermResolver",
-		"allDeclaredConstructors" : true,
-		"allPublicConstructors" : true,
-		"allDeclaredMethods" : true,
-		"allPublicMethods" : true,
-		"allDeclaredFields" : true,
-		"allPublicFields" : true
-	},
-	{
-		"name": "org.hibernate.validator.internal.engine.messageinterpolation.InterpolationTerm",
 		"allDeclaredConstructors" : true,
 		"allPublicConstructors" : true,
 		"allDeclaredMethods" : true,
@@ -719,55 +749,52 @@ Add at reflect.json
  		"allDeclaredConstructors": true,
 		"allDeclaredMethods": true
  	},
-  {
-    "name":"java.io.ObjectInputStream",
-    "allPublicMethods":true
-  },
-  {
-    "name":"org.apache.logging.log4j.core.config.json.JsonConfigurationFactory",
-    "methods":[{ "name":"<init>", "parameterTypes":[] }]
-  },
-  {
-    "name":"org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory",
-    "methods":[{ "name":"<init>", "parameterTypes":[] }]
-  },
-  {
-    "name":"org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory",
-    "methods":[{ "name":"<init>", "parameterTypes":[] }]
-  },
-  {
-    "name":"org.apache.logging.log4j.core.config.yaml.YamlConfigurationFactory",
-    "methods":[{ "name":"<init>", "parameterTypes":[] }]
-  },
-  {
-    "name":"org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
-    "methods":[{ "name":"<init>", "parameterTypes":[] }]
-  },
-  {
-    "name":"org.apache.logging.log4j.core.lookup.JndiLookup",
-    "methods":[{ "name":"<init>", "parameterTypes":[] }]
-  },
-  {
-    "name":"org.apache.logging.log4j.core.pattern.DatePatternConverter",
-    "allDeclaredMethods":true
-  },
-  {
-    "name":"org.apache.logging.log4j.core.pattern.LevelPatternConverter",
-    "allDeclaredMethods":true
-  },
-  {
-    "name":"org.apache.logging.log4j.core.pattern.LineSeparatorPatternConverter",
-    "allDeclaredMethods":true
-  },
-  {
-    "name":"org.apache.logging.log4j.core.pattern.LoggerPatternConverter",
-    "allDeclaredMethods":true
-  },
-  {
-    "name":"org.apache.logging.log4j.core.pattern.MessagePatternConverter",
-    "allDeclaredMethods":true
-  },
-  {
-    "name":"org.apache.logging.log4j.core.pattern.ThreadNamePatternConverter",
-    "allDeclaredMethods":true
-  },
+	{
+		"name":"org.apache.logging.log4j.core.config.json.JsonConfigurationFactory",
+		"methods":[{ "name":"<init>", "parameterTypes":[] }]
+	},
+	{
+		"name":"org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory",
+		"methods":[{ "name":"<init>", "parameterTypes":[] }]
+	},
+	{
+		"name":"org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory",
+		"methods":[{ "name":"<init>", "parameterTypes":[] }]
+	},
+	{
+		"name":"org.apache.logging.log4j.core.config.yaml.YamlConfigurationFactory",
+		"methods":[{ "name":"<init>", "parameterTypes":[] }]
+	},
+	{
+		"name":"org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
+		"methods":[{ "name":"<init>", "parameterTypes":[] }]
+	},
+	{
+		"name":"org.apache.logging.log4j.core.lookup.JndiLookup",
+		"methods":[{ "name":"<init>", "parameterTypes":[] }]
+	},
+	{
+		"name":"org.apache.logging.log4j.core.pattern.DatePatternConverter",
+		"allDeclaredMethods":true
+	},
+	{
+		"name":"org.apache.logging.log4j.core.pattern.LevelPatternConverter",
+		"allDeclaredMethods":true
+	},
+	{
+		"name":"org.apache.logging.log4j.core.pattern.LineSeparatorPatternConverter",
+		"allDeclaredMethods":true
+	},
+	{
+		"name":"org.apache.logging.log4j.core.pattern.LoggerPatternConverter",
+		"allDeclaredMethods":true
+	},
+	{
+		"name":"org.apache.logging.log4j.core.pattern.MessagePatternConverter",
+		"allDeclaredMethods":true
+	},
+	{
+		"name":"org.apache.logging.log4j.core.pattern.ThreadNamePatternConverter",
+		"allDeclaredMethods":true
+	},
+	// ^^^ logback
