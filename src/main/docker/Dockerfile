@@ -32,6 +32,12 @@ COPY ${DEPENDENCIES}/general-error.jsp    /staging/app/
 COPY ${DEPENDENCIES}/index.html           /staging/app/
 COPY ${DEPENDENCIES}/videochat.html       /staging/app/
 
+# Stage fabric8's run-java.sh
+COPY ${DEPENDENCIES}/run-java.sh          /staging/app/
+
+# Assign execution permission to fabric8's run-java.sh script
+RUN chmod 755 /staging/app/run-java.sh
+
 
 ######################################################################################################
 FROM alpine:3.10
@@ -43,11 +49,8 @@ ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS} \
 
 ENV PATH=$PATH:$JAVA_HOME/bin
 
-# The JRE mini runtime we build in previous stage is based on glibc, and Alpine linux uses musl, 
-# so we need to add glibc support:
-
+# The JRE mini runtime we build in previous stage is based on glibc, and Alpine linux uses musl, so we need to add glibc support:
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
-
 RUN apk add --no-cache --virtual .build-deps curl binutils \
     && GLIBC_VER="2.29-r0" \
     && ALPINE_GLIBC_REPO="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" \
@@ -87,4 +90,11 @@ COPY --from=STAGING-OPENJDK12-MINI $JAVA_HOME/customjre $JAVA_HOME
 COPY --from=STAGING-WAR /staging/app  /app
 
 # Entry with exec so jvm flags are correctly gathered
-ENTRYPOINT exec java ${ENV_JAVA_MODULES_FOR_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
+#ENTRYPOINT exec java ${ENV_JAVA_MODULES_FOR_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
+
+# Entry using fabric8's run-java.sh
+ENTRYPOINT JAVA_OPTIONS="${JAVA_OPTS} ${ENV_JAVA_MODULES_FOR_HAZELCAST}" \
+           JAVA_APP_DIR=/app \
+           JAVA_CLASSPATH=/app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* \
+           JAVA_MAIN_CLASS=${ENV_JAVA_MAIN_CLASS} \
+           /app/run-java.sh

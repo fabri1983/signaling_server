@@ -380,7 +380,7 @@ Script **docker-build.<bat|sh>** is moved to `target` folder after repackage is 
 It decompress the war file and creates the multi layer Docker image.  
 Keep an eye on the context size sent to Docker's context:
 ```bash
-Sending build context to Docker daemon  35.09MB   (this is the size with hazelcast libs)
+Sending build context to Docker daemon  35.21MB   (this is the size with hazelcast libs)
 ```  
 Once the image build finishes use next command to check layers size:
 ```bash
@@ -401,8 +401,8 @@ http://trustmeiamadeveloper.com/2016/03/18/where-is-my-memory-java/
 
 - **Run 2 instances of the image**:
 ```bash
-docker container run -i -p 8481:8443 --name signaling-1 fabri1983dockerid/signaling:dev
-docker container run -i -p 8482:8443 --name signaling-2 fabri1983dockerid/signaling:dev
+docker container run -i -m 400m -p 8481:8443 --name signaling-1 fabri1983dockerid/signaling:dev
+docker container run -i -m 400m -p 8482:8443 --name signaling-2 fabri1983dockerid/signaling:dev
 (replace -i by -d if you want to detach the process and let it run on background)
 
 Then manage it with:

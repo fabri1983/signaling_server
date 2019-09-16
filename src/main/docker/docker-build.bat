@@ -28,9 +28,14 @@ ECHO -----------------------------
 :: NOTE: when using Spring Boot uber WAR we always need to decompress the WAR file since 
 :: it comes with provided jars needed to start Tomcat or the selected Servlet engine.
 
-:: decompress war file
+:: reset working directory
 RMDIR /Q /S target\docker-workdir > NUL 2>&1
 MKDIR target\docker-workdir
+
+:: copy fabric8's run-java.sh
+COPY /Y target\run-java.sh target\docker-workdir
+
+:: decompress war file
 CD target\docker-workdir
 jar -xf ..\%1.war
 CD ..\..

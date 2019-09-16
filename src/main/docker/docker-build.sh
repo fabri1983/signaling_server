@@ -10,9 +10,14 @@ echo -----------------------------
 echo Decompressing $1.war
 echo -----------------------------
 
-# decompress war file
+# reset working directory
 rm -rf target/docker-workdir 2> /dev/null
 mkdir target/docker-workdir
+
+# copy fabric8's run-java.sh
+cp target/run-java.sh target/docker-workdir/
+
+# decompress war file
 cd target/docker-workdir
 jar -xf ../$1.war
 cd ../..

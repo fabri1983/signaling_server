@@ -216,6 +216,7 @@
 				<artifactId>copy-rename-maven-plugin</artifactId>
 				<version>1.0.1</version>
 				<executions>
+					<!-- copy jwt private and public keys to target folder -->
 					<execution>
 						<id>rename-file-jwt-private-key</id>
 						<phase>generate-sources</phase>
@@ -238,7 +239,7 @@
 							<destinationFile>${project.build.outputDirectory}/jwt_public.key</destinationFile>
 						</configuration>
 					</execution>
-					<!-- copy Docker related files to target -->
+					<!-- copy Docker related files to target folder -->
 					<execution>
 						<id>copy-docker-files</id>
 						<phase>generate-sources</phase>
@@ -260,6 +261,18 @@
 									<destinationFile>${project.build.directory}/docker-build${script.extension}</destinationFile>
 								</fileSet>
 							</fileSets>
+						</configuration>
+					</execution>
+					<!-- copy fabric8 run-java.sh script to target -->
+					<execution>
+						<id>copy-fabric8-run-java-script</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<sourceFile>${project.basedir}/src/main/docker/run-java.sh</sourceFile>
+							<destinationFile>${project.build.directory}/run-java.sh</destinationFile>
 						</configuration>
 					</execution>
 				</executions>
