@@ -111,7 +111,7 @@ Current videochat example uses insecure endpoint so any authorization is skipped
   - use next image as a reference:
     ![jwt token generation](/jwt_token_generation.jpg?raw=true "jwt token generation")
 - Use that token to populate HTTP Header `vctoken` (on browsers you will need a plugin).
-- Use the first *User Id* token to populate HTTP Header `vcuser` (on browsers you will need a plugin). 
+- Use the first *User Id* value (*fromUid*) to populate HTTP Header `vcuser` (on browsers you will need a plugin). 
 
 
 ## Maven Profiles
