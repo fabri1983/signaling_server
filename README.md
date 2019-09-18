@@ -101,7 +101,7 @@ openssl rsa -in jwt_local_private.key -pubout -outform DER -out jwt_local_public
 
 ### Generate valid token for secure endpoint usage
 Current videochat example uses insecure endpoint so any authorization is skipped.  
-If you want to use the secure endpoint then you will need to generate a valid JWT.  
+**If you want to use the secure endpoint then you will need to generate a valid JWT:**  
 - First you need to get your user id. You can obtain it directly from the `User Id` input textbox form the videochat example page.
 - If you have opened a second window/tab for videochat then keep that new `User Id` too.
 - Visit [jwt.io](https://jwt.io) Debugger section, and generate a RSA token:
