@@ -44,6 +44,7 @@ public class HazelcastSignalingConfiguration {
     public HazelcastInstance hazelCastInstance(ReliableTopicConfig hzcTopicConfig) {
     	Config config = new Config(HZ_INSTANCE_NAME);
     	config.addReliableTopicConfig(hzcTopicConfig);
+    	config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(true);
     	registerSerializers(config);
         HazelcastInstance hzcInstance = Hazelcast.getOrCreateHazelcastInstance(config);
         return hzcInstance;

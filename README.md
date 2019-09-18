@@ -466,3 +466,8 @@ Windows:
 Linux
   build-native-image.sh
 ```
+
+
+## TODO
+- Currently hazelcast configuration uses multicast for service discovery. Add different solutions: 
+https://hazelcast.com/blog/hazelcast-auto-discovery-with-eureka/
