@@ -10,6 +10,7 @@ protoc-dependencies
 protoc-plugins
 surefire-reports
 test-classes
+jacoco*
 
 # folders and files related to this project
 signaling
