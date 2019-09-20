@@ -74,9 +74,11 @@ move /Y scripts\local-keystore.jks local-keystore.jks
 Edit `application.properties` accordingly if you have made changes on `chain-certificate.<sh|bat>` script.
 
 
-## Create key pair for JWT (Json Web Token)
-*(This step is optional since the provided videochat example uses an insecure endpoint which skips authorization)*
-We are going to generate pblic and private key pair using RSA algorithm.  
+## Create key pair for signing JWTs (Json Web Token)
+Current videochat example uses insecure endpoint so any authorization is skipped.  
+**If you want to use the secure endpoint then you will need to generate a key pair and a valid JWT.**  
+
+We are going to generate public and private key pair using RSA algorithm to later use them to sign JWTs.  
 Enter into `profiles` folder.
 ```bash
 cd src/main/resources/profiles
@@ -100,8 +102,6 @@ openssl rsa -in jwt_local_private.key -pubout -outform DER -out jwt_local_public
 ```
 
 ### Generate valid token for secure endpoint usage
-Current videochat example uses insecure endpoint so any authorization is skipped.  
-**If you want to use the secure endpoint then you will need to generate a valid JWT:**  
 - First you need to get your user id. You can obtain it directly from the `User Id` input textbox form the videochat example page.
 - If you have opened a second window/tab for videochat then keep that new `User Id` too.
 - Visit [jwt.io](https://jwt.io) Debugger section, and generate a RSA256 token:
