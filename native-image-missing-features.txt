@@ -27,15 +27,16 @@ under "buildTimeInitialization":
 	{"class": "java.util.ArrayList"},
 
 
-Add ta proxies.json:
+Add at proxies.json:
 	["javax.persistence.Persistence"],
 
 
 Add at resources.json:
-    {"pattern":"META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat"}, 
-    {"pattern":"META-INF/services/org.apache.logging.log4j.spi.Provider"}, 
-    {"pattern":"META-INF/services/org.apache.logging.log4j.util.PropertySource"}, 
-    {"pattern":"org/slf4j/impl/StaticLoggerBinder.class"},
+under "resources":
+	{"pattern":"META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat"}, 
+	{"pattern":"META-INF/services/org.apache.logging.log4j.spi.Provider"}, 
+	{"pattern":"META-INF/services/org.apache.logging.log4j.util.PropertySource"}, 
+	{"pattern":"org/slf4j/impl/StaticLoggerBinder.class"},
 	{"pattern":"org.hibernate.validator.spi.resourceloading.ResourceBundleLocator"},
 
 
