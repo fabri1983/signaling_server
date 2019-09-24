@@ -40,7 +40,7 @@ export CP=$CP:../spring-graal-feature/target/spring-graal-feature-0.6.0.BUILD-SN
 # compile with graal native-image
 echo :::::::: Compiling with graal native-image
 $GRAALVM_HOME/bin/native-image \
-  -J-Xmx4500m \
+  -J-Xmx6000m \
   -H:+ReportExceptionStackTraces \
   -H:+TraceClassInitialization \
   -H:IncludeResources=".*/*.properties|.*/*.jks|.*/*.key|.*/*.xml|.*/*.js|.*/*.html|.*/*.jsp" \
