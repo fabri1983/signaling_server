@@ -550,6 +550,12 @@ Add at reflect.json
 		"name": "java.util.logging.FileHandler",
 		"methods" : [{ "name": "<init>", "parameterTypes": [] }]
 	},
+	{
+		"name" : "com.sample.ColorConverter",
+		"allPublicConstructors": true,
+		"allPublicMethods": true,
+		"allDeclaredMethods": true
+	},
     {
 		"name": "ch.qos.logback.classic.pattern.DateConverter",
 		"allDeclaredConstructors": true,

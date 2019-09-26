@@ -48,6 +48,7 @@ set CP=%CP%;%FEATURES_JAR%
 echo :::::::: Compiling with graal native-image
 call %GRAALVM_HOME%\bin\native-image ^
   -J-Xmx6000m ^
+  --static ^
   -H:+ReportExceptionStackTraces ^
   -H:+TraceClassInitialization ^
   -H:IncludeResources=".*/*.properties|.*/*.jks|.*/*.key|.*/*.xml|.*/*.js|.*/*.html|.*/*.jsp" ^
