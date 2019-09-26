@@ -24,7 +24,7 @@ If not Docker installed then use `-Dskip.docker.build=true` to skip the docker b
 	- edit *pom.xml* `<properties>` section:
 		- change `<java.version>` and `<maven.compiler.target>`
 		- remove `<maven.compiler.release>`
-- Native image generation using GraalVM: currently struggling with Spring Boot 2.2.0.BUILD-SNAPSHOT and Spring Graal Features plugin to correctly compile a native image.
+- Native image generation using GraalVM: currently struggling with Spring Boot 2.2.0.M5 and Spring Graal Features plugin to correctly compile a native image.
 
 
 ## Create self signed certificate (no chain ca, no SAN -Subject Alternative Names-)
@@ -430,9 +430,9 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 
 ## Native Image generation with GraalVM
 (**NOTE**: work in progress due to logback logging api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time generation phase)
-- You first need to build the signaling project and generate the WAR artifact targeting Java 8, and change Spring Boot version to 2.2.0.BUILD-SNAPSHOT.
+- You first need to build the signaling project and generate the WAR artifact targeting Java 8, and change Spring Boot version to 2.2.0.M5.
   - Update `pom.xml` modifying properties accordingly to build targeting Java 8 (see instructions at the top of this document).
-  - Update `pom.xml` modifying Spring Boot version to 2.2.0.BUILD-SNAPSHOT.
+  - Update `pom.xml` modifying Spring Boot version to 2.2.0.M5.
   - Update `pom.xml` adding repositories:
   ```xml
 	<repositories>
