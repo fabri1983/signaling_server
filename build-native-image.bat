@@ -8,11 +8,11 @@ if "%GRAALVM_HOME%"=="" (
 	exit /b
 )
 
-:: build spring graal feature project
-echo :::::::: Building spring-graal-feature
-cd target/spring-graal-feature
+:: build spring-graal-native-image project
+echo :::::::: Building spring-graal-native-image
+cd target\spring-graal-native-image\spring-graal-native-image-feature
 call mvn clean package
-cd ..\..
+cd ..\..\..
 
 set WAR=signaling.war
 set IMAGE_NAME=signaling
@@ -36,10 +36,10 @@ set CP=%CD%;%LIBPATH_1%;%LIBPATH_2%
 :: go back to graal-build folder
 cd ..\..
 
-:: spring-graal-feature jar being on the classpath is what triggers the Spring Graal auto configuration.
+:: spring-graal-native-image-feature jar being on the classpath is what triggers the Spring Graal auto configuration.
 :: we need to list only the exact jar since there is another one in test-classes
 del /F /Q features_jar.txt > NUL 2>&1
-dir /S /B ..\spring-graal-feature\target\spring-graal-feature-0.6.0.BUILD-SNAPSHOT.jar > features_jar.txt
+dir /S /B ..\spring-graal-native-image\spring-graal-native-image-feature\target\spring-graal-native-image-feature-0.6.0.BUILD-SNAPSHOT.jar > features_jar.txt
 set FEATURES_JAR=
 for /f %%i in (features_jar.txt) do set FEATURES_JAR=%%i;
 set CP=%CP%;%FEATURES_JAR%

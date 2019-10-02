@@ -8,11 +8,11 @@ if [ -z "$GRAALVM_HOME" ] ; then
   exit
 fi
 
-# build spring graal feature project
-echo :::::::: Building spring-graal-feature
-cd target/spring-graal-feature
+# build spring-graal-native-image project
+echo :::::::: Building spring-graal-native-image
+cd target/spring-graal-native-image/spring-graal-native-image-feature
 mvn clean package
-cd ../..
+cd ../../..
 
 export WAR="signaling.war"
 export IMAGE_NAME="signaling"
@@ -34,8 +34,8 @@ export CP=.:$LIBPATH_1:$LIBPATH_2
 # go back to graal-build folder
 cd ../..
 
-# spring-graal-feature being on the classpath is what triggers it
-export CP=$CP:../spring-graal-feature/target/spring-graal-feature-0.6.0.BUILD-SNAPSHOT.jar
+:: spring-graal-native-image-feature jar being on the classpath is what triggers the Spring Graal auto configuration.
+export CP=$CP:../spring-graal-native-image/spring-graal-native-image-feature/target/spring-graal-native-image-feature-0.6.0.BUILD-SNAPSHOT.jar
 
 # compile with graal native-image
 echo :::::::: Compiling with graal native-image
