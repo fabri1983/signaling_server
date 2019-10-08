@@ -24,7 +24,7 @@ If not Docker installed then use `-Dskip.docker.build=true` to skip the docker b
 	- edit *pom.xml* `<properties>` section:
 		- change `<java.version>` and `<maven.compiler.target>`
 		- remove `<maven.compiler.release>`
-- Native image generation using GraalVM: currently struggling with *Spring Boot 2.2.0.RC1* and *Spring Graal Native Image* plugin to correctly create a native image.
+- Native image generation using GraalVM: currently struggling with *Spring Boot 2.2.0.RC1* and *Spring Graal Native* plugin to correctly create a native image.
 
 
 ## Create self signed certificate (no chain ca, no SAN -Subject Alternative Names-)
@@ -340,7 +340,7 @@ Server exposed with [ngrok](https://ngrok.com/).
 
 Use `jdeps` to know which java modules the final application needs to run. Note that we are using `--multi-release=12`.
 
-- *NOTE*: *this guide is only valid for Spring Boot fat WAR due to internal WAR structure. For a fat jar package you will need to make some adjustments.*
+- *NOTE*: *this guide is only valid for Spring Boot fat WAR due to internal WAR structure. For a fat JAR package you will need to make some adjustments.*
 
 - Windows:
 ```bash
@@ -462,13 +462,13 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
   ```
   - Build package:
   `mvn clean package -P local,eventbus-hazelcast -Dskip.docker.build=true`
-- Locate at project root dir and download the [Spring-Graal-Native-Image](https://github.com/spring-projects-experimental/spring-graal-native-image.git) project:  
+- Locate at project root dir and download the [Spring-Graal-Native-Image](https://github.com/spring-projects-experimental/spring-graal-native.git) project:  
 (Next scripts will clone it under target folder)
 ```bash
 Windows:
-  clone-spring-graal-native-image.bat
+  clone-spring-graal-native.bat
 Linux
-  clone-spring-graal-native-image.sh
+  clone-spring-graal-native.sh
 ```
 - Apply modifications in downloaded project as indicated in file `native-image-missing-features.txt`.
 - Generate native image from WAR artifact (**you will need 6GB of free memory!**):
