@@ -14,8 +14,12 @@ RUN jlink \
      --no-header-files \
      --no-man-pages \
      --strip-debug \
-     --output ${JAVA_HOME}/customjre
-
+     --output ${JAVA_HOME}/customjre \
+    && apk add --no-cache --virtual .build-deps binutils \
+    && strip -p --strip-unneeded ${JAVA_HOME}/customjre/lib/server/libjvm.so \
+    && apk del --purge .build-deps \
+    && rm -rf /tmp/*.apk /tmp/gcc /tmp/gcc-libs.tar.xz /tmp/libz /tmp/libz.tar.xz /var/cache/apk/*
+    
 
 ######################################################################################################
 FROM alpine:3.10 AS STAGING-WAR
@@ -90,11 +94,11 @@ COPY --from=STAGING-OPENJDK12-MINI $JAVA_HOME/customjre $JAVA_HOME
 COPY --from=STAGING-WAR /staging/app  /app
 
 # Entry with exec so jvm flags are correctly gathered
-#ENTRYPOINT exec java ${ENV_JAVA_MODULES_FOR_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
+ENTRYPOINT exec java ${ENV_JAVA_MODULES_FOR_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
 
 # Entry using fabric8's run-java.sh
-ENTRYPOINT JAVA_OPTIONS="${JAVA_OPTS} ${ENV_JAVA_MODULES_FOR_HAZELCAST}" \
-           JAVA_APP_DIR=/app \
-           JAVA_CLASSPATH=/app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* \
-           JAVA_MAIN_CLASS=${ENV_JAVA_MAIN_CLASS} \
-           /app/run-java.sh
+#ENTRYPOINT JAVA_OPTIONS="${JAVA_OPTS} ${ENV_JAVA_MODULES_FOR_HAZELCAST}" \
+#           JAVA_APP_DIR=/app \
+#           JAVA_CLASSPATH=/app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* \
+#           JAVA_MAIN_CLASS=${ENV_JAVA_MAIN_CLASS} \
+#           /app/run-java.sh

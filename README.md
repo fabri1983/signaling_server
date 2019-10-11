@@ -332,7 +332,7 @@ _Sometimes websocket (js side) is throwing an exception and can't connect via we
 This is a working test of the Signaling Server and the videochat client using a Chrome tab on my laptop and an Opera tab on my mobile phone. 
 Server exposed with [ngrok](https://ngrok.com/).
 
-![videochat with local signaling](/videochat_example_ngrok.jpg?raw=true "videochat with local signaling")
+![videochat with local signaling](videochat_example_ngrok.jpg?raw=true "videochat with local signaling")
 
 
 
@@ -380,7 +380,7 @@ Script **docker-build.<bat|sh>** is moved to `target` folder after repackage is 
 It decompress the war file and creates the multi layer Docker image.  
 Keep an eye on the context size sent to Docker's context:
 ```bash
-Sending build context to Docker daemon  35.21MB   (this is the size with hazelcast libs)
+Sending build context to Docker daemon  35.21MB   (this is the size with all libs)
 ```  
 Once the image build finishes use next command to check layers size:
 ```bash
