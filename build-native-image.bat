@@ -56,7 +56,6 @@ call %GRAALVM_HOME%\bin\native-image ^
   --no-fallback ^
   --allow-incomplete-classpath ^
   --report-unsupported-elements-at-runtime ^
-  -Dio.netty.noUnsafe=true ^
   -DremoveUnusedAutoconfig=true ^
   --initialize-at-build-time=org.eclipse.jdt,org.apache.el.parser.SimpleNode,javax.servlet.jsp.JspFactory,org.apache.jasper.servlet.JasperInitializer,org.apache.jasper.runtime.JspFactoryImpl ^
   -H:+JNI ^
