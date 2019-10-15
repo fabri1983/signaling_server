@@ -14,11 +14,11 @@ GOTO ACTION
 
 :NO_ARGS
 ECHO No arguments supplied. You need to specify war final name (without .war) and tag name
-GOTO DONE
+GOTO FAILED
 
 :WRONG_ARGS
 ECHO Wrong number of arguments. You need to specify war final name (without .war) and tag name
-GOTO DONE
+GOTO FAILED
 
 :ACTION
 
@@ -53,12 +53,17 @@ docker image build ^
 if %ERRORLEVEL% == 0 (
 	ECHO -----------------------------
 	ECHO Finished!
-	ECHO ----------------------------- 
+	ECHO -----------------------------
+	GOTO SUCCESS
 ) ELSE (
 	ECHO -----------------------------
-	ECHO Failed!
-	ECHO ----------------------------- 
+	ECHO There was a problem!
+	ECHO -----------------------------
+	GOTO FAILED
 )
 
-:DONE
-EXIT /b
+:FAILED
+EXIT /b 1
+
+:SUCCESS
+EXIT /b 0

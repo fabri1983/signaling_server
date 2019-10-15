@@ -36,8 +36,10 @@ if [[ $? -eq 0 ]] ; then
 	echo -----------------------------
 	echo Finished!
 	echo -----------------------------
+	exit 0
 else
 	echo -----------------------------
-	echo Failed!
+	echo There was a problem!
 	echo -----------------------------
+	exit 1
 fi

@@ -1,6 +1,6 @@
 
 ######################################################################################################
-FROM azul/zulu-openjdk-alpine:12 AS STAGING-OPENJDK12-MINI
+FROM azul/zulu-openjdk-alpine:12 AS STAGING-JRE-MINI
 
 # At this point JAVA_HOME refers to:
 #   adoptopenjdk: /opt/java/openjdk
@@ -58,7 +58,7 @@ ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS} \
 ENV PATH=$PATH:$JAVA_HOME/bin
 
 # Copy JRE mini runtime from previous stage
-COPY --from=STAGING-OPENJDK12-MINI $JAVA_HOME/customjre $JAVA_HOME
+COPY --from=STAGING-JRE-MINI $JAVA_HOME/customjre $JAVA_HOME
 
 # Copy staged decompressed WAR from previous stage
 COPY --from=STAGING-WAR /staging/app  /app

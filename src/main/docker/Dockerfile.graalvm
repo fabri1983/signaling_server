@@ -3,7 +3,7 @@
 # Produced json files must be located later at <...>/META-INF/native-image folder in the Signaling project. 
  
 ######################################################################################################
-FROM oracle/graalvm-ce:19.2.0 AS STAGING-WAR
+FROM oracle/graalvm-ce:19.2.0.1 AS STAGING-WAR
 ARG DEPENDENCIES=docker-workdir
 
 RUN mkdir -p /staging/app/
@@ -19,7 +19,7 @@ COPY ${DEPENDENCIES}/videochat.html       /staging/app/
 
 
 ######################################################################################################
-FROM oracle/graalvm-ce:19.2.0
+FROM oracle/graalvm-ce:19.2.0.1
 ARG JAVA_MAIN_CLASS
 
 ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS}

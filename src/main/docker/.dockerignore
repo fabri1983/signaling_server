@@ -8,6 +8,7 @@ maven-archiver
 maven-status
 protoc-dependencies
 protoc-plugins
+site
 surefire-reports
 test-classes
 jacoco*
