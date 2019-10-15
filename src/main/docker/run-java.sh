@@ -1,4 +1,5 @@
 #!/bin/sh
+#
 # ===================================================================================
 # Generic startup script for running arbitrary Java applications with
 # being optimized for running in containers

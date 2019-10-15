@@ -64,11 +64,11 @@ COPY --from=STAGING-OPENJDK12-MINI $JAVA_HOME/customjre $JAVA_HOME
 COPY --from=STAGING-WAR /staging/app  /app
 
 # Entry with exec so jvm flags are correctly gathered
-ENTRYPOINT exec java ${ENV_JAVA_MODULES_FOR_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
+#ENTRYPOINT exec java ${ENV_JAVA_MODULES_FOR_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
 
 # Entry using fabric8's run-java.sh
-#ENTRYPOINT JAVA_OPTIONS="${JAVA_OPTS} ${ENV_JAVA_MODULES_FOR_HAZELCAST}" \
-#           JAVA_APP_DIR=/app \
-#           JAVA_CLASSPATH=/app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* \
-#           JAVA_MAIN_CLASS=${ENV_JAVA_MAIN_CLASS} \
-#           /app/run-java.sh
+ENTRYPOINT JAVA_OPTIONS="${JAVA_OPTS} ${ENV_JAVA_MODULES_FOR_HAZELCAST}" \
+           JAVA_APP_DIR=/app \
+           JAVA_CLASSPATH=/app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* \
+           JAVA_MAIN_CLASS=${ENV_JAVA_MAIN_CLASS} \
+           /app/run-java.sh

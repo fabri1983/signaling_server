@@ -1,6 +1,6 @@
 # This dockerfile intended to run the Signaling Server under GraalVM with an agentlib for 
-# produce native image configuraiton files for later usage on a native image build.
-# Produced json files must be located later at .../META-INF/native-image folder in the Signaling project. 
+# produce native image configuration files for later usage on a native image build.
+# Produced json files must be located later at <...>/META-INF/native-image folder in the Signaling project. 
  
 ######################################################################################################
 FROM oracle/graalvm-ce:19.2.0 AS STAGING-WAR
@@ -30,4 +30,5 @@ RUN gu install native-image
 COPY --from=STAGING-WAR /staging/app  /app
 
 # Entry with exec so jvm flags are correctly gathered
-ENTRYPOINT exec java -agentlib:native-image-agent=config-merge-dir=/app/META-INF/native-image -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
+ENTRYPOINT exec java -agentlib:native-image-agent=config-merge-dir=/app/META-INF/native-image \
+   -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
