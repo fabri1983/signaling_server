@@ -43,6 +43,8 @@
 		<signaling.path>/signaling/v1/s</signaling.path>
 		<signaling.insecure.path>/signaling/v1/s-insecure</signaling.insecure.path>
 		<api.rest.videochat.room.url>https://127.0.0.1:8443/v1/users/videochat/room</api.rest.videochat.room.url>
+		
+		<dependency.check.maven.version>5.2.2</dependency.check.maven.version>
 	</properties>
 	
 	<dependencies>
@@ -184,6 +186,39 @@
 				<script.extension>.sh</script.extension>
 				<skip.chmod>false</skip.chmod>
 			</properties>
+		</profile>
+		<!-- OWASP security checker for project dependencies -->
+		<profile>
+			<id>securitycheck</id>
+			<dependencies>
+				<!-- OWASP dependency checker -->
+				<dependency>
+					<groupId>org.owasp</groupId>
+					<artifactId>dependency-check-maven</artifactId>
+					<version>${dependency.check.maven.version}</version>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.owasp</groupId>
+						<artifactId>dependency-check-maven</artifactId>
+						<version>${dependency.check.maven.version}</version>
+						<configuration>
+							<suppressionFiles>
+								<!--suppressionFile>suppressed.xml</suppressionFile-->
+							</suppressionFiles>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 	

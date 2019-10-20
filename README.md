@@ -480,6 +480,13 @@ Linux
 ```
 
 
+## OWASP Dependency Checker
+Run next command to check if any dependency has a security risk according the Maven plugin *dependency-checker* from **OWASP**:  
+```sh
+mvn verify -P local,eventbus-hazelcast,securitycheck -Dskip.docker.build=true
+```
+
+
 ## TODO
 - Currently hazelcast configuration uses multicast for service discovery. Add different solutions: 
 https://hazelcast.com/blog/hazelcast-auto-discovery-with-eureka/
