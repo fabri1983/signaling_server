@@ -18,6 +18,7 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>12</java.version> <!-- overrides value from Spring Boot's defaults -->
 		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>12</maven.compiler.target>
@@ -25,7 +26,7 @@
 		
 		<!-- default flag values -->
 		<skip.docker.build>false</skip.docker.build>
-		<skip.proguard>true</skip.proguard>
+		<proguard.skip>true</proguard.skip>
 		
 		<!-- Signaling Server -->
 		<start-class>org.fabri1983.signaling.entrypoint.SignalingEntryPoint</start-class>
@@ -325,7 +326,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<skip>${skip.proguard}</skip>
+					<skip>${proguard.skip}</skip>
 					<proguardVersion>6.1.1</proguardVersion>
 					<proguardInclude>${basedir}/proguard.conf</proguardInclude>
 					<outputDirectory>${project.build.directory}</outputDirectory>
@@ -340,7 +341,7 @@
 					<dependency>
 						<groupId>net.sf.proguard</groupId>
 						<artifactId>proguard-base</artifactId>
-						<version>6.1.1</version>
+						<version>6.2.0</version>
 						<scope>runtime</scope>
 					</dependency>
 				</dependencies>
