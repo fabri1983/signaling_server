@@ -13,6 +13,7 @@ It is cluster aware by using a distributed event bus backed by *Hazelcast* with 
 
 
 - Uses Maven 3.6.x. You can use `mvnw` if you don't have Maven installed in your host.
+- Uses Spring Boot 2.2.0.RELEASE.
 - After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
 If not Docker installed then use `-Dskip.docker.build=true` to skip the docker build.
 - Runs on **Java 12**. If you want to use **Java 8** then you need to:
@@ -24,7 +25,7 @@ If not Docker installed then use `-Dskip.docker.build=true` to skip the docker b
 	- edit *pom.xml* `<properties>` section:
 		- change `<java.version>` and `<maven.compiler.target>`
 		- remove `<maven.compiler.release>`
-- Native image generation using GraalVM: currently struggling with *Spring Boot 2.2.0.RC1* and *Spring Graal Native* plugin to correctly create a native image.
+- Native image generation using GraalVM: currently struggling with *Spring Graal Native* plugin to correctly create a native image.
 
 
 ## Create self signed certificate (no chain ca, no SAN -Subject Alternative Names-)
@@ -307,7 +308,8 @@ See **NextRTC Video Chat exmaple** section.
 	```
 - Edit *application.properties* accordingly. Be aware *server.port* value is *8443*.
 - Run:
-	- `mvn clean package && java -jar target/signaling.war`
+	- `mvn clean package`
+	- `java -jar target/signaling.war`
 	
 #### Access
 - From your client app access it via:
@@ -432,34 +434,6 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 (**NOTE**: work in progress due to logback logging api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time generation phase)
 - You first need to build the signaling project and generate the WAR artifact targeting Java 8, and change Spring Boot version.
   - Update `pom.xml` modifying properties accordingly to build targeting Java 8 (see instructions at the top of this document).
-  - Update `pom.xml` modifying Spring Boot version to 2.2.0.RC1.
-  - Update `pom.xml` adding repositories:
-  ```xml
-	<repositories>
-		<repository>
-			<id>repository.spring.milestone</id>
-			<name>Spring Milestone Repository</name>
-			<url>http://repo.spring.io/milestone</url>
-		</repository>
-		<repository>
-			<id>repository.spring.snapshot</id> 
-			<name>Spring Snapshot Repository</name> 
-			<url>http://repo.spring.io/snapshot</url> 
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones Libs</name>
-			<url>https://repo.spring.io/libs-milestone</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots Libs</name>
-			<url>https://repo.spring.io/libs-snapshot</url>
-		</pluginRepository>
-	</pluginRepositories>
-  ```
   - Build package:
   `mvn clean package -P local,eventbus-hazelcast -Dskip.docker.build=true`
 - Locate at project root dir and download the [Spring-Graal-Native-Image](https://github.com/spring-projects-experimental/spring-graal-native.git) project:  
