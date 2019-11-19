@@ -31,20 +31,18 @@ RUN mkdir -p /staging/app/
 COPY ${DEPENDENCIES}/js                   /staging/app/js
 COPY ${DEPENDENCIES}/META-INF             /staging/app/META-INF
 COPY ${DEPENDENCIES}/WEB-INF              /staging/app/WEB-INF
-COPY ${DEPENDENCIES}/callTo.html          /staging/app/
-COPY ${DEPENDENCIES}/general-error.jsp    /staging/app/
-COPY ${DEPENDENCIES}/index.html           /staging/app/
-COPY ${DEPENDENCIES}/videochat.html       /staging/app/
-
-# Stage fabric8's run-java.sh
-COPY ${DEPENDENCIES}/run-java.sh          /staging/app/
+COPY ${DEPENDENCIES}/callTo.html \
+     ${DEPENDENCIES}/general-error.jsp \
+     ${DEPENDENCIES}/index.html \
+     ${DEPENDENCIES}/videochat.html \
+     ${DEPENDENCIES}/run-java.sh          /staging/app/
 
 # Assign execution permission to fabric8's run-java.sh script
 RUN chmod 755 /staging/app/run-java.sh
 
 
 ######################################################################################################
-FROM alpine:latest
+FROM alpine:3.10.3
 ARG JAVA_MAIN_CLASS
 
 # JAVA_HOME needs to be set:
@@ -64,11 +62,11 @@ COPY --from=STAGING-JRE-MINI $JAVA_HOME/customjre $JAVA_HOME
 COPY --from=STAGING-WAR /staging/app  /app
 
 # Entry with exec so jvm flags are correctly gathered
-#ENTRYPOINT exec java ${ENV_JAVA_MODULES_FOR_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
+ENTRYPOINT exec java ${ENV_JAVA_MODULES_FOR_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
 
 # Entry using fabric8's run-java.sh
-ENTRYPOINT JAVA_OPTIONS="${JAVA_OPTS} ${ENV_JAVA_MODULES_FOR_HAZELCAST}" \
-           JAVA_APP_DIR=/app \
-           JAVA_CLASSPATH=/app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* \
-           JAVA_MAIN_CLASS=${ENV_JAVA_MAIN_CLASS} \
-           /app/run-java.sh
+#ENTRYPOINT JAVA_OPTIONS="${JAVA_OPTS} ${ENV_JAVA_MODULES_FOR_HAZELCAST}" \
+#           JAVA_APP_DIR=/app \
+#           JAVA_CLASSPATH=/app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* \
+#           JAVA_MAIN_CLASS=${ENV_JAVA_MAIN_CLASS} \
+#           /app/run-java.sh

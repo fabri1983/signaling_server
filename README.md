@@ -382,7 +382,7 @@ Script **docker-build.<bat|sh>** is moved to `target` folder after repackage is 
 It decompress the war file and creates the multi layer Docker image.  
 Keep an eye on the context size sent to Docker's context:
 ```bash
-Sending build context to Docker daemon  35.21MB   (this is the size with all libs)
+Sending build context to Docker daemon  36.07MB   (this is the size with all libs)
 ```  
 Once the image build finishes use next command to check layers size:
 ```bash
