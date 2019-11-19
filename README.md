@@ -265,7 +265,7 @@ Add next plugin on *build* section:
 See **NextRTC Video Chat exmaple** section.
 
 
-## Spring Boot standalone jar:
+## Spring Boot Standalone WAR:
 
 #### Maven pom and Spring Bean Configuration setup
 - On *pom.xml*:
@@ -313,9 +313,9 @@ See **NextRTC Video Chat exmaple** section.
 	
 #### Access
 - From your client app access it via:
-	- [wss://127.0.0.1:8443/signaling/v1/s-insecure](wss://127.0.0.1:8443/signaling/v1/s-insecure)
+	- [wss://127.0.0.1:8443/signaling/v1/s-insecure](wss://127.0.0.1:8443/signaling/v1/s-insecure)  
 - Or the secured endpoint which after HTTP Upgrade to Websocket it expects and validates headers *vcuser* and *vctoken*:
-	- [wss://127.0.0.1:8443/signaling/v1/s](wss://127.0.0.1:8443/signaling/v1/s)
+	- [wss://127.0.0.1:8443/signaling/v1/s](wss://127.0.0.1:8443/signaling/v1/s)  
 See **NextRTC Video Chat exmaple** section.
 
 
