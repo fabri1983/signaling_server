@@ -16,7 +16,7 @@ It is cluster aware by using a distributed event bus backed by *Hazelcast* with 
 - Uses Spring Boot 2.2.0.RELEASE.
 - After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
 If not Docker installed then use `-Dskip.docker.build=true` to skip the docker build.
-- Runs on **Java 12**. If you want to use **Java 8** then you need to:
+- Runs on **Java 11**. If you want to use **Java 8** then you need to:
 	- change [Dockerfile](src/main/docker/Dockerfile):
 		- remove intermediate stage STAGING-OPENJDK12-MINI
 		- in the final stage use adoptopenjdk/openjdk8:alpine-jre instead of alpine:3.10
@@ -432,7 +432,7 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 
 ## Native Image generation with GraalVM
 (**NOTE**: work in progress due to logback logging api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time generation phase)
-- You first need to build the signaling project and generate the WAR artifact targeting Java 8, and change Spring Boot version.
+- You first need to build the signaling project and generate the WAR artifact targeting Java 8 or Java 11.
   - Update `pom.xml` modifying properties accordingly to build targeting Java 8 (see instructions at the top of this document).
   - Build package:
   `mvn clean package -P local,eventbus-hazelcast -Dskip.docker.build=true`

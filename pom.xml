@@ -19,10 +19,10 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>12</java.version> <!-- overrides value from Spring Boot's defaults -->
+		<java.version>11</java.version> <!-- overrides value from Spring Boot's defaults -->
 		<maven.compiler.source>8</maven.compiler.source>
-		<maven.compiler.target>12</maven.compiler.target>
-		<maven.compiler.release>12</maven.compiler.release>
+		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.release>11</maven.compiler.release>
 		
 		<!-- default flag values -->
 		<skip.docker.build>false</skip.docker.build>
