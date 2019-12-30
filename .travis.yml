@@ -1,27 +1,33 @@
+sudo: false
 language: java
 
 jdk:
   - openjdk11
 
-# whitelist branches
 branches:
   only:
     - master
 
-# overrides travis 'install' step
-# this installs dependencies. Using default profile
+cache:
+  directories:
+    - $HOME/.m2
+
+# Overrides travis 'install' step.
+# This installs dependencies.
 install:
   - java -version
-  - /usr/local/maven/bin/mvn --version
-  - sudo /usr/local/maven/bin/mvn --batch-mode clean install -P local,eventbus-local -Dskip.docker.build=true
+  - mvn --version
+  - mvn --batch-mode clean compile -P local,eventbus-local -Dskip.docker.build=true
 
 # overrides travis 'script' step
 script:
-  - sudo /usr/local/maven/bin/mvn --batch-mode clean package -P local,eventbus-local -Dskip.docker.build=true
+  - mvn --batch-mode clean package -P local,eventbus-local -Dskip.docker.build=true
 
 after_success:
   # using environment variable $repo_token set in travis web site
-  - sudo /usr/local/maven/bin/mvn clean test -P local,eventbus-local jacoco:report coveralls:report -DrepoToken=$repo_token -Dskip.docker.build=true
+  - mvn clean test jacoco:report coveralls:report -P local,eventbus-local -DrepoToken=$repo_token -Dskip.docker.build=true
   
 notifications:
-  email: false
+  email:
+    on_success: never
+    on_failure: always
