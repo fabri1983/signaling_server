@@ -49,6 +49,7 @@ echo :::::::: Compiling with graal native-image
 call %GRAALVM_HOME%\bin\native-image ^
   -J-Xmx6000m ^
   --static ^
+  -H:Optimize=2 ^
   -H:+ReportExceptionStackTraces ^
   -H:+TraceClassInitialization ^
   -H:IncludeResources=".*/*.properties|.*/*.jks|.*/*.key|.*/*.xml|.*/*.js|.*/*.html|.*/*.jsp" ^
