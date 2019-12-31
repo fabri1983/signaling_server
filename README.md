@@ -16,15 +16,7 @@ It is cluster aware by using a distributed event bus backed by *Hazelcast* with 
 - Uses Spring Boot 2.2.0.RELEASE.
 - After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
 If not Docker installed then use `-Dskip.docker.build=true` to skip the docker build.
-- Runs on **Java 11**. If you want to use **Java 8** then you need to:
-	- change [Dockerfile](src/main/docker/Dockerfile):
-		- remove intermediate stage STAGING-OPENJDK12-MINI
-		- in the final stage use adoptopenjdk/openjdk8:alpine-jre instead of alpine:3.10
-		- in the final stage remove the download of apks for Java 12 and the `COPY` command of custom jre
-		- in the final stage remove any use of ${ENV_JAVA_MODULES_FOR_HAZELCAST}
-	- edit *pom.xml* `<properties>` section:
-		- change `<java.version>` and `<maven.compiler.target>`
-		- remove `<maven.compiler.release>`
+- Runs on **Java 11** (default profile is *java11*). If you want to use **Java 8** then you need to use maven profile *java8*. 
 - Native image generation using GraalVM: currently struggling with *Spring Graal Native* plugin to correctly create a native image.
 
 
@@ -118,14 +110,25 @@ openssl rsa -in jwt_local_private.key -pubout -outform DER -out jwt_local_public
 ## Maven Profiles
 **Profiles**  
 - `local` (active by default)  
-Set JWT's signer and verifier private and public keys.
+Sets JWT's signer and verifier private and public keys.
+
+- `java11` (active by default)  
+Sets compiler target to **Java 11** and also uses Dockerfile.java11 file for image generation.
+
+- `java8`    
+Sets compiler target to **Java 8** and also uses Dockerfile.java8 file for image generation.
 
 **Additional profiles**  
 - `eventbus-local` (active by default)  
 - `eventbus-hazelcast`  
-Remove/add additional dependencies and disable/enable a Spring profile which allow the use of a distributed eventbus.
+Removes/adds additional dependencies and disables/enables a Spring profile which allows the use of a distributed eventbus.
 When using *eventbus-local* some dependencies are removed and the beans defined in `DistributedSignalingConfiguration` are not created.
-When using *eventbus-hazelcast* the opposite occurs.
+When using *eventbus-hazelcast* the opposite occurs.  
+  
+Example:  
+```sh
+mvn clean package -P local,eventbus-hazelcast,java11
+```
 
 
 ## Build WAR file to deploy in Tomcat (external or with Cargo plugin)
@@ -185,7 +188,7 @@ When using *eventbus-hazelcast* the opposite occurs.
 - Configure Dynamic Web project: *Properties -> Project Facets*
 - Set context root to **signaling**: 
 	- *Properties -> Web Project Settings*
-- Active profiles: using `ALT+SHIFT+P` select *local* and *eventbus-local* profiles.
+- Active profiles: using `ALT+SHIFT+P` select *local*, *eventbus-local*, *java11* profiles.
 - Build project: `CTRL+B`
 
 #### Deploy on external Tomcat installation
@@ -338,9 +341,9 @@ Server exposed with [ngrok](https://ngrok.com/).
 
 
 
-## jdeps on a Spring Boot fat WAR file
+## jdeps on a Spring Boot Fat WAR file
 
-Use `jdeps` to know which java modules the final application needs to run. Note that we are using `--multi-release=12`.
+Use `jdeps` to know which java modules the final application needs to run. Note that we are using `--multi-release=11`.
 
 - *NOTE*: *this guide is only valid for Spring Boot fat WAR due to internal WAR structure. For a fat JAR package you will need to make some adjustments.*
 
@@ -348,7 +351,7 @@ Use `jdeps` to know which java modules the final application needs to run. Note 
 ```bash
 mkdir target\docker-workdir
 cd target\docker-workdir && jar -xf ..\signaling.war && cd ..\..
-jdeps --add-modules=ALL-MODULE-PATH --ignore-missing-deps --multi-release=12 --print-module-deps ^
+jdeps --add-modules=ALL-MODULE-PATH --ignore-missing-deps --multi-release=11 --print-module-deps ^
   -cp target\docker-workdir\WEB-INF\lib\*;target\docker-workdir\WEB-INF\lib-provided\* target\docker-workdir\WEB-INF\classes
 ```
 
@@ -356,7 +359,7 @@ jdeps --add-modules=ALL-MODULE-PATH --ignore-missing-deps --multi-release=12 --p
 ```bash
 mkdir target\docker-workdir
 cd target\docker-workdir && jar -xf ..\signaling.war && cd ..\..
-jdeps --add-modules=ALL-MODULE-PATH --ignore-missing-deps --multi-release=12 --print-module-deps \
+jdeps --add-modules=ALL-MODULE-PATH --ignore-missing-deps --multi-release=11 --print-module-deps \
   -cp target/docker-workdir/WEB-INF/lib/*;target/docker-workdir/WEB-INF/lib-provided/* target/docker-workdir/WEB-INF/classes
 ```
 
@@ -368,15 +371,15 @@ java.base,java.compiler,java.desktop,java.instrument,java.management.rmi,java.na
 
 ## Run with Docker and test Distributed Event Bus with Hazelcast
 
-- *NOTE*: this guide is only valid for Spring Boot fat WAR due to internal WAR structure.
+- *NOTE*: this guide is only valid for Spring Boot Fat WAR due to internal WAR structure.
 
-- First pack the Signaling Server in a fat war using Spring Boot maven plugin:
+- First pack the Signaling Server in a Fat WAR artifact using Spring Boot maven plugin:
 ```bash
-mvn clean package -P local,eventbus-hazelcast
+mvn clean package -P local,eventbus-hazelcast,java11
 ```
 
 - **Create a multi layer Docker image for Spring Boot app**:
-In order to take advantage of less frequency changes the [Dockerfile](src/main/docker/Dockerfile) defines a multi layer image, 
+In order to take advantage of less frequency changes the [Dockerfile.java11](src/main/docker/Dockerfile.java11) defines a multi layer image, 
 so next time image build is fired it only updates application code.  
 Script **docker-build.<bat|sh>** is moved to `target` folder after repackage is done.  
 It decompress the war file and creates the multi layer Docker image.  
@@ -431,11 +434,9 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
     ```
 
 ## Native Image generation with GraalVM
-(**NOTE**: work in progress due to logback logging api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time generation phase)
-- You first need to build the signaling project and generate the WAR artifact targeting Java 8 or Java 11.
-  - Update `pom.xml` modifying properties accordingly to build targeting Java 8 (see instructions at the top of this document).
-  - Build package:
-  `mvn clean package -P local,eventbus-hazelcast -Dskip.docker.build=true`
+**NOTE**: work in progress due to logback logging api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time generation phase.
+- You first need to build the signaling project and generate the WAR artifact targeting *java8* or *java11*.
+  - `mvn clean package -P local,eventbus-hazelcast,java8 -Dskip.docker.build=true`
 - Locate at project root dir and download the [Spring-Graal-Native-Image](https://github.com/spring-projects-experimental/spring-graal-native.git) project:  
 (Next scripts will clone it under target folder)
 ```bash
@@ -445,7 +446,8 @@ Linux
   clone-spring-graal-native.sh
 ```
 - Apply modifications in downloaded project as indicated in file `native-image-missing-features.txt`.
-- Generate native image from WAR artifact (**you will need 6GB of free memory!**):
+- Generate native image from WAR artifact (**you will need 6GB of free memory!**):  
+**Note** that Signaling WAR file contains `META-INF/native-image/org.fabri1983.signaling/native-image.properties` with all the options/flags.
 ```bash
 Windows:
   build-native-image.bat
@@ -457,7 +459,7 @@ Linux
 ## OWASP Dependency Checker
 Run next command to check if any dependency has a security risk according the Maven plugin *dependency-checker* from **OWASP**:  
 ```sh
-mvn verify -P local,eventbus-hazelcast,securitycheck -Dskip.docker.build=true
+mvn verify -P local,eventbus-hazelcast,java11,securitycheck -Dskip.docker.build=true
 ```
 
 

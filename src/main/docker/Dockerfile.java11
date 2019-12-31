@@ -1,12 +1,12 @@
 
 ######################################################################################################
-FROM azul/zulu-openjdk-alpine:12 AS STAGING-JRE-MINI
+FROM azul/zulu-openjdk-alpine:11 AS STAGING-JRE-MINI
 
 # At this point JAVA_HOME refers to:
 #   adoptopenjdk: /opt/java/openjdk
 #   zulu: /usr/lib/jvm/zulu-12
 
-# Build a smaller Java 12 JRE
+# Build a smaller Java 11 JRE
 RUN jlink \
      --module-path ${JAVA_HOME}/jmods \
      --compress=2 \
@@ -22,7 +22,7 @@ RUN jlink \
     
 
 ######################################################################################################
-FROM alpine:latest AS STAGING-WAR
+FROM alpine:3.10.3 AS STAGING-WAR
 ARG DEPENDENCIES=docker-workdir
 
 RUN mkdir -p /staging/app/
@@ -47,10 +47,10 @@ ARG JAVA_MAIN_CLASS
 
 # JAVA_HOME needs to be set:
 #   adoptopenjdk: /opt/java/openjdk
-#   zulu: /usr/lib/jvm/zulu-12
+#   zulu: /usr/lib/jvm/zulu-11  or zulu11-ca
 
 ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS} \
-    JAVA_HOME=/usr/lib/jvm/zulu-12 \
+    JAVA_HOME=/usr/lib/jvm/zulu-11 \
     ENV_JAVA_MODULES_FOR_HAZELCAST="--add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED"
 
 ENV PATH=$PATH:$JAVA_HOME/bin

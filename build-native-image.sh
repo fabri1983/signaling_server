@@ -39,30 +39,13 @@ export CP=$CP:../spring-graal-native/spring-graal-native-feature/target/spring-g
 
 # compile with graal native-image
 echo :::::::: Compiling with graal native-image
-$GRAALVM_HOME/bin/native-image \
-  -J-Xmx6000m \
-  --static \
-  -H:Optimize=2 \
-  -H:+ReportExceptionStackTraces \
-  -H:+TraceClassInitialization \
-  -H:IncludeResources=".*/*.properties|.*/*.jks|.*/*.key|.*/*.xml|.*/*.js|.*/*.html|.*/*.jsp" \
-  -H:IncludeResourceBundles=javax.servlet.http.LocalStrings \
-  --no-fallback \
-  --allow-incomplete-classpath \
-  --report-unsupported-elements-at-runtime \
-  -DremoveUnusedAutoconfig=true \
-  --initialize-at-build-time=org.eclipse.jdt,org.apache.el.parser.SimpleNode,javax.servlet.jsp.JspFactory,org.apache.jasper.servlet.JasperInitializer,org.apache.jasper.runtime.JspFactoryImpl \
-  -H:+JNI \
-  -H:EnableURLProtocols=http,https,jar \
-  -H:ReflectionConfigurationFiles=../../tomcat-reflection.json \
-  -H:ResourceConfigurationFiles=../../tomcat-resource.json \
-  -H:JNIConfigurationFiles=../../tomcat-jni.json \
-  --enable-https \
-  -Dsun.rmi.transport.tcp.maxConnectionThreads=0 \
+$GRAALVM_HOME/bin/native-image --no-server \
   -H:Name=$IMAGE_NAME \
   -cp $CP -jar ../$WAR
 #  -cp $CP org.fabri1983.signaling.entrypoint.SignalingEntryPoint
-  
+
+$GRAALVM_HOME/bin/native-image --server-shutdown
+
 if [[ $? -eq 0 ]] ; then
 	echo :::::::: Native image located at target/graal-build/
 else

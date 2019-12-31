@@ -17,16 +17,16 @@ cache:
 install:
   - java -version
   - mvn --version
-  - mvn --batch-mode clean compile -P local,eventbus-local -Dskip.docker.build=true
+  - mvn --batch-mode clean compile -P local,eventbus-local,java11 -Dskip.docker.build=true
 
 # overrides travis 'script' step
 script:
-  - mvn --batch-mode clean package -P local,eventbus-local -Dskip.docker.build=true
+  - mvn --batch-mode clean package -P local,eventbus-local,java11 -Dskip.docker.build=true
 
 after_success:
   # using environment variable $repo_token set in travis web site
-  - mvn clean test jacoco:report coveralls:report -P local,eventbus-local -DrepoToken=$repo_token -Dskip.docker.build=true
-  
+  - mvn clean test jacoco:report coveralls:report -P local,eventbus-local,java11 -DrepoToken=$repo_token -Dskip.docker.build=true
+
 notifications:
   email:
     on_success: never
