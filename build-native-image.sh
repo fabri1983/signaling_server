@@ -15,7 +15,6 @@ mvn clean package
 cd ../../..
 
 export WAR="signaling.war"
-export IMAGE_NAME="signaling"
 
 # decompress war file to get a classpath with jars and classes
 echo :::::::: Decompressing $WAR file to build a classpath with jars and classes
@@ -40,7 +39,7 @@ export CP=$CP:../spring-graal-native/spring-graal-native-feature/target/spring-g
 # compile with graal native-image
 echo :::::::: Compiling with graal native-image
 $GRAALVM_HOME/bin/native-image --no-server \
-  -H:Name=$IMAGE_NAME \
+  --verbose \
   -cp $CP -jar ../$WAR
 #  -cp $CP org.fabri1983.signaling.entrypoint.SignalingEntryPoint
 

@@ -434,8 +434,9 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
     ```
 
 ## Native Image generation with GraalVM
-**NOTE**: work in progress due to logback logging api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time generation phase.
-- You first need to build the signaling project and generate the WAR artifact targeting *java8* or *java11*.
+**NOTE**: work in progress due to logback logging api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time generation phase.  
+**NOTE**: currently trying to make it work with graalvm native-image 19.3.0.2.  
+- You first need to build the signaling project and generate the WAR artifact for *java8* or *java11* depending on what graalvm installation you are targeting.
   - `mvn clean package -P local,eventbus-hazelcast,java8 -Dskip.docker.build=true`
 - Locate at project root dir and download the [Spring-Graal-Native-Image](https://github.com/spring-projects-experimental/spring-graal-native.git) project:  
 (Next scripts will clone it under target folder)

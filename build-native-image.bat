@@ -15,7 +15,6 @@ call mvn clean package
 cd ..\..\..
 
 set WAR=signaling.war
-set IMAGE_NAME=signaling
 
 :: decompress war file to get a classpath with jars and classes
 echo :::::::: Decompressing %WAR% file to build a classpath with jars and classes
@@ -24,7 +23,7 @@ mkdir target\graal-build
 cd target\graal-build
 jar -xf ..\%WAR%
 xcopy /E /Q /Y /S META-INF\* WEB-INF\classes\META-INF\
- 
+
 :: build classpath with all jars and classes
 cd WEB-INF\classes
 set LIBPATH_1=
@@ -47,7 +46,7 @@ set CP=%CP%;%FEATURES_JAR%
 :: compile with graal native-image
 echo :::::::: Compiling with graal native-image
 call %GRAALVM_HOME%\bin\native-image ^
-  -H:Name=%IMAGE_NAME% ^
+  --verbose ^
   -cp %CP% -jar ..\%WAR%
 ::  -cp %CP% org.fabri1983.signaling.entrypoint.SignalingEntryPoint
 
