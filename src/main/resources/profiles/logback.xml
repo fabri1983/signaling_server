@@ -13,7 +13,7 @@
 	</appender>
 
 	<appender name="FILE"
-		class="org.fabri1983.signaling.util.GraalFriendlyRollingFileAppender">
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- Daily rollover -->
 			<fileNamePattern>logs/signaling-%d{yyyyMMdd}.log</fileNamePattern>
