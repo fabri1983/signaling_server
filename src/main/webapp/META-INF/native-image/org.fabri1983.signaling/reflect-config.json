@@ -1,38 +1,4 @@
-You need to change the feature files coming with the source code of project spring-boot-graal-feature.
-NOTE: the content of this file was already passed to their respective files under src/main/webapp/META-INF/native-image/org.fabri1983.signaling/.
-
-Add at initialization.json:
-under "runtimeInitialization":
-	{"class": "com.hazelcast.instance.DefaultNodeExtension"},
-	{"class": "org.apache.logging.log4j.core.pattern.JAnsiTextRenderer"},
-under "buildTimeInitialization":
-	{"package": "org.hibernate.validator.internal.engine.messageinterpolation"},
-	{"package": "org.hibernate.validator.internal.engine.resolver"},
-	{"package": "ch.qos.logback.core.status"},
-	{"package": "javax.persistence"},
-	{"package": "org.codehaus.janino"},
-	{"package": "org.codehaus.commons"},
-	{"class": "org.springframework.validation.beanvalidation.LocaleContextMessageInterpolator"},
-	{"class": "org.apache.logging.slf4j.SLF4JLogger"},
-	{"class": "ch.qos.logback.core.rolling.RollingFileAppender"},
-	{"class": "ch.qos.logback.core.recovery.ResilientFileOutputStream"},
-	{"class": "ch.qos.logback.core.Appender"},
-	{"class": "ch.qos.logback.classic.AsyncAppender"},
-	{"class": "org.slf4j.Logger"},
-	{"class": "org.hibernate.validator.HibernateValidator"},
-
-Add at resources.json:
-under "resources":
-	{"pattern":"META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat"}, 
-	{"pattern":"META-INF/services/ch.qos.logback.classic.spi.Configurator"},
-	{"pattern":"META-INF/services/org.apache.logging.log4j.spi.Provider"}, 
-	{"pattern":"META-INF/services/org.apache.logging.log4j.util.PropertySource"}, 
-	{"pattern":"org/slf4j/impl/StaticLoggerBinder.class"},
-	{"pattern":"org.hibernate.validator.spi.resourceloading.ResourceBundleLocator"},
-
-
-Add at reflect.json
-	// vvv logback
+[
 	{
 		"name": "java.util.Locale",
 		"allDeclaredConstructors" : true,
@@ -685,4 +651,4 @@ Add at reflect.json
  		"allDeclaredConstructors": true,
 		"allDeclaredMethods": true
  	}
-	// ^^^ logback
+]

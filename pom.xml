@@ -27,7 +27,8 @@
 		
 		<!-- Signaling Server -->
 		<start-class>org.fabri1983.signaling.SignalingEntryPoint</start-class>
-		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml -->
+		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml and logback-no-file.xml -->
+		<logback.file>logback.xml</logback.file>
 		<spring.profiles.active>default</spring.profiles.active> <!-- default spring profile. Overridden by eventbus-<type> profiles -->
 		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it replaces Session dependency by custom Connection class -->
 		<auth0.jwt.version>3.8.1</auth0.jwt.version>
@@ -154,6 +155,12 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>native</id>
+			<properties>
+				<logback.file>logback-no-file.xml</logback.file>
+			</properties>
+		</profile>
+		<profile>
 			<id>eventbus-local</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -269,6 +276,18 @@
 				<artifactId>copy-rename-maven-plugin</artifactId>
 				<version>1.0.1</version>
 				<executions>
+					<!-- copy and rename logback xml file accordingly to target folder -->
+					<execution>
+						<id>rename-logback-xml-file</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<sourceFile>${project.basedir}/src/main/resources/profiles/${logback.file}</sourceFile>
+							<destinationFile>${project.build.outputDirectory}/logback.xml</destinationFile>
+						</configuration>
+					</execution>
 					<!-- copy jwt private and public keys to target folder -->
 					<execution>
 						<id>rename-file-jwt-private-key</id>
