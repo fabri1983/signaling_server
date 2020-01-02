@@ -1,4 +1,4 @@
-package org.fabri1983.signaling.entrypoint;
+package org.fabri1983.signaling;
 
 import java.io.PrintStream;
 

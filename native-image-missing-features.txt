@@ -9,22 +9,16 @@ under "buildTimeInitialization":
 	{"package": "org.hibernate.validator.internal.engine.resolver"},
 	{"package": "ch.qos.logback.core.status"},
 	{"package": "javax.persistence"},
+	{"package": "org.codehaus.janino"},
+	{"package": "org.codehaus.commons"},
 	{"class": "org.springframework.validation.beanvalidation.LocaleContextMessageInterpolator"},
-	{"class": "org.springframework.core.DecoratingProxy"},
 	{"class": "org.apache.logging.slf4j.SLF4JLogger"},
 	{"class": "ch.qos.logback.core.rolling.RollingFileAppender"},
 	{"class": "ch.qos.logback.core.recovery.ResilientFileOutputStream"},
 	{"class": "ch.qos.logback.core.Appender"},
 	{"class": "ch.qos.logback.core.Appender[]"},
 	{"class": "org.slf4j.Logger"},
-	{"class": "org.hibernate.validator.internal.util.logging.logger"},
 	{"class": "org.hibernate.validator.HibernateValidator"},
-	{"class": "java.io.FileDescriptor"},
-	{"class": "java.io.FileOutputStream"},
-	{"class": "java.io.ObjectInputStream"},
-	{"class": "java.lang.Object"},
-	{"class": "java.lang.Object[]"},
-	{"class": "java.util.ArrayList"},
 
 
 Add at proxies.json:
@@ -34,6 +28,7 @@ Add at proxies.json:
 Add at resources.json:
 under "resources":
 	{"pattern":"META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat"}, 
+	{"pattern":"META-INF/services/ch.qos.logback.classic.spi.Configurator"},
 	{"pattern":"META-INF/services/org.apache.logging.log4j.spi.Provider"}, 
 	{"pattern":"META-INF/services/org.apache.logging.log4j.util.PropertySource"}, 
 	{"pattern":"org/slf4j/impl/StaticLoggerBinder.class"},
@@ -44,15 +39,6 @@ Add at reflect.json
 	// vvv logback
 	{
 		"name": "java.util.Locale",
-		"allDeclaredConstructors" : true,
-		"allPublicConstructors" : true,
-		"allDeclaredMethods" : true,
-		"allPublicMethods" : true,
-		"allDeclaredFields" : true,
-		"allPublicFields" : true
-	},
-	{
-		"name": "java.io.FileDescriptor",
 		"allDeclaredConstructors" : true,
 		"allPublicConstructors" : true,
 		"allDeclaredMethods" : true,
@@ -97,15 +83,6 @@ Add at reflect.json
 		"allPublicFields" : true
 	},
 	{
-		"name": "org.hibernate.validator.internal.engine.ConfigurationImpl",
-		"allDeclaredConstructors" : true,
-		"allPublicConstructors" : true,
-		"allDeclaredMethods" : true,
-		"allPublicMethods" : true,
-		"allDeclaredFields" : true,
-		"allPublicFields" : true
-	},
-	{
 		"name": "org.hibernate.validator.internal.util.privilegedactions.GetMethod",
 		"allDeclaredConstructors" : true,
 		"allPublicConstructors" : true,
@@ -125,24 +102,6 @@ Add at reflect.json
 	},
 	{
 		"name": "org.jboss.logging.DelegatingBasicLogger",
-		"allDeclaredConstructors" : true,
-		"allPublicConstructors" : true,
-		"allDeclaredMethods" : true,
-		"allPublicMethods" : true,
-		"allDeclaredFields" : true,
-		"allPublicFields" : true
-	},
-	{
-		"name": "org.hibernate.validator.internal.util.logging.Log_$logger",
-		"allDeclaredConstructors" : true,
-		"allPublicConstructors" : true,
-		"allDeclaredMethods" : true,
-		"allPublicMethods" : true,
-		"allDeclaredFields" : true,
-		"allPublicFields" : true
-	},
-	{
-		"name": "org.hibernate.validator.internal.util.logging.logger",
 		"allDeclaredConstructors" : true,
 		"allPublicConstructors" : true,
 		"allDeclaredMethods" : true,
@@ -621,11 +580,6 @@ Add at reflect.json
  		"allDeclaredConstructors": true,
 		"allDeclaredMethods": true
  	},
-    {
- 		"name": "ch.qos.logback.classic.pattern.ExtendedThrowableProxyConverter",
- 		"allDeclaredConstructors": true,
-		"allDeclaredMethods": true
- 	},
  	{
  		"name": "ch.qos.logback.classic.pattern.RootCauseFirstThrowableProxyConverter",
  		"allDeclaredConstructors": true,
@@ -677,11 +631,6 @@ Add at reflect.json
 		"allDeclaredMethods": true
  	},
  	{
- 		"name": "ch.qos.logback.classic.pattern.ClassOfCallerConverter",
- 		"allDeclaredConstructors": true,
-		"allDeclaredMethods": true
- 	},
- 	{
  		"name": "ch.qos.logback.classic.pattern.LineOfCallerConverter",
  		"allDeclaredConstructors": true,
 		"allDeclaredMethods": true
@@ -707,11 +656,6 @@ Add at reflect.json
 		"allDeclaredMethods": true
  	},
  	{
- 		"name": "ch.qos.logback.classic.pattern.ExtendedThrowableProxyConverter",
- 		"allDeclaredConstructors": true,
-		"allDeclaredMethods": true
- 	},
- 	{
  		"name": "ch.qos.logback.classic.pattern.color.HighlightingCompositeConverter",
  		"allDeclaredConstructors": true,
 		"allDeclaredMethods": true
@@ -723,11 +667,6 @@ Add at reflect.json
  	},
  	{
  		"name": "ch.qos.logback.classic.pattern.MDCConverter",
- 		"allDeclaredConstructors": true,
-		"allDeclaredMethods": true
- 	},
- 	{
- 		"name": "ch.qos.logback.classic.pattern.ClassOfCallerConverter",
  		"allDeclaredConstructors": true,
 		"allDeclaredMethods": true
  	},

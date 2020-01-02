@@ -27,6 +27,10 @@
 		</encoder>
 	</appender>
 	
+	<appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="FILE"/>
+	</appender>
+
 	<!-- Override NextRTC Signaling Server log level (for debugging purposes) -->
 	<logger name="org.nextrtc.signalingserver" level="INFO" />
 	
@@ -37,7 +41,7 @@
 				<appender-ref ref="STDOUT"/>
 			</then>
 		</if>
-		<appender-ref ref="FILE" />
+		<appender-ref ref="ASYNC_FILE" />
 	</root>
 
 </configuration>

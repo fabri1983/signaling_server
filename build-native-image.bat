@@ -23,6 +23,9 @@ mkdir target\graal-build
 cd target\graal-build
 jar -xf ..\%WAR%
 xcopy /E /Q /Y /S META-INF\* WEB-INF\classes\META-INF\
+:: remove native-image folder because it is later read from the WAR file
+rmdir /Q /S WEB-INF\classes\META-INF\native-image > NUL 2>&1
+rmdir /Q /S META-INF\native-image > NUL 2>&1
 
 :: build classpath with all jars and classes
 cd WEB-INF\classes
@@ -48,7 +51,7 @@ echo :::::::: Compiling with graal native-image
 call %GRAALVM_HOME%\bin\native-image ^
   --verbose ^
   -cp %CP% -jar ..\%WAR%
-::  -cp %CP% org.fabri1983.signaling.entrypoint.SignalingEntryPoint
+::  -cp %CP% org.fabri1983.signaling.SignalingEntryPoint
 
 if %ERRORLEVEL% == 0 (
 	echo :::::::: Native image located at target\graal-build\

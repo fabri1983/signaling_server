@@ -311,8 +311,10 @@ See **NextRTC Video Chat exmaple** section.
 	```
 - Edit *application.properties* accordingly. Be aware *server.port* value is *8443*.
 - Run:
-	- `mvn clean package`
-	- `java -jar target/signaling.war`
+```sh
+mvn clean package
+java -jar target/signaling.war
+```
 	
 #### Access
 - From your client app access it via:
@@ -320,6 +322,18 @@ See **NextRTC Video Chat exmaple** section.
 - Or the secured endpoint which after HTTP Upgrade to Websocket it expects and validates headers *vcuser* and *vctoken*:
 	- [wss://127.0.0.1:8443/signaling/v1/s](wss://127.0.0.1:8443/signaling/v1/s)  
 See **NextRTC Video Chat exmaple** section.
+
+
+## Curious multiple log of same message
+The next message repeats in the logs 3 times:  
+```sh
+... INFO  [main]  NextRTCEndpoint: Setted server: org.nextrtc.signalingserver.domain.Server@61c58320 to org.fabri1983.signaling.configuration.SignalingConfiguration$2@10e4ee33
+... INFO  [main]  NextRTCEndpoint: Setted server: org.nextrtc.signalingserver.domain.Server@61c58320 to org.fabri1983.signaling.configuration.SignalingConfiguration$2@10e4ee33
+... INFO  [main]  NextRTCEndpoint: Setted server: org.nextrtc.signalingserver.domain.Server@61c58320 to org.fabri1983.signaling.configuration.SignalingConfiguration$2@10e4ee33
+```
+This is due to the nature of `NextRTCEndpoint` class which has a mix of `Singleton` pattern, `@Component`, and has `@Inject` in method `setServer()`. 
+Nevertheless, as the log lines show, the `Server` bean is created only once. And so it does for the `NextRTCEndpoint` bean defined in the 
+`SignalingConfiguration` class.
 
 
 ## NextRTC Video Chat usage
@@ -435,7 +449,7 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
 
 ## Native Image generation with GraalVM
 **NOTE**: work in progress due to logback logging api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time generation phase.  
-**NOTE**: currently trying to make it work with graalvm native-image 19.3.0.2.  
+**NOTE**: currently targeting graalvm 19.2.0.1.  
 - You first need to build the signaling project and generate the WAR artifact for *java8* or *java11* depending on what graalvm installation you are targeting.
   - `mvn clean package -P local,eventbus-hazelcast,java8 -Dskip.docker.build=true`
 - Locate at project root dir and download the [Spring-Graal-Native-Image](https://github.com/spring-projects-experimental/spring-graal-native.git) project:  

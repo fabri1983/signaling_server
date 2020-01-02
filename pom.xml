@@ -26,7 +26,7 @@
 		<proguard.skip>true</proguard.skip>
 		
 		<!-- Signaling Server -->
-		<start-class>org.fabri1983.signaling.entrypoint.SignalingEntryPoint</start-class>
+		<start-class>org.fabri1983.signaling.SignalingEntryPoint</start-class>
 		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml -->
 		<spring.profiles.active>default</spring.profiles.active> <!-- default spring profile. Overridden by eventbus-<type> profiles -->
 		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it replaces Session dependency by custom Connection class -->

@@ -8,12 +8,19 @@ import javax.inject.Inject;
 
 import org.apache.catalina.Context;
 import org.apache.tomcat.util.scan.StandardJarScanner;
+import org.fabri1983.signaling.core.CustomSignal;
 import org.fabri1983.signaling.core.IJwtVerifier;
 import org.fabri1983.signaling.core.JwtVerifier;
 import org.fabri1983.signaling.core.handler.OnCloseHandler;
 import org.fabri1983.signaling.core.handler.OnErrorHandler;
 import org.fabri1983.signaling.core.handler.OnMessageHandler;
 import org.fabri1983.signaling.core.handler.OnOpenHandler;
+import org.fabri1983.signaling.core.handler.signal.cancelcall.CancelCallSignalHandler;
+import org.fabri1983.signaling.core.handler.signal.drop.DropSimuSignalHandler;
+import org.fabri1983.signaling.core.handler.signal.onhold.OnHoldSignalHandler;
+import org.fabri1983.signaling.core.handler.signal.pong.PongSignalHandler;
+import org.fabri1983.signaling.core.handler.signal.reject.RejectSignalHandler;
+import org.fabri1983.signaling.core.handler.signal.toggle.ToggleSignalHandler;
 import org.fabri1983.signaling.core.messagesender.ErrorMessageSender;
 import org.fabri1983.signaling.core.population.ConversationPopulation;
 import org.fabri1983.signaling.core.task.DummyTaskManager;
@@ -31,8 +38,13 @@ import org.fabri1983.signaling.http.validator.PresentUserIdValidator;
 import org.fabri1983.signaling.http.validator.VideoChatTokenValidator;
 import org.nextrtc.signalingserver.Names;
 import org.nextrtc.signalingserver.NextRTCComponent;
+import org.nextrtc.signalingserver.api.ConfigurationBuilder;
+import org.nextrtc.signalingserver.api.EndpointConfiguration;
+import org.nextrtc.signalingserver.api.NextRTCEndpoint;
 import org.nextrtc.signalingserver.domain.MessageSender;
 import org.nextrtc.signalingserver.property.NextRTCProperties;
+import org.nextrtc.signalingserver.repository.ConversationRepository;
+import org.nextrtc.signalingserver.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -59,9 +71,9 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 				"org.nextrtc.signalingserver.cases",    "org.nextrtc.signalingserver.domain", 
 				"org.nextrtc.signalingserver.eventbus", "org.nextrtc.signalingserver.factory",
 				"org.nextrtc.signalingserver.modules",  "org.nextrtc.signalingserver.property",
-				"org.nextrtc.signalingserver.repository"}
+				"org.nextrtc.signalingserver.repository" }
 )
-@PropertySource(value={"classpath:application.properties", "classpath:nextrtc.properties"})
+@PropertySource(value={"classpath:application.properties", "classpath:nextrtc.properties", "classpath:environment.properties"})
 public class SignalingConfiguration {
 
 	private static final List<String> URL_PATTERNS_FOR_FILTERS = Arrays.asList("/v1/*", "/v2/*", "/v3/*");
@@ -201,6 +213,62 @@ public class SignalingConfiguration {
 	@Bean
 	public VideoChatTokenValidator videoChatTokenValidator(IJwtVerifier jwtVerifier) {
 		return new VideoChatTokenValidator(jwtVerifier);
+	}
+	
+	@Bean
+	public NextRTCEndpoint nextRTCEndpoint(ITaskManager<String> pongTaskManager, MessageSender messageSender,
+			MemberRepository members, ConversationRepository conversations, SpringNextRTCComponent springNextRTCComponent,
+			ConversationPopulation population, ErrorMessageSender errorSender) {
+		
+		return new NextRTCEndpoint() {
+			
+			@Override
+			protected EndpointConfiguration manualConfiguration(final ConfigurationBuilder builder) {
+				
+				// NOTE: This method only called once, no matter how many instances you have from NextRTCEndpoint.
+				
+				// tell NextRTC that use our custom Spring NextRTC Components instead of those loaded with Dagger
+		        EndpointConfiguration configuration = new EndpointConfiguration(springNextRTCComponent);
+
+				// IMPORTANT: only signals not equal to those from org.nextrtc.signalingserver.domain.Signals can be used
+				
+				// on 'pong' signal do some rescheduling logic to eventually close the Websocket if not used anymore
+				configuration.signalResolver()
+					.addCustomSignal(CustomSignal.PONG, PongSignalHandler.createOrReschedule(pongTaskManager, errorSender, 
+							members));
+				
+				// on 'reject' signal send same signal to target user
+				configuration.signalResolver()
+					.addCustomSignal(CustomSignal.REJECT, RejectSignalHandler.reject(conversations));
+
+				// on 'onhold' signal send same signal to target user
+				configuration.signalResolver()
+					.addCustomSignal(CustomSignal.ONHOLD, OnHoldSignalHandler.onhold(conversations));
+				
+				// on 'drop_simu' signal send same signal to target user. In this case the websocket is not disconnected at the origin source
+				configuration.signalResolver()
+					.addCustomSignal(CustomSignal.DROP_SIMU, DropSimuSignalHandler.dropsimu(conversations));
+				
+				// on 'cancel_call' signal send same signal to target user. Find the target user's session using the population object
+				configuration.signalResolver()
+					.addCustomSignal(CustomSignal.CANCEL_CALL, CancelCallSignalHandler.cancelCall(messageSender, population));
+				
+				configuration.signalResolver()
+					.addCustomSignal(CustomSignal.VIDEO_OFF, ToggleSignalHandler.toggle(conversations, population, 
+							CustomSignal.VIDEO_OFF));
+				configuration.signalResolver()
+					.addCustomSignal(CustomSignal.VIDEO_ON, ToggleSignalHandler.toggle(conversations, population, 
+							CustomSignal.VIDEO_ON));
+				configuration.signalResolver()
+					.addCustomSignal(CustomSignal.AUDIO_OFF, ToggleSignalHandler.toggle(conversations, population, 
+							CustomSignal.AUDIO_OFF));
+				configuration.signalResolver()
+					.addCustomSignal(CustomSignal.AUDIO_ON, ToggleSignalHandler.toggle(conversations, population, 
+							CustomSignal.AUDIO_ON));
+				
+				return configuration;
+			}
+		};	
 	}
 	
 	@Bean

@@ -1,14 +1,14 @@
-package org.fabri1983.signaling.entrypoint;
+package org.fabri1983.signaling;
 
 import org.fabri1983.signaling.configuration.SignalingConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Configuration
+@ComponentScan("dummy.package.disable.component.scan")
 @Import(value = { SignalingConfiguration.class })
 public class SignalingEntryPoint extends SpringBootServletInitializer {
 
