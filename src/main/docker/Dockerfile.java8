@@ -1,7 +1,7 @@
 # Dockerfile for Java 8 platform
 
 ######################################################################################################
-FROM azul/zulu-openjdk-alpine:8u232-jre-headless AS STAGING-WAR
+FROM adoptopenjdk/openjdk8:x86_64-alpine-jre8u232-b09 AS STAGING-WAR
 ARG DEPENDENCIES=docker-workdir
 
 RUN mkdir -p /staging/app/
@@ -21,7 +21,7 @@ RUN chmod 755 /staging/app/run-java.sh
 
 
 ######################################################################################################
-FROM azul/zulu-openjdk-alpine:8u232-jre-headless
+FROM adoptopenjdk/openjdk8:x86_64-alpine-jre8u232-b09
 ARG JAVA_MAIN_CLASS
 
 # JAVA_HOME needs to be set:
@@ -29,19 +29,19 @@ ARG JAVA_MAIN_CLASS
 #   zulu: /usr/lib/jvm/zulu-8
 
 ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS} \
-    JAVA_HOME=/usr/lib/jvm/zulu-8
+    JAVA_HOME=/opt/java/openjdk
 
 ENV PATH=$PATH:$JAVA_HOME/bin
 
 # Copy staged decompressed WAR from previous stage
 COPY --from=STAGING-WAR /staging/app  /app
 
-# Entry with exec so jvm flags are correctly gathered
-ENTRYPOINT exec java -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
+# Using CMD so it can be overwritten from outside
+CMD java -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
 
-# Entry using fabric8's run-java.sh
-#ENTRYPOINT JAVA_OPTIONS="${JAVA_OPTS}" \
-#           JAVA_APP_DIR=/app \
-#           JAVA_CLASSPATH=/app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* \
-#           JAVA_MAIN_CLASS=${ENV_JAVA_MAIN_CLASS} \
-#           /app/run-java.sh
+# Using fabric8's run-java.sh
+#CMD JAVA_OPTIONS="${JAVA_OPTS} ${ENV_JAVA_MODULES_FOR_HAZELCAST}" \
+#    JAVA_APP_DIR=/app \
+#    JAVA_CLASSPATH=/app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* \
+#    JAVA_MAIN_CLASS=${ENV_JAVA_MAIN_CLASS} \
+#    /app/run-java.sh
