@@ -385,7 +385,7 @@ java.base,java.compiler,java.desktop,java.instrument,java.management.rmi,java.na
 
 ## Run with Docker and test Distributed Event Bus with Hazelcast
 
-- *NOTE*: this guide is only valid for Spring Boot Fat WAR due to internal WAR structure.
+- *NOTE*: this guide is only valid for Spring Boot Fat WAR due to internal WAR structure. If it's a JAR then modify scripts accordingly.
 
 - First pack the Signaling Server in a Fat WAR artifact using Spring Boot maven plugin:
 ```bash
@@ -393,13 +393,14 @@ mvn clean package -P local,eventbus-hazelcast,java11
 ```
 
 - **Create a multi layer Docker image for Spring Boot app**:
-In order to take advantage of less frequency changes the [Dockerfile.java11](src/main/docker/Dockerfile.java11) defines a multi layer image, 
-so next time image build is fired it only updates application code.  
-Script **docker-build.<bat|sh>** is moved to `target` folder after repackage is done.  
-It decompress the war file and creates the multi layer Docker image.  
+In order to take advantage of less frequency changes the [Dockerfile.java8](src/main/docker/Dockerfile.java8) file and 
+[Dockerfile.java11](src/main/docker/Dockerfile.java11) file both define a multi layer image, so next time image build is 
+fired it only updates application code.  
+Script **docker-build.<bat|sh>** is moved to `target` folder during maven life cycle.  
+It decompress the WAR file and creates the multi layer Docker image.  
 Keep an eye on the context size sent to Docker's context:
 ```bash
-Sending build context to Docker daemon  36.07MB   (this is the size with all libs)
+Sending build context to Docker daemon  36.12MB   (this is the size with all libs)
 ```  
 Once the image build finishes use next command to check layers size:
 ```bash
@@ -426,13 +427,16 @@ docker container run -i -m 400m -p 8482:8443 --name signaling-2 fabri1983dockeri
 
 Then manage it with:
 docker container stop|start <container-name>
+
+Connect to its bash console:
+docker container exec -it <container-name> /bin/sh
 ```
 Or you can use the [docker-compose-local.yml](src/main/docker/docker-compose-local.yml):
 ```bash
-docker-compose -f src/main/docker/docker-compose-local.yml up
+docker-compose -f target/docker-compose-local.yml up
 
 Then manage it with:
-docker-compose -f src/main/docker/docker-compose-local.yml stop|start
+docker-compose -f target/docker-compose-local.yml stop|start
 ```
 
 - Test the Distributed Event Bus with Hazelcast:
@@ -448,10 +452,10 @@ docker-compose -f src/main/docker/docker-compose-local.yml stop|start
     ```
 
 ## Native Image generation with GraalVM
-**NOTE**: work in progress due to logback logging api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time generation phase.  
+**NOTE**: work in progress due to logback logging api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time phase.  
 **NOTE**: currently targeting graalvm 19.2.0.1.  
 - You first need to build the signaling project and generate the WAR artifact for *java8* or *java11* depending on what graalvm installation you are targeting.
-  - `mvn clean package -P local,eventbus-hazelcast,java8,native -Dskip.docker.build=true`
+  - `mvn clean package -P local,eventbus-hazelcast,java8 -Dskip.docker.build=true`
 - Locate at project root dir and download the [Spring-Graal-Native-Image](https://github.com/spring-projects-experimental/spring-graal-native.git) project:  
 (Next scripts will clone it under target folder)
 ```bash

@@ -5,7 +5,7 @@ FROM azul/zulu-openjdk-alpine:11 AS STAGING-JRE-MINI
 
 # At this point JAVA_HOME refers to:
 #   adoptopenjdk: /opt/java/openjdk
-#   zulu: /usr/lib/jvm/zulu-12
+#   zulu: /usr/lib/jvm/zulu-11
 
 # Build a smaller Java 11 JRE
 RUN jlink \
@@ -48,7 +48,7 @@ ARG JAVA_MAIN_CLASS
 
 # JAVA_HOME needs to be set:
 #   adoptopenjdk: /opt/java/openjdk
-#   zulu: /usr/lib/jvm/zulu-11  or zulu11-ca
+#   zulu: /usr/lib/jvm/zulu-11
 
 ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS} \
     JAVA_HOME=/usr/lib/jvm/zulu-11 \

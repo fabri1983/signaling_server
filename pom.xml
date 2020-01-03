@@ -155,12 +155,6 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>native</id>
-			<properties>
-				<logback.file>logback-no-file.xml</logback.file>
-			</properties>
-		</profile>
-		<profile>
 			<id>eventbus-local</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -276,18 +270,6 @@
 				<artifactId>copy-rename-maven-plugin</artifactId>
 				<version>1.0.1</version>
 				<executions>
-					<!-- copy and rename logback xml file accordingly to target folder -->
-					<execution>
-						<id>rename-logback-xml-file</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<sourceFile>${project.basedir}/src/main/resources/profiles/${logback.file}</sourceFile>
-							<destinationFile>${project.build.outputDirectory}/logback.xml</destinationFile>
-						</configuration>
-					</execution>
 					<!-- copy jwt private and public keys to target folder -->
 					<execution>
 						<id>rename-file-jwt-private-key</id>
@@ -326,11 +308,16 @@
 								</fileSet>
 								<fileSet>
 									<sourceFile>${project.basedir}/src/main/docker/Dockerfile.java${maven.compiler.target}</sourceFile>
+									<!--sourceFile>${project.basedir}/src/main/docker/Dockerfile.graalvm</sourceFile-->
 									<destinationFile>${project.build.directory}/Dockerfile</destinationFile>
 								</fileSet>
 								<fileSet>
 									<sourceFile>${project.basedir}/src/main/docker/docker-build${script.extension}</sourceFile>
 									<destinationFile>${project.build.directory}/docker-build${script.extension}</destinationFile>
+								</fileSet>
+								<fileSet>
+									<sourceFile>${project.basedir}/src/main/docker/docker-compose-local.yml</sourceFile>
+									<destinationFile>${project.build.directory}/docker-compose-local.yml</destinationFile>
 								</fileSet>
 							</fileSets>
 						</configuration>
@@ -366,9 +353,9 @@
 					<proguardVersion>6.1.1</proguardVersion>
 					<proguardInclude>${basedir}/proguard.conf</proguardInclude>
 					<outputDirectory>${project.build.directory}</outputDirectory>
-					<injar>${project.build.finalName}.war</injar>
+					<injar>${project.build.finalName}.${project.packaging}</injar>
 					<inFilter>!WEB-INF/lib/**</inFilter>
-					<outjar>${project.build.finalName}.war</outjar>
+					<outjar>${project.build.finalName}.${project.packaging}</outjar>
 					<options>
 						<option>-target ${maven.compiler.target}</option>
 					</options>
@@ -426,7 +413,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>decompress ${project.build.finalName}.war and build Docker image</id>
+						<id>decompress ${project.build.finalName}.${project.packaging} and build Docker image</id>
 						<phase>package</phase>
 						<goals>
 							<goal>exec</goal>
@@ -434,7 +421,7 @@
 						<configuration>
 							<skip>${skip.docker.build}</skip>
 							<executable>${project.build.directory}/docker-build${script.extension}</executable>
-							<commandlineArgs>${project.build.finalName} dev</commandlineArgs>
+							<commandlineArgs>${project.build.finalName} ${project.packaging} dev ${start-class}</commandlineArgs>
 						</configuration>
 					</execution>
 				</executions>

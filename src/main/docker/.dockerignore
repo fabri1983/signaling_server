@@ -3,9 +3,13 @@ antrun
 classes
 generated-sources
 generated-test-sources
+logs
 m2e-wtp
 maven-archiver
 maven-status
+proguard_map.txt
+proguard_seed.txt
+*_proguard_base.*
 protoc-dependencies
 protoc-plugins
 site
@@ -17,6 +21,7 @@ jacoco*
 signaling
 signaling.jar
 signaling.war
+signaling.jar
 *.original
 spring-boot-graal-feature
 graal-build

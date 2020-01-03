@@ -26,7 +26,7 @@ ARG JAVA_MAIN_CLASS
 
 # JAVA_HOME needs to be set:
 #   adoptopenjdk: /opt/java/openjdk
-#   zulu: /usr/lib/jvm/zulu-8  or zulu8-ca
+#   zulu: /usr/lib/jvm/zulu-8
 
 ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS} \
     JAVA_HOME=/usr/lib/jvm/zulu-8

@@ -1,14 +1,16 @@
 #!/bin/sh
 # If you need to change permissions for execution then do: sudo chmod 775 docker-build.sh
 
-if [[ $# -ne 2 ]] ; then
-  echo "No arguments supplied. You need to specify war final name (without .war) and tag name"
+if [[ $# -ne 4 ]] ; then
+  echo "No arguments supplied. You need to specify artifact final name (without extension), extension (war or jar), tag name, and java class"
   exit 1
 fi
 
 echo -----------------------------
-echo Decompressing $1.war
+echo Decompressing $1.$2
 echo -----------------------------
+# NOTE: when using Spring Boot fat WAR we always need to decompress the WAR file since 
+# it comes with provided jars needed to start Tomcat (or the selected Servlet engine).
 
 # reset working directory
 rm -rf target/docker-workdir 2> /dev/null
@@ -19,7 +21,7 @@ cp target/run-java.sh target/docker-workdir/
 
 # decompress war file
 cd target/docker-workdir
-jar -xf ../$1.war
+jar -xf ../$1.$2
 cd ../..
 
 echo -----------------------------
@@ -29,8 +31,8 @@ echo -----------------------------
 # create Docker image
 docker image build \
 	--build-arg DEPENDENCIES=docker-workdir \
-	--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint \
-	-f target/Dockerfile -t fabri1983dockerid/$1:$2 ./target
+	--build-arg JAVA_MAIN_CLASS=$4 \
+	-f target/Dockerfile -t fabri1983dockerid/$1:$3 ./target
 
 if [[ $? -eq 0 ]] ; then
 	echo -----------------------------

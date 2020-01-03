@@ -6,27 +6,33 @@ IF "%1"=="" (
 IF "%2"=="" (
   GOTO NO_ARGS
 )
-IF NOT "%3"=="" (
+IF "%3"=="" (
+  GOTO NO_ARGS
+)
+IF "%4"=="" (
+  GOTO NO_ARGS
+)
+IF NOT "%5"=="" (
   GOTO WRONG_ARGS
 )
 
 GOTO ACTION
 
 :NO_ARGS
-ECHO No arguments supplied. You need to specify war final name (without .war) and tag name
+ECHO No arguments supplied. You need to specify artifact final name (without extension), extension (war or jar), tag name, and java class
 GOTO FAILED
 
 :WRONG_ARGS
-ECHO Wrong number of arguments. You need to specify war final name (without .war) and tag name
+ECHO Wrong number of arguments. You need to specify artifact final name (without extension), extension (war or jar), tag name, and java class
 GOTO FAILED
 
 :ACTION
 
 ECHO -----------------------------
-ECHO Decompressing %1.war
+ECHO Decompressing %1.%2
 ECHO -----------------------------
-:: NOTE: when using Spring Boot uber WAR we always need to decompress the WAR file since 
-:: it comes with provided jars needed to start Tomcat or the selected Servlet engine.
+:: NOTE: when using Spring Boot fat WAR we always need to decompress the WAR file since 
+:: it comes with provided jars needed to start Tomcat (or the selected Servlet engine).
 
 :: reset working directory
 RMDIR /Q /S target\docker-workdir > NUL 2>&1
@@ -37,7 +43,7 @@ COPY /Y target\run-java.sh target\docker-workdir
 
 :: decompress war file
 CD target\docker-workdir
-jar -xf ..\%1.war
+jar -xf ..\%1.%2
 CD ..\..
 
 ECHO -----------------------------
@@ -47,8 +53,8 @@ ECHO -----------------------------
 :: create Docker image
 docker image build ^
 	--build-arg DEPENDENCIES=docker-workdir ^
-	--build-arg JAVA_MAIN_CLASS=org.fabri1983.signaling.entrypoint.SignalingEntryPoint ^
-	-f target/Dockerfile -t fabri1983dockerid/%1:%2 ./target
+	--build-arg JAVA_MAIN_CLASS=%4 ^
+	-f target/Dockerfile -t fabri1983dockerid/%1:%3 ./target
 
 if %ERRORLEVEL% == 0 (
 	ECHO -----------------------------
