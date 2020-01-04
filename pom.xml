@@ -308,7 +308,6 @@
 								</fileSet>
 								<fileSet>
 									<sourceFile>${project.basedir}/src/main/docker/Dockerfile.java${maven.compiler.target}</sourceFile>
-									<!--sourceFile>${project.basedir}/src/main/docker/Dockerfile.graalvm</sourceFile-->
 									<destinationFile>${project.build.directory}/Dockerfile</destinationFile>
 								</fileSet>
 								<fileSet>

@@ -1,0 +1,34 @@
+# This dockerfile intended to run the Signaling Server under GraalVM with an agentlib for 
+# produce native image configuration files for later usage on a native image build.
+# Produced json files must be located at src/main/resources/META-INF/native-image/org.fabri1983.signaling folder in the Signaling project. 
+ 
+######################################################################################################
+FROM oracle/graalvm-ce:19.3.0.2-java8 AS STAGING-WAR
+ARG DEPENDENCIES=docker-workdir
+
+RUN mkdir -p /staging/app/
+
+# Stage dependencies and classes
+COPY ${DEPENDENCIES}/js                   /staging/app/js
+COPY ${DEPENDENCIES}/META-INF             /staging/app/META-INF
+COPY ${DEPENDENCIES}/WEB-INF              /staging/app/WEB-INF
+COPY ${DEPENDENCIES}/callTo.html \
+     ${DEPENDENCIES}/general-error.jsp \
+     ${DEPENDENCIES}/index.html \
+     ${DEPENDENCIES}/videochat.html       /staging/app/
+
+
+######################################################################################################
+FROM oracle/graalvm-ce:19.3.0.2-java8
+ARG JAVA_MAIN_CLASS
+
+ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS}
+
+RUN gu install native-image
+
+# Copy staged decompressed WAR from previous stage
+COPY --from=STAGING-WAR /staging/app  /app
+
+# Entry with exec so jvm flags are correctly gathered
+ENTRYPOINT exec java -agentlib:native-image-agent=config-output-dir=/native-config/ \
+   -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
