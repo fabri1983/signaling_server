@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/fabri1983/signaling_server.svg?branch=master)](https://travis-ci.org/fabri1983/signaling_server?branch=master)
 &nbsp;&nbsp;&nbsp;&nbsp;
-[![Coverage Status](https://coveralls.io/repos/github/fabri1983/signaling_server/badge.svg)](https://coveralls.io/github/fabri1983/signaling_server?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/fabri1983/signaling_server/badge.svg?branch=master)](https://coveralls.io/github/fabri1983/signaling_server?branch=master)
 &nbsp;&nbsp;&nbsp;&nbsp;
 [![Code Climate](https://codeclimate.com/github/fabri1983/signaling_server/badges/gpa.svg)](https://codeclimate.com/github/fabri1983/signaling_server)
 
