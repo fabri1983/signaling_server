@@ -25,7 +25,7 @@ script:
 
 after_success:
   # using environment variable $repo_token set in travis web site
-  - mvn clean test jacoco:report coveralls:report -P local,eventbus-local,java11 -DrepoToken=$repo_token -Dskip.docker.build=true
+  - mvn clean test cobertura:cobertura coveralls:report -P local,eventbus-local,java11 -DrepoToken=$repo_token -Dskip.docker.build=true
 
 notifications:
   email:
