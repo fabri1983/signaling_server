@@ -54,7 +54,7 @@ ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS} \
     JAVA_HOME=/opt/java/openjdk \
     ENV_JAVA_MODULES_FOR_HAZELCAST="--add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED"
 
-ENV PATH=$PATH:$JAVA_HOME/bin
+ENV PATH="$PATH:$JAVA_HOME/bin"
     
 # Copy JRE mini runtime from previous stage
 COPY --from=STAGING-JRE-MINI $JAVA_HOME/customjre $JAVA_HOME
@@ -63,7 +63,7 @@ COPY --from=STAGING-JRE-MINI $JAVA_HOME/customjre $JAVA_HOME
 COPY --from=STAGING-WAR /staging/app  /app
 
 # Using CMD so it can be overwritten from outside
-CMD exec java ${ENV_JAVA_MODULES_FOR_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
+CMD java ${ENV_JAVA_MODULES_FOR_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
 
 # Using fabric8's run-java.sh
 #CMD JAVA_OPTIONS="${JAVA_OPTS} ${ENV_JAVA_MODULES_FOR_HAZELCAST}" \

@@ -429,7 +429,7 @@ Then manage it with:
 docker container stop|start <container-name>
 
 Connect to its bash console:
-docker container exec -it <container-name> /bin/sh
+docker container exec -it <container-name> /bin/ash
 ```
 Or you can use the [docker-compose-local.yml](src/main/docker/docker-compose-local.yml):
 ```bash

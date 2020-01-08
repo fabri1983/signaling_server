@@ -31,7 +31,7 @@ ARG JAVA_MAIN_CLASS
 ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS} \
     JAVA_HOME=/opt/java/openjdk
 
-ENV PATH=$PATH:$JAVA_HOME/bin
+ENV PATH="$PATH:$JAVA_HOME/bin"
 
 # Copy staged decompressed WAR from previous stage
 COPY --from=STAGING-WAR /staging/app  /app
