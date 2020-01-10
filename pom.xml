@@ -23,7 +23,7 @@
 		
 		<!-- default flag values -->
 		<skip.docker.build>false</skip.docker.build>
-		<proguard.skip>true</proguard.skip>
+		<skip.proguard>true</skip.proguard>
 		
 		<!-- Signaling Server -->
 		<start-class>org.fabri1983.signaling.SignalingEntryPoint</start-class>
@@ -53,14 +53,6 @@
 			<artifactId>log4j-over-slf4j</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 		</dependency>
@@ -82,6 +74,11 @@
 			<groupId>org.nextrtc.signalingserver</groupId>
 			<artifactId>nextrtc-signaling-server</artifactId>
 			<version>${nextrtc.signaling.server.version}</version>
+		</dependency>
+		<!-- Hazelcast for distributed event bus -->
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast</artifactId>
 		</dependency>
 		<!-- Spring Boot's dependencies -->
 		<dependency>
@@ -162,25 +159,12 @@
 			<properties>
 				<spring.profiles.active>eventbus-local</spring.profiles.active>
 			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>com.hazelcast</groupId>
-					<artifactId>hazelcast</artifactId>
-					<scope>provided</scope> <!-- codes compiles, but not included in the final jar -->
-				</dependency>
-			</dependencies>
 		</profile>
 		<profile>
 			<id>eventbus-hazelcast</id>
 			<properties>
 				<spring.profiles.active>eventbus-hazelcast</spring.profiles.active>
 			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>com.hazelcast</groupId>
-					<artifactId>hazelcast</artifactId>
-				</dependency>
-			</dependencies>
 		</profile>
 		<profile>
 			<id>Windows</id>
@@ -348,7 +332,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<skip>${proguard.skip}</skip>
+					<skip>${skip.proguard}</skip>
 					<proguardVersion>6.1.1</proguardVersion>
 					<proguardInclude>${basedir}/proguard.conf</proguardInclude>
 					<outputDirectory>${project.build.directory}</outputDirectory>

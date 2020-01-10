@@ -21,7 +21,8 @@ jacoco*
 signaling
 signaling.jar
 signaling.war
-signaling.jar
+signaling_*.jar
+signaling_*.war
 *.original
 spring-boot-graal-feature
 graal-build
