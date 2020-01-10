@@ -121,9 +121,7 @@ Sets compiler target to **Java 8** and also uses Dockerfile.java8 file for image
 **Additional profiles**  
 - `eventbus-local` (active by default)  
 - `eventbus-hazelcast`  
-Removes/adds additional dependencies and disables/enables a Spring profile which allows the use of a distributed eventbus.
-When using *eventbus-local* some dependencies are removed and the beans defined in `DistributedSignalingConfiguration` are not created.
-When using *eventbus-hazelcast* the opposite occurs.  
+Disables/enables a Spring profile which allows the use of a distributed eventbus.
   
 Example:  
 ```sh

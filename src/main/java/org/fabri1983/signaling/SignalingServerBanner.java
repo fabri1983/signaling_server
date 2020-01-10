@@ -11,7 +11,7 @@ import org.springframework.core.env.Environment;
 
 public class SignalingServerBanner implements Banner {
 	
-	private final String[] BANNER = { "",
+	private final String[] BANNER = {
 			"  ______  _                       _   _                   ______",
 			" / _____)(_)                     | | (_)                 / _____)",
 			"( (____   _   ____  ____   _____ | |  _  ____    ____   ( (____   _____   ____  _   _  _____   ____", 
