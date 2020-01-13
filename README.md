@@ -462,7 +462,7 @@ Windows:
 Linux
   clone-spring-graal-native.sh
 ```
-- Generate native image from WAR artifact (**you will need 6GB of free memory!**):  
+- Generate native image from WAR artifact (**you will need 7GB of free memory!**):  
 **Note** that Signaling WAR file contains `META-INF/native-image/org.fabri1983.signaling/native-image.properties` with all the options/flags.
 ```bash
 Windows:
