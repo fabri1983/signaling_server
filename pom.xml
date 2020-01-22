@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.0.RELEASE</version>
+		<version>2.2.3.RELEASE</version>
 	</parent>
 	
 	<properties>
@@ -27,8 +27,7 @@
 		
 		<!-- Signaling Server -->
 		<start-class>org.fabri1983.signaling.SignalingEntryPoint</start-class>
-		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml and logback-no-file.xml -->
-		<logback.file>logback.xml</logback.file>
+		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml -->
 		<spring.profiles.active>default</spring.profiles.active> <!-- default spring profile. Overridden by eventbus-<type> profiles -->
 		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it replaces Session dependency by custom Connection class -->
 		<auth0.jwt.version>3.8.1</auth0.jwt.version>

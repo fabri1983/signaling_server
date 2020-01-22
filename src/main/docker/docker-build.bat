@@ -41,7 +41,7 @@ MKDIR target\docker-workdir
 :: copy fabric8's run-java.sh
 COPY /Y target\run-java.sh target\docker-workdir
 
-:: decompress war file
+:: decompress artifact file
 CD target\docker-workdir
 jar -xf ..\%1.%2
 CD ..\..

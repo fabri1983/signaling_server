@@ -13,7 +13,7 @@ It is cluster aware by using a distributed event bus backed by *Hazelcast* with 
 
 
 - Uses Maven 3.6.x. You can use `mvnw` if you don't have Maven installed in your host.
-- Uses Spring Boot 2.2.0.RELEASE.
+- Uses Spring Boot 2.2.3.RELEASE.
 - After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
 If not Docker installed then use `-Dskip.docker.build=true` to skip the docker build.
 - Runs on **Java 11** (default profile is *java11*). If you want to use **Java 8** then you need to use maven profile *java8*. 

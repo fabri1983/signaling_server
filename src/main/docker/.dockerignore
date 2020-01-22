@@ -7,6 +7,8 @@ logs
 m2e-wtp
 maven-archiver
 maven-status
+original*.jar
+original*.war
 proguard_map.txt
 proguard_seed.txt
 *_proguard_base.*
