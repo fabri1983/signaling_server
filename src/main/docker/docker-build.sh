@@ -28,16 +28,18 @@ echo -----------------------------
 echo Building Docker image
 echo -----------------------------
 
+tagName=fabri1983dockerid/$1:$3
+
 # create Docker image
 docker image build \
 	--build-arg DEPENDENCIES=docker-workdir \
 	--build-arg JAVA_MAIN_CLASS=$4 \
-	-f target/Dockerfile -t fabri1983dockerid/$1:$3 ./target
+	-f target/Dockerfile -t $tagName ./target
 
 if [[ $? -eq 0 ]] ; then
-	echo -----------------------------
-	echo Finished!
-	echo -----------------------------
+	echo ----------------------------------------------------------
+	echo Finished! Docker Image tagged: $tagName
+	echo ----------------------------------------------------------
 	exit 0
 else
 	echo -----------------------------

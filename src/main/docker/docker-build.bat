@@ -50,16 +50,18 @@ ECHO -----------------------------
 ECHO Building Docker image
 ECHO -----------------------------
 
+SET tagName=fabri1983dockerid/%1:%3
+
 :: create Docker image
 docker image build ^
 	--build-arg DEPENDENCIES=docker-workdir ^
 	--build-arg JAVA_MAIN_CLASS=%4 ^
-	-f target/Dockerfile -t fabri1983dockerid/%1:%3 ./target
+	-f target/Dockerfile -t %tagName% ./target
 
 if %ERRORLEVEL% == 0 (
-	ECHO -----------------------------
-	ECHO Finished!
-	ECHO -----------------------------
+	ECHO ----------------------------------------------------------
+	ECHO Finished! Docker Image tagged: %tagName%
+	ECHO ----------------------------------------------------------
 	GOTO SUCCESS
 ) ELSE (
 	ECHO -----------------------------
