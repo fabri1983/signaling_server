@@ -1,11 +1,22 @@
 {
-    "resources":
-    [
-		{"pattern":"META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat"}, 
-		{"pattern":"META-INF/services/ch.qos.logback.classic.spi.Configurator"},
-		{"pattern":"META-INF/services/org.apache.logging.log4j.spi.Provider"}, 
-		{"pattern":"META-INF/services/org.apache.logging.log4j.util.PropertySource"}, 
-		{"pattern":"org/slf4j/impl/StaticLoggerBinder.class"},
-		{"pattern":"org.hibernate.validator.spi.resourceloading.ResourceBundleLocator"}
-	]
+  "bundles": 
+  [
+    {"name":"messages.messages"},
+    {"name":"javax.servlet.LocalStrings"},
+    {"name":"javax.servlet.http.LocalStrings"}
+  ],
+  "resources":
+  [
+	{"pattern":"META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat"}, 
+	{"pattern":"META-INF/services/ch.qos.logback.classic.spi.Configurator"},
+	{"pattern":"META-INF/services/org.apache.logging.log4j.spi.Provider"}, 
+	{"pattern":"META-INF/services/org.apache.logging.log4j.util.PropertySource"}, 
+	{"pattern":"org/slf4j/impl/StaticLoggerBinder.class"},
+	{"pattern":"org.hibernate.validator.spi.resourceloading.ResourceBundleLocator"},
+	{"pattern":"META-INF/resources/webjars/.*"},
+    {"pattern":"banner.txt"},
+    {"pattern":"org/springframework/web/util/HtmlCharacterEntityReferences.properties"},
+    {"pattern":"org.springframework.web.servlet.DispatcherServlet.properties"},
+    {"pattern":"org/springframework/http/mime.types"}
+  ]
 }
