@@ -16,7 +16,7 @@ It is cluster aware by using a distributed event bus backed by *Hazelcast* with 
 - Uses Spring Boot 2.2.3.RELEASE.
 - After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
 If not Docker installed then use `-Dskip.docker.build=true` to skip the docker build.
-- Runs on **Java 11** (default profile is *java11*). If you want to use **Java 8** then you need to use maven profile *java8*. 
+- Runs on **Java 8** and **Java 11** (default profile is *java11*). 
 - Native image generation using GraalVM: currently struggling with *Spring Graal Native* plugin to correctly create a native image.
 
 
