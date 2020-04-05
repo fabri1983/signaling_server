@@ -491,7 +491,7 @@
 						--report-unsupported-elements-at-runtime
 						--enable-all-security-services
 						--initialize-at-build-time=org.eclipse.jdt,org.apache.el.parser.SimpleNode,javax.servlet.jsp.JspFactory,org.apache.jasper.servlet.JasperInitializer,org.apache.jasper.runtime.JspFactoryImpl,org.hibernate.validator.internal.engine.messageinterpolation,org.hibernate.validator.internal.engine.resolver,ch.qos.logback.core.status,javax.persistence,org.codehaus.janino,org.codehaus.commons,org.springframework.validation.beanvalidation.LocaleContextMessageInterpolator,org.apache.logging.slf4j.SLF4JLogger,ch.qos.logback.core.rolling.RollingFileAppender,ch.qos.logback.core.recovery.ResilientFileOutputStream,ch.qos.logback.core.Appender,ch.qos.logback.classic.AsyncAppender,org.slf4j.Logger,org.hibernate.validator.HibernateValidator
-						--initialize-at-run-time=com.hazelcast.instance.DefaultNodeExtension,org.apache.logging.log4j.core.pattern.JAnsiTextRenderer,org.springframework.boot.validation.MessageInterpolatorFactory
+						--initialize-at-run-time=com.hazelcast.instance.DefaultNodeExtension,org.apache.logging.log4j.core.pattern.JAnsiTextRenderer
 						-H:Name=${project.build.finalName}
 						-H:EnableURLProtocols=http,https,ws,wss,jar
 						-H:+ReportExceptionStackTraces
