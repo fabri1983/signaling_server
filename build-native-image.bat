@@ -13,6 +13,12 @@ echo :::::::: Building spring-graal-native
 cd target\spring-graal-native\spring-graal-native-feature
 call mvn clean package
 cd ..\..\..
+cd target\spring-graal-native\spring-graal-native-configuration
+call mvn clean package
+cd ..\..\..
+cd target\spring-graal-native\spring-graal-native-substitutions
+call mvn clean package
+cd ..\..\..
 
 set WAR=signaling.war
 
@@ -46,10 +52,25 @@ set FEATURES_JAR=
 for /f %%i in (features_jar.txt) do set FEATURES_JAR=%%i;
 set CP=%CP%;%FEATURES_JAR%
 
+:: spring-graal-native-configuration jar.
+:: we need to list only the exact jar since there is another one in test-classes
+del /F /Q config_jar.txt > NUL 2>&1
+dir /S /B ..\spring-graal-native\spring-graal-native-configuration\target\spring-graal-native-configuration-0.6.0.BUILD-SNAPSHOT.jar > config_jar.txt
+set CONFIG_JAR=
+for /f %%i in (config_jar.txt) do set CONFIG_JAR=%%i;
+set CP=%CP%;%CONFIG_JAR%
+
+:: spring-graal-native-substitutions jar.
+:: we need to list only the exact jar since there is another one in test-classes
+del /F /Q substitutions_jar.txt > NUL 2>&1
+dir /S /B ..\spring-graal-native\spring-graal-native-substitutions\target\spring-graal-native-substitutions-0.6.0.BUILD-SNAPSHOT.jar > substitutions_jar.txt
+set SUBSTITUTIONS_JAR=
+for /f %%i in (substitutions_jar.txt) do set SUBSTITUTIONS_JAR=%%i;
+set CP=%CP%;%SUBSTITUTIONS_JAR%
+
 :: compile with graal native-image
 echo :::::::: Compiling with graal native-image
 call %GRAALVM_HOME%\bin\native-image ^
-  --verbose ^
   -cp %CP% -jar ..\%WAR%
 ::  -cp %CP% org.fabri1983.signaling.SignalingEntryPoint
 

@@ -22,8 +22,9 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		
 		<!-- default flag values -->
-		<skip.docker.build>false</skip.docker.build>
+		<skip.docker.build>true</skip.docker.build>
 		<skip.proguard>true</skip.proguard>
+		<skip.native.build>true</skip.native.build>
 		
 		<!-- Signaling Server -->
 		<start-class>org.fabri1983.signaling.SignalingEntryPoint</start-class>
@@ -165,6 +166,102 @@
 			<properties>
 				<spring.profiles.active>eventbus-hazelcast</spring.profiles.active>
 			</properties>
+		</profile>
+		<profile>
+			<id>docker</id>
+			<properties>
+				<skip.docker.build>false</skip.docker.build>
+				<skip.native.build>true</skip.native.build>
+			</properties>
+		</profile>
+		<profile>
+			<id>graal</id>
+			<properties>
+				<skip.docker.build>true</skip.docker.build>
+				<skip.native.build>false</skip.native.build>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context-indexer</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.experimental</groupId>
+					<artifactId>spring-graal-native</artifactId>
+					<version>0.6.0.BUILD-SNAPSHOT</version>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.experimental</groupId>
+					<artifactId>spring-graal-native-configuration</artifactId>
+					<version>0.6.0.BUILD-SNAPSHOT</version>
+				</dependency>
+			</dependencies>
+			<repositories>
+				<repository>
+					<id>central</id>
+					<url>https://repo.maven.apache.org/maven2</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>spring-release</id>
+					<name>Spring release</name>
+					<url>https://repo.spring.io/release</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>spring-snapshot</id>
+					<name>Spring Snapshots</name>
+					<url>https://repo.spring.io/snapshot</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>spring-milestone</id>
+					<name>Spring Milestone</name>
+					<url>https://repo.spring.io/milestone</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+				<pluginRepositories>
+					<pluginRepository>
+						<id>central</id>
+						<url>https://repo.maven.apache.org/maven2</url>
+						<snapshots>
+							<enabled>false</enabled>
+						</snapshots>
+					</pluginRepository>
+					<pluginRepository>
+						<id>spring-release</id>
+						<name>Spring release</name>
+						<url>https://repo.spring.io/release</url>
+						<snapshots>
+							<enabled>false</enabled>
+						</snapshots>
+					</pluginRepository>
+					<pluginRepository>
+						<id>spring-snapshot</id>
+						<name>Spring Snapshots</name>
+						<url>https://repo.spring.io/snapshot</url>
+						<snapshots>
+							<enabled>true</enabled>
+						</snapshots>
+					</pluginRepository>
+					<pluginRepository>
+						<id>spring-milestone</id>
+						<name>Spring Milestone</name>
+						<url>https://repo.spring.io/milestone</url>
+						<snapshots>
+							<enabled>false</enabled>
+						</snapshots>
+					</pluginRepository>
+				</pluginRepositories>
 		</profile>
 		<profile>
 			<id>Windows</id>
@@ -352,7 +449,7 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			<!-- If using Proguard Maven plugin then put the spring-boot-maven-plugin after proguard plugin -->
+			<!-- If using Proguard Maven plugin then put the spring-boot-maven-plugin AFTER proguard plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -370,6 +467,7 @@
 						<resource>
 							<filtering>true</filtering>
 							<directory>src/main/webapp</directory>
+							<!-- Next files have place holders to be replaced by property values -->
 							<includes>
 								<include>js/common.js</include>
 								<include>videochat.html</include>
@@ -379,6 +477,43 @@
 					</webResources>
 				</configuration>
 	        </plugin>
+			<plugin>
+				<groupId>org.graalvm.nativeimage</groupId>
+				<artifactId>native-image-maven-plugin</artifactId>
+				<version>20.0.0</version>
+				<configuration>
+					<skip>${skip.native.build}</skip>
+					<buildArgs>
+						--verbose
+						--static
+						--no-fallback
+						--allow-incomplete-classpath
+						--report-unsupported-elements-at-runtime
+						--enable-all-security-services
+						--initialize-at-build-time=org.eclipse.jdt,org.apache.el.parser.SimpleNode,javax.servlet.jsp.JspFactory,org.apache.jasper.servlet.JasperInitializer,org.apache.jasper.runtime.JspFactoryImpl,org.hibernate.validator.internal.engine.messageinterpolation,org.hibernate.validator.internal.engine.resolver,ch.qos.logback.core.status,javax.persistence,org.codehaus.janino,org.codehaus.commons,org.springframework.validation.beanvalidation.LocaleContextMessageInterpolator,org.apache.logging.slf4j.SLF4JLogger,ch.qos.logback.core.rolling.RollingFileAppender,ch.qos.logback.core.recovery.ResilientFileOutputStream,ch.qos.logback.core.Appender,ch.qos.logback.classic.AsyncAppender,org.slf4j.Logger,org.hibernate.validator.HibernateValidator
+						--initialize-at-run-time=com.hazelcast.instance.DefaultNodeExtension,org.apache.logging.log4j.core.pattern.JAnsiTextRenderer,org.springframework.boot.validation.MessageInterpolatorFactory
+						-H:Name=${project.build.finalName}
+						-H:EnableURLProtocols=http,https,ws,wss,jar
+						-H:+ReportExceptionStackTraces
+						-H:+TraceClassInitialization
+						-Dsun.rmi.transport.tcp.maxConnectionThreads=0
+						-Djava.awt.headless=true
+						-Dsun.java2d.xrender=false
+						-Dspring.graal.remove-unused-autoconfig=true
+						-Dspring.graal.skip-yaml=true
+						-J-Xmx7000m
+						-jar ${project.build.finalName}.${project.packaging}
+  					</buildArgs>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>native-image</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+			</plugin>
 	        <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>

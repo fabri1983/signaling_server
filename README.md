@@ -14,10 +14,9 @@ It is cluster aware by using a distributed event bus backed by *Hazelcast* with 
 
 - Uses Maven 3.6.x. You can use `mvnw` if you don't have Maven installed in your host.
 - Uses Spring Boot 2.2.3.RELEASE.
-- After Spring Boot repackages the final *WAR* file, a Docker image is built. So you need to get Docker installed and running. 
-If not Docker installed then use `-Dskip.docker.build=true` to skip the docker build.
-- Runs on **Java 8** and **Java 11** (default profile is *java11*). 
-- Native image generation using GraalVM: currently struggling with *Spring Graal Native* plugin to correctly create a native image.
+- After Spring Boot repackages the final *WAR* file, a Docker image can be built using the profile `docker`. So you need to get Docker installed and running.
+- Runs on **Java 8** and **Java 11** (default profile is `java11`).
+- Native image generation using GraalVM: It is enabled with profile `graal`. Currently struggling with *Spring Graal Native* plugin to correctly create a native image.
 
 
 ## Create self signed certificate (no chain ca, no SAN -Subject Alternative Names-)
@@ -108,22 +107,29 @@ openssl rsa -in jwt_local_private.key -pubout -outform DER -out jwt_local_public
 
 
 ## Maven Profiles
-**Profiles**  
+**Profiles**
 - `local` (active by default)  
 Sets JWT's signer and verifier private and public keys.
 
 - `java11` (active by default)  
-Sets compiler target to **Java 11** and also uses Dockerfile.java11 file for image generation.
+Sets compiler target to **Java 11** and also uses *Dockerfile.java11* file for image generation.
 
-- `java8`    
-Sets compiler target to **Java 8** and also uses Dockerfile.java8 file for image generation.
+- `java8`  
+Sets compiler target to **Java 8** and also uses *Dockerfile.java8* file for image generation.
 
-**Additional profiles**  
 - `eventbus-local` (active by default)  
+Disable a Spring profile repsonsibly to allow communication between nodes.
+
 - `eventbus-hazelcast`  
-Disables/enables a Spring profile which allows the use of a distributed eventbus.
-  
-Example:  
+Enables a Spring profile which allows the use of a distributed eventbus between exisiting nodes.
+
+- `docker`  
+Fires a docker image creation after package is created. It currenly disables native image generation option.
+
+- `graal`  
+Native image generation using Graal Native Image. It currently disables docker creation option.
+    
+Example:
 ```sh
 mvn clean package -P local,eventbus-hazelcast,java11
 ```
@@ -387,7 +393,7 @@ java.base,java.compiler,java.desktop,java.instrument,java.management.rmi,java.na
 
 - First pack the Signaling Server in a Fat WAR artifact using Spring Boot maven plugin:
 ```bash
-mvn clean package -P local,eventbus-hazelcast,java11
+mvn clean package -P local,eventbus-hazelcast,java11,docker
 ```
 
 - **Create a multi layer Docker image for Spring Boot app**:
@@ -449,11 +455,29 @@ docker-compose -f target/docker-compose-local.yml stop|start
     docker inspect -f "{{ .NetworkSettings.IPAddress }}" <containerNameOrId>
     ```
 
-## Native Image generation with GraalVM
-**NOTE**: work in progress due to logback logging api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time phase.  
-**NOTE**: currently targeting graalvm 19.2.0.1.  
-- You first need to build the signaling project and generate the WAR artifact for *java8* or *java11* depending on what graalvm installation you are targeting.
-  - `mvn clean package -P local,eventbus-hazelcast,java8 -Dskip.docker.build=true`
+
+## Native Image generation with GraalVM using Maven native-image plugin
+**NOTE**: work in progress due to logback api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time phase.  
+**NOTE**: currently targeting graalvm 20.0.0.
+- First set `GRAALMV_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
+- Second set `JAVA_HOME` environment variable to point *GraalVM*. Update your `PATH` as well.
+- Then build the signaling project for *java8* or *java11* (depending on what graalvm installation you are targeting):  
+(**you will need 7GB of free memory!**)
+```bash
+mvn clean package -P graal,local,eventbus-hazelcast,java8
+```
+
+
+## Native Image generation with GraalVM using custom scripts
+**NOTE**: work in progress due to logback api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time phase.  
+**NOTE**: currently targeting graalvm 20.0.0.  
+- First set `GRAALMV_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
+- Then build the signaling project and generate the WAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
+  - Update `pom.xml` modifying Spring Boot version to 2.3.0.M4.
+  - Build package:
+  ```bash
+  mvn clean package -P graal,local,eventbus-hazelcast,java8 -Dskip.native.build=true
+  ```
 - Locate at project root dir and download the [Spring-Graal-Native-Image](https://github.com/spring-projects-experimental/spring-graal-native.git) project:  
 (Next scripts will clone it under target folder)
 ```bash
