@@ -349,6 +349,15 @@
 		</resources>
 		<plugins>
 			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<delimiters>
+						<delimiter>${resource.delimiter}</delimiter>
+					</delimiters>
+					<useDefaultDelimiters>true</useDefaultDelimiters>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>com.coderplus.maven.plugins</groupId>
 				<artifactId>copy-rename-maven-plugin</artifactId>
 				<version>1.0.1</version>

@@ -7,6 +7,9 @@
 [![Code Climate](https://codeclimate.com/github/fabri1983/signaling_server/badges/gpa.svg)](https://codeclimate.com/github/fabri1983/signaling_server)
 
 
+**WIP: trying to make it work with Spring Boot 2.2.x**.
+
+
 This project uses [NextRTC Signaling Server](https://github.com/mslosarz/nextrtc-signaling-server) project (which is no longer maintained).
 I added custom signals, room max participants limit, and other constraints, to provide a complete video call solution between two clients.
 It is cluster aware by using a distributed event bus backed by *Hazelcast* with node auto discovery.

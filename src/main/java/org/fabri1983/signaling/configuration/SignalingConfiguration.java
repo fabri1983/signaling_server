@@ -58,7 +58,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 public class SignalingConfiguration {
 
 	private static final List<String> URL_PATTERNS_FOR_FILTERS = Arrays.asList("/v1/*", "/v2/*", "/v3/*");
-
+	org.nextrtc.signalingserver.domain.Member a;
 	/**
 	 * Disable Tomcat's scan jars feature.
 	 */

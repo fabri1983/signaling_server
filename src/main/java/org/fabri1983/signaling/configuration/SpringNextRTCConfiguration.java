@@ -2,6 +2,9 @@ package org.fabri1983.signaling.configuration;
 
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+
+import javax.websocket.Session;
 
 import org.nextrtc.signalingserver.Names;
 import org.nextrtc.signalingserver.NextRTCComponent;
@@ -9,6 +12,7 @@ import org.nextrtc.signalingserver.api.NextRTCEventBus;
 import org.nextrtc.signalingserver.cases.RegisterMember;
 import org.nextrtc.signalingserver.cases.SignalHandler;
 import org.nextrtc.signalingserver.domain.DefaultMessageSender;
+import org.nextrtc.signalingserver.domain.Member;
 import org.nextrtc.signalingserver.domain.MessageSender;
 import org.nextrtc.signalingserver.domain.Server;
 import org.nextrtc.signalingserver.domain.SignalResolver;
@@ -23,6 +27,7 @@ import org.nextrtc.signalingserver.repository.MemberRepository;
 import org.nextrtc.signalingserver.repository.Members;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.concurrent.ScheduledExecutorFactoryBean;
@@ -93,6 +98,12 @@ public class SpringNextRTCConfiguration {
 	public Server server(NextRTCEventBus eventBus, MemberRepository members, SignalResolver resolver,
 			RegisterMember register, MessageSender sender) {
 		return new Server(eventBus, members, resolver, register, sender);
+	}
+	
+	@Bean
+	@Scope("prototype")
+	public Member member(Session session, ScheduledFuture<?> ping) {
+		return new Member(session, ping);
 	}
 	
 	@Bean

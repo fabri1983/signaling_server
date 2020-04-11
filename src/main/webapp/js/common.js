@@ -89,8 +89,8 @@ function loadAllServers() {
 	// Default credentials to use when not using flag --use-auth-secret.
 	// Created with turnadmin tool.
 	var creds = {
-		user: "@turn.no.auth.user@",
-		pass: "@turn.no.auth.pass@"
+		user: "${turn.no.auth.user}",
+		pass: "${turn.no.auth.pass}"
 	};
 	
 	// Credentials used to access turn server when using flag --use-auth-secret

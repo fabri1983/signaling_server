@@ -1,7 +1,7 @@
 #!/bin/bash
 # If you need to change permissions for execution then do: sudo chmod 775 build-native-image.sh
 
-# NOTE: you first need to build the signaling project and generate the WAR artifact targeting Java 8. Update pom.xml accordingly.
+# NOTE: you first need to build the signaling project and generate the WAR artifact targeting Java 8 or 11. Update pom.xml accordingly.
 
 if [ -z "$GRAALVM_HOME" ] ; then
   echo "Please set GRAALVM_HOME to point to your graalvm installation"
@@ -40,7 +40,7 @@ export CP=.:$LIBPATH_1:$LIBPATH_2
 cd ../..
 
 # spring-graal-native-feature jar being on the classpath is what triggers the Spring Graal auto configuration.
-export CP=$CP:../spring-graal-native/spring-graal-native-feature/target/spring-graal-native-feature-0.7.0.BUILD-SNAPSHOT.jar
+export CP=$CP:../spring-graal-native/spring-graal-native-feature/target/spring-graal-native-feature-0.6.1.BUILD-SNAPSHOT.jar
 
 # compile with graal native-image
 echo :::::::: Compiling with graal native-image
