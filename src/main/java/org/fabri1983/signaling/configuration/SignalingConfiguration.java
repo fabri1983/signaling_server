@@ -2,9 +2,6 @@ package org.fabri1983.signaling.configuration;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
-
-import javax.inject.Inject;
 
 import org.apache.catalina.Context;
 import org.apache.tomcat.util.scan.StandardJarScanner;
@@ -36,13 +33,11 @@ import org.fabri1983.signaling.http.filter.SkipApiExceptionFilter;
 import org.fabri1983.signaling.http.filter.VideochatTokenFilter;
 import org.fabri1983.signaling.http.validator.PresentUserIdValidator;
 import org.fabri1983.signaling.http.validator.VideoChatTokenValidator;
-import org.nextrtc.signalingserver.Names;
 import org.nextrtc.signalingserver.NextRTCComponent;
 import org.nextrtc.signalingserver.api.ConfigurationBuilder;
 import org.nextrtc.signalingserver.api.EndpointConfiguration;
 import org.nextrtc.signalingserver.api.NextRTCEndpoint;
 import org.nextrtc.signalingserver.domain.MessageSender;
-import org.nextrtc.signalingserver.property.NextRTCProperties;
 import org.nextrtc.signalingserver.repository.ConversationRepository;
 import org.nextrtc.signalingserver.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,33 +46,19 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.scheduling.concurrent.ScheduledExecutorFactoryBean;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
-@Configuration
-@Import(value = { LocalSignalingConfiguration.class, HazelcastSignalingConfiguration.class })
-// The next @ComponentScan annotation is used only to let Spring creates all the necessary beans except for the
-// NextRTCEndpoint bean which we don't want to instantiate due to its static instance creation logic which disables
-// completely the use of custom SignalResolver instances.
-@ComponentScan(
-		basePackages = {
-				"org.nextrtc.signalingserver.cases",    "org.nextrtc.signalingserver.domain", 
-				"org.nextrtc.signalingserver.eventbus", "org.nextrtc.signalingserver.factory",
-				"org.nextrtc.signalingserver.modules",  "org.nextrtc.signalingserver.property",
-				"org.nextrtc.signalingserver.repository" }
-)
-@PropertySource(value={"classpath:application.properties", "classpath:nextrtc.properties", "classpath:environment.properties"})
+@Configuration(proxyBeanMethods = false)
+@Import(value = { SpringNextRTCConfiguration.class, LocalSignalingConfiguration.class, HazelcastSignalingConfiguration.class })
+@PropertySource(value = { "classpath:application.properties", "classpath:nextrtc.properties", "classpath:environment.properties" })
 public class SignalingConfiguration {
 
 	private static final List<String> URL_PATTERNS_FOR_FILTERS = Arrays.asList("/v1/*", "/v2/*", "/v3/*");
-	
+
 	/**
 	 * Disable Tomcat's scan jars feature.
 	 */
@@ -91,79 +72,42 @@ public class SignalingConfiguration {
 		};
 	}
 
-	@Inject
-	private ErrorAttributes errorAttributes;
-	
-	/*######################################################################################################
-	 * Next section are beans needed by instances created on org.nextrtc.signalingserver package.
-	 * We manually created them here because we have excluded its configuration class NextRTCConfig.class.
-	 *######################################################################################################*/
-    
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
-        propertyPlaceholderConfigurer.setLocation(new ClassPathResource("nextrtc.properties"));
-        return propertyPlaceholderConfigurer;
-    }
-
-    /**
-     * Ping Scheduler.
-     * 
-     * @param nextRTCProperties
-     * @return
-     */
-    @Bean(name = Names.SCHEDULER_NAME)
-    public ScheduledExecutorService scheduler(NextRTCProperties nextRTCProperties) {
-        ScheduledExecutorFactoryBean factoryBean = new ScheduledExecutorFactoryBean();
-        factoryBean.setThreadNamePrefix(Names.SCHEDULER_NAME);
-        factoryBean.setPoolSize(nextRTCProperties.getSchedulerPoolSize());
-        factoryBean.afterPropertiesSet();
-        return factoryBean.getObject();
-    }
-	
-    @Bean
-    public NextRTCComponent nextRTCComponent() {
-    	return new SpringNextRTCComponent();
-    }
-    
-    /*######################################################################################################*/
-    
 	@Bean
 	public ContextAwareEndpointConfigurator endpointConfigurator(IJwtVerifier jwtVerifier) {
 		return new ContextAwareEndpointConfigurator(jwtVerifier);
 	}
-	
+
 	@Bean
 	public OnOpenHandler onOpenHandler() {
 		return new OnOpenHandler();
 	}
-	
+
 	@Bean
 	public OnMessageHandler onMessageHandler() {
 		return new OnMessageHandler();
 	}
-	
+
 	@Bean
 	public OnErrorHandler onErrorHandler() {
 		return new OnErrorHandler();
 	}
-	
+
 	@Bean
 	public OnCloseHandler onCloseHandler() {
 		return new OnCloseHandler();
 	}
-	
+
 	@Bean
 	public ConversationPopulation population(
 			@Value("${nextrtc.max_participants_per_room}") int maxParticipantsPerRoom) {
 		return new ConversationPopulation(maxParticipantsPerRoom);
 	}
-	
+
 	@Bean
 	public ErrorMessageSender errorMessageSender(MessageSender messageSender) {
 		return new ErrorMessageSender(messageSender);
 	}
-	
+
 	@Bean
 	public IJwtVerifier jwtVerifier(
 			@Value("${jwt.audience}") String audience, 
@@ -183,41 +127,41 @@ public class SignalingConfiguration {
 			return new TaskManager<String>((int)Math.ceil((pingDelaySeconds*1000) * 1.5)); // wait 1.5 times the ping period time
 		}
 	}
-	
+
 	@Bean
 	public ServerEndpointExporter serverEndpointExporter() {
 		return new ServerEndpointExporter();
 	}
-	
+
 	@Bean
 	public SignalingEndpoint signalingEndpoint() {
 		return new SignalingEndpoint();
 	}
 
 	@Bean
-	@ConditionalOnProperty(prefix="app", name="allow.insecure.path", havingValue="true")
+	@ConditionalOnProperty(prefix = "app", name = "allow.insecure.path", havingValue = "true")
 	public SignalingInsecureEndpoint signalingInsecureEndpoint() {
 		return new SignalingInsecureEndpoint();
 	}
-	
+
 	@Bean
-	public AppErrorController appErrorController() {
+	public AppErrorController appErrorController(ErrorAttributes errorAttributes) {
 		return new AppErrorController(errorAttributes);
 	}
-	
+
 	@Bean
 	public PresentUserIdValidator presentUserIdValidator() {
 		return new PresentUserIdValidator();
 	}
-	
+
 	@Bean
 	public VideoChatTokenValidator videoChatTokenValidator(IJwtVerifier jwtVerifier) {
 		return new VideoChatTokenValidator(jwtVerifier);
 	}
-	
+
 	@Bean
 	public NextRTCEndpoint nextRTCEndpoint(ITaskManager<String> pongTaskManager, MessageSender messageSender,
-			MemberRepository members, ConversationRepository conversations, SpringNextRTCComponent springNextRTCComponent,
+			MemberRepository members, ConversationRepository conversations, NextRTCComponent nextRTCComponent,
 			ConversationPopulation population, ErrorMessageSender errorSender) {
 		
 		return new NextRTCEndpoint() {
@@ -228,7 +172,7 @@ public class SignalingConfiguration {
 				// NOTE: This method only called once, no matter how many instances you have from NextRTCEndpoint.
 				
 				// tell NextRTC that use our custom Spring NextRTC Components instead of those loaded with Dagger
-		        EndpointConfiguration configuration = new EndpointConfiguration(springNextRTCComponent);
+		        EndpointConfiguration configuration = new EndpointConfiguration(nextRTCComponent);
 
 				// IMPORTANT: only signals not equal to those from org.nextrtc.signalingserver.domain.Signals can be used
 				

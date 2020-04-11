@@ -40,18 +40,14 @@ export CP=.:$LIBPATH_1:$LIBPATH_2
 cd ../..
 
 # spring-graal-native-feature jar being on the classpath is what triggers the Spring Graal auto configuration.
-export CP=$CP:../spring-graal-native/spring-graal-native-feature/target/spring-graal-native-feature-0.6.0.BUILD-SNAPSHOT.jar
-# spring-graal-native-configuration jar also needs to be present in class path.
-export CP=$CP:../spring-graal-native/spring-graal-native-configuration/target/spring-graal-native-configuration-0.6.0.BUILD-SNAPSHOT.jar
-# spring-graal-native-substitutions jar also needs to be present in class path.
-export CP=$CP:../spring-graal-native/spring-graal-native-substitutions/target/spring-graal-native-substitutions-0.6.0.BUILD-SNAPSHOT.jar
+export CP=$CP:../spring-graal-native/spring-graal-native-feature/target/spring-graal-native-feature-0.7.0.BUILD-SNAPSHOT.jar
 
 # compile with graal native-image
 echo :::::::: Compiling with graal native-image
 $GRAALVM_HOME/bin/native-image --no-server \
-  -cp $CP -jar ../$WAR
-#  -cp $CP org.fabri1983.signaling.SignalingEntryPoint
-
+  -cp $CP \
+  -jar ../$WAR \
+  -H:Class=org.fabri1983.signaling.SignalingEntryPoint
 $GRAALVM_HOME/bin/native-image --server-shutdown
 
 if [[ $? -eq 0 ]] ; then

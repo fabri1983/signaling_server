@@ -135,184 +135,16 @@ mvn clean package -P local,eventbus-hazelcast,java11
 ```
 
 
-## Build WAR file to deploy in Tomcat (external or with Cargo plugin)
-
-#### Maven pom and Spring Bean Configuration setup
-- Edit *pom.xml*:  
-	- add next property:  
-		```xml
-		<javax.websocket.api.version>1.1</javax.websocket.api.version>
-		```  
-	- add next dependencies:  
-		```xml
-		<!-- Java JSR 356 WebSocket -->
-		<dependency>
-			<groupId>javax.websocket</groupId>
-			<artifactId>javax.websocket-api</artifactId>
-			<version>${javax.websocket.api.version}</version>
-			<scope>provided</scope> <!-- provided by Tomcat -->
-		</dependency>
-		<!-- Java JSR 340 Servlet 3.1 or higher -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<scope>provided</scope> <!-- provided by Tomcat -->
-		</dependency>
-		```  
-	- remove next dependencies (if exist):  
-		```xml
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-websocket</artifactId>
-		```  
-	- NextRTC dependency needs to exclude Spring Context dependency:  
-		```xml
-		<dependency>
-			<groupId>org.nextrtc.signalingserver</groupId>
-			<artifactId>nextrtc-signaling-server</artifactId>
-			<version>${nextrtc.signaling.server.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-context</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		```  
-	- remove next build plugins:  
-		```xml		
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-maven-plugin</artifactId>
-		```  
-- Then remnove next beans (if exist) in *SignalingConfiguration* class:
-	- `ServerEndpointExporter serverEndpointExporter()`
-- Edit *application.properties* accordingly. Be aware *server.port* value is *8443*.
-
-#### Eclipse IDE
-- Import as Maven project
-- Configure Dynamic Web project: *Properties -> Project Facets*
-- Set context root to **signaling**: 
-	- *Properties -> Web Project Settings*
-- Active profiles: using `ALT+SHIFT+P` select *local*, *eventbus-local*, *java11* profiles.
-- Build project: `CTRL+B`
-
-#### Deploy on external Tomcat installation
-- Use next configuration on your *<CATALINA_BASE>/conf/server.xml*:
-	```xml
-	<Connector port="8443" protocol="org.apache.coyote.http11.Http11Nio2Protocol" 
-		SSLEnabled="true" clientAuth="false" keyAlias="serverca" keystoreFile="conf/local-keystore.jks" 
-		keystorePass="<keystore-pass>" scheme="https" secure="true" sslProtocol="TLS" />
-	```
-	- You will need to copy local-keystore.jsk into *<CATALINA_BASE>/conf/* folder.
-	- In case you already have a keystore in Tomcat *<CATALINA_BASE>/conf/* folder then you will need to import the signaling certificate into it.
-- Then create Server in Eclipse and choose existing Tomcat installation.
-- Deploy from *Eclipse's Server tab*.
-
-#### Deploy using Cargo plugin with Tomcat
-Add next plugin on *build* section:  
-```xml
-<plugin>
-  <groupId>org.codehaus.cargo</groupId>
-  <artifactId>cargo-maven2-plugin</artifactId>
-  <version>1.7.5</version>
-  <configuration>
-    <container>
-      <containerId>tomcat8x</containerId>
-      <containerUrl>http://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/8.5.42/tomcat-8.5.42.zip</containerUrl>
-      <artifactInstaller>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat</artifactId>
-        <version>${tomcat.version}</version>
-      </artifactInstaller>
-    </container>
-    <configuration>
-      <type>standalone</type>
-      <home>
-        ${project.build.directory}/apache-tomcat-${tomcat.version}
-      </home>
-      <properties>
-        <cargo.start.jvmargs>
-          -Xdebug
-          -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
-          -Xnoagent
-          -Dorg.apache.tomcat.websocket.executorCoreSize=10
-          -Dorg.apache.tomcat.websocket.executorMaxSize=15
-          -Djava.compiler=NONE
-        </cargo.start.jvmargs>
-        <cargo.logging>medium</cargo.logging>
-        <cargo.servlet.port>8443</cargo.servlet.port>
-        <cargo.protocol>https</cargo.protocol>
-        <cargo.tomcat.connector.clientAuth>false</cargo.tomcat.connector.clientAuth>
-        <cargo.tomcat.connector.keyAlias>serverca</cargo.tomcat.connector.keyAlias>
-        <cargo.tomcat.connector.keystoreFile>${project.basedir}/src/main/resources/local-keystore.jks</cargo.tomcat.connector.keystoreFile>
-        <cargo.tomcat.connector.keystorePass>servercapass</cargo.tomcat.connector.keystorePass>
-        <cargo.tomcat.connector.keystoreType>JKS</cargo.tomcat.connector.keystoreType>
-        <cargo.tomcat.connector.sslProtocol>TLS</cargo.tomcat.connector.sslProtocol>
-        <cargo.tomcat.httpSecure>true</cargo.tomcat.httpSecure>
-      </properties>
-    </configuration>
-    <deployables>
-      <deployable>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <type>war</type>
-        <properties>
-          <context>/signaling</context>
-        </properties>
-      </deployable>
-    </deployables>
-  </configuration>
-</plugin>
-```  
-
-#### Access
-- From your client app access it via:
-	- [wss://127.0.0.1:8443/signaling/s-insecure](wss://127.0.0.1:8443/signaling/v1/s-insecure)
-- Or the secured endpoint which after HTTP Upgrade to Websocket it expects and validates headers *vcuser* and *vctoken*:
-	- [wss://127.0.0.1:8443/signaling/s](wss://127.0.0.1:8443/signaling/s)
-See **NextRTC Video Chat exmaple** section.
-
-
 ## Spring Boot Standalone WAR:
 
+#### Eclipse IDE
+- Import as Maven project.
+- Active profiles: using `ALT+SHIFT+P` select *local*, *eventbus-local*, *java11* profiles.
+- Edit *application.properties* accordingly. Be aware *server.port* value is *8443*.
+- Build project: `CTRL+B`.
+- You can the app if using *Eclipse Spring Suite Tools*: just run `SignlaingEntryPoint` as Spring Boot App.
+
 #### Maven pom and Spring Bean Configuration setup
-- On *pom.xml*:
-	- remove next dependencies (if exist):
-		```xml
-		<groupId>javax.websocket</groupId>
-		<artifactId>javax.websocket-api</artifactId>
-		
-		<groupId>javax.servlet</groupId>
-		<artifactId>javax.servlet-api</artifactId>
-		
-		<groupId>javax.servlet</groupId>
-		<artifactId>jstl</artifactId>
-		```
-	- add next depedency
-		```xml
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-websocket</artifactId>
-		</dependency>
-		```
-	- add next build plugins:
-		```xml
-		<plugin>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-maven-plugin</artifactId>
-		</plugin>
-        ```
-	- remove Cargo plugin (if exist):
-		```xml
-		<groupId>org.codehaus.cargo</groupId>
-		<artifactId>cargo-maven2-plugin</artifactId>
-		```
-- Then declare next beans in *SignalingConfiguration* class:
-	```java
-	@Bean
-	public ServerEndpointExporter serverEndpointExporter() {
-		return new ServerEndpointExporter();
-	}
-	```
 - Edit *application.properties* accordingly. Be aware *server.port* value is *8443*.
 - Run:
 ```sh
@@ -356,7 +188,6 @@ This is a working test of the Signaling Server and the videochat client using a 
 Server exposed with [ngrok](https://ngrok.com/).
 
 ![videochat with local signaling](videochat_example_ngrok.jpg?raw=true "videochat with local signaling")
-
 
 
 ## jdeps on a Spring Boot Fat WAR file
@@ -457,20 +288,20 @@ docker-compose -f target/docker-compose-local.yml stop|start
 
 
 ## Native Image generation with GraalVM using Maven native-image plugin
-**NOTE**: work in progress due to logback api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time phase.  
-**NOTE**: currently targeting graalvm 20.0.0.
+**WIP. Executable is created but fails internal Spring Boot War launcher.**
 - First set `GRAALMV_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
 - Second set `JAVA_HOME` environment variable to point *GraalVM*. Update your `PATH` as well.
-- Then build the signaling project for *java8* or *java11* (depending on what graalvm installation you are targeting):  
-(**you will need 7GB of free memory!**)
-```bash
-mvn clean package -P graal,local,eventbus-hazelcast,java8
-```
+- Then build the signaling project and generate the WAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
+  - Update `pom.xml` modifying Spring Boot version to 2.3.0.M4.
+  - Build package:
+  ```bash
+  mvn clean package -P graal,local,eventbus-hazelcast,java8
+  ```
+See the plugin `native-image-maven-plugin` configuration to get an idea what options/flags are used.
 
 
 ## Native Image generation with GraalVM using custom scripts
-**NOTE**: work in progress due to logback api issue and hazelcast instance node creation (issue)(https://github.com/oracle/graal/issues/1508) on image build time phase.  
-**NOTE**: currently targeting graalvm 20.0.0.  
+**WIP. Executable is created but fails internal Spring Boot War launcher.**  
 - First set `GRAALMV_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
 - Then build the signaling project and generate the WAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
   - Update `pom.xml` modifying Spring Boot version to 2.3.0.M4.
@@ -486,7 +317,7 @@ Windows:
 Linux
   clone-spring-graal-native.sh
 ```
-- Generate native image from WAR artifact (**you will need 7GB of free memory!**):  
+- Generate native image from WAR artifact (**you will need 4GB of free memory!**):  
 **Note** that Signaling WAR file contains `META-INF/native-image/org.fabri1983.signaling/native-image.properties` with all the options/flags.
 ```bash
 Windows:
