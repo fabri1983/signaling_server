@@ -33,7 +33,6 @@ import org.fabri1983.signaling.http.filter.SkipApiExceptionFilter;
 import org.fabri1983.signaling.http.filter.VideochatTokenFilter;
 import org.fabri1983.signaling.http.validator.PresentUserIdValidator;
 import org.fabri1983.signaling.http.validator.VideoChatTokenValidator;
-import org.nextrtc.signalingserver.NextRTCComponent;
 import org.nextrtc.signalingserver.api.ConfigurationBuilder;
 import org.nextrtc.signalingserver.api.EndpointConfiguration;
 import org.nextrtc.signalingserver.api.NextRTCEndpoint;
@@ -48,6 +47,7 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
@@ -58,7 +58,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 public class SignalingConfiguration {
 
 	private static final List<String> URL_PATTERNS_FOR_FILTERS = Arrays.asList("/v1/*", "/v2/*", "/v3/*");
-	org.nextrtc.signalingserver.domain.Member a;
+	
 	/**
 	 * Disable Tomcat's scan jars feature.
 	 */
@@ -160,8 +160,9 @@ public class SignalingConfiguration {
 	}
 
 	@Bean
+	@Primary
 	public NextRTCEndpoint nextRTCEndpoint(ITaskManager<String> pongTaskManager, MessageSender messageSender,
-			MemberRepository members, ConversationRepository conversations, NextRTCComponent nextRTCComponent,
+			MemberRepository members, ConversationRepository conversations, SpringNextRTCComponent nextRTCComponent,
 			ConversationPopulation population, ErrorMessageSender errorSender) {
 		
 		return new NextRTCEndpoint() {

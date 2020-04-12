@@ -81,11 +81,6 @@
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast</artifactId>
 		</dependency>
-		<!-- Produces a list of components at Java compile time and captures it in a spring.components -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-indexer</artifactId>
-		</dependency>
 		<!-- Spring Boot's dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
