@@ -63,11 +63,11 @@ COPY --from=STAGING-JRE-MINI $JAVA_HOME/customjre $JAVA_HOME
 COPY --from=STAGING-WAR /staging/app  /app
 
 # Using CMD so it can be overwritten from outside
-CMD java ${ENV_JAVA_MODULES_FOR_HAZELCAST} -cp /app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* ${ENV_JAVA_MAIN_CLASS}
+CMD java ${ENV_JAVA_MODULES_FOR_HAZELCAST} -cp /app/BOOT-INF/classes:/app/BOOT-INF/lib/* ${ENV_JAVA_MAIN_CLASS}
 
 # Using fabric8's run-java.sh
 #CMD JAVA_OPTIONS="${JAVA_OPTS} ${ENV_JAVA_MODULES_FOR_HAZELCAST}" \
 #    JAVA_APP_DIR=/app \
-#    JAVA_CLASSPATH=/app/WEB-INF/classes:/app/WEB-INF/lib/*:/app/WEB-INF/lib-provided/* \
+#    JAVA_CLASSPATH=/app/BOOT-INF/classes:/app/BOOT-INF/lib/* \
 #    JAVA_MAIN_CLASS=${ENV_JAVA_MAIN_CLASS} \
 #    /app/run-java.sh

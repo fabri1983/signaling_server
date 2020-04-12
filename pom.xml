@@ -7,7 +7,7 @@
 	<groupId>org.fabri1983</groupId>
 	<artifactId>signaling</artifactId>
 	<version>1.0.0</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>signaling</name>
 	<description>Signaling Server for WebRTC</description>
 	
@@ -190,7 +190,7 @@
 				<dependency>
 					<groupId>org.springframework.experimental</groupId>
 					<artifactId>spring-graal-native</artifactId>
-					<version>0.7.0.BUILD-SNAPSHOT</version>
+					<version>0.6.0.RELEASE</version>
 				</dependency>
 			</dependencies>
 			<repositories>
@@ -423,6 +423,27 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.graalvm.nativeimage</groupId>
+				<artifactId>native-image-maven-plugin</artifactId>
+				<version>20.0.0</version>
+				<configuration>
+					<skip>${skip.native.build}</skip>
+					<buildArgs>
+						-H:ConfigurationFileDirectories=./META-INF/native-image/org.fabri1983.signaling/
+						-H:ConfigurationFileDirectories=./META-INF/native-image/
+						-H:Class=${start-class}
+  					</buildArgs>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>native-image</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>com.github.wvengen</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
 				<version>2.2.0</version>
@@ -459,50 +480,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>${start-class}</mainClass>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-					</archive>
-					<webResources>
-						<resource>
-							<filtering>true</filtering>
-							<directory>src/main/webapp</directory>
-							<!-- Next files have place holders to be replaced by property values -->
-							<includes>
-								<include>js/common.js</include>
-								<include>videochat.html</include>
-								<include>callTo.html</include>
-							</includes>
-						</resource>
-					</webResources>
-				</configuration>
-	        </plugin>
-			<plugin>
-				<groupId>org.graalvm.nativeimage</groupId>
-				<artifactId>native-image-maven-plugin</artifactId>
-				<version>20.0.0</version>
-				<configuration>
-					<skip>${skip.native.build}</skip>
-					<buildArgs>
-						-H:ConfigurationFileDirectories=./META-INF/native-image/org.fabri1983.signaling/
-						-H:ConfigurationFileDirectories=./META-INF/native-image/
-						-H:Class=${start-class}
-  					</buildArgs>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>native-image</goal>
-						</goals>
-						<phase>package</phase>
-					</execution>
-				</executions>
 			</plugin>
 	        <plugin>
 				<groupId>org.codehaus.mojo</groupId>

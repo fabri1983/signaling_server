@@ -4,6 +4,9 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"[Ljava.lang.StackTraceElement;"
+},
+{
   "name":"boolean[]"
 },
 {
@@ -171,6 +174,14 @@
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
   "methods":[{"name":"setupModule","parameterTypes":["com.fasterxml.jackson.databind.Module$SetupContext"] }]
+},
+{
+  "name":"com.google.common.eventbus.AllowConcurrentEvents",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.eventbus.Subscribe",
+  "allDeclaredMethods":true
 },
 {
   "name":"com.google.common.util.concurrent.AbstractFuture",
@@ -927,20 +938,35 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"com.sun.management.internal.OperatingSystemImpl",
-  "methods":[
-    {"name":"getCommittedVirtualMemorySize","parameterTypes":[] }, 
-    {"name":"getFreePhysicalMemorySize","parameterTypes":[] }, 
-    {"name":"getFreeSwapSpaceSize","parameterTypes":[] }, 
-    {"name":"getProcessCpuLoad","parameterTypes":[] }, 
-    {"name":"getProcessCpuTime","parameterTypes":[] }, 
-    {"name":"getSystemCpuLoad","parameterTypes":[] }, 
-    {"name":"getTotalPhysicalMemorySize","parameterTypes":[] }, 
-    {"name":"getTotalSwapSpaceSize","parameterTypes":[] }
-  ]
+  "name":"dagger.Binds",
+  "allDeclaredMethods":true
 },
 {
   "name":"dagger.Component",
+  "allDeclaredMethods":true
+},
+{
+  "name":"dagger.MapKey",
+  "allDeclaredMethods":true
+},
+{
+  "name":"dagger.Module",
+  "allDeclaredMethods":true
+},
+{
+  "name":"dagger.Provides",
+  "allDeclaredMethods":true
+},
+{
+  "name":"dagger.multibindings.IntoMap",
+  "allDeclaredMethods":true
+},
+{
+  "name":"dagger.multibindings.StringKey",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.beans.ConstructorProperties",
   "allDeclaredMethods":true
 },
 {
@@ -960,8 +986,7 @@
 },
 {
   "name":"java.lang.Class",
-  "allDeclaredMethods":true,
-  "methods":[{"name":"getModule","parameterTypes":[] }]
+  "allDeclaredMethods":true
 },
 {
   "name":"java.lang.ClassLoader",
@@ -988,24 +1013,6 @@
   "allPublicMethods":true
 },
 {
-  "name":"java.lang.Module",
-  "allDeclaredMethods":true,
-  "methods":[
-    {"name":"getName","parameterTypes":[] }, 
-    {"name":"isExported","parameterTypes":["java.lang.String"] }, 
-    {"name":"isExported","parameterTypes":["java.lang.String","java.lang.Module"] }, 
-    {"name":"isOpen","parameterTypes":["java.lang.String","java.lang.Module"] }
-  ]
-},
-{
-  "name":"java.lang.ModuleLayer",
-  "methods":[
-    {"name":"boot","parameterTypes":[] }, 
-    {"name":"configuration","parameterTypes":[] }, 
-    {"name":"modules","parameterTypes":[] }
-  ]
-},
-{
   "name":"java.lang.Object",
   "allDeclaredFields":true,
   "allDeclaredMethods":true
@@ -1017,10 +1024,6 @@
   "name":"java.lang.Runnable",
   "allDeclaredFields":true,
   "allDeclaredMethods":true
-},
-{
-  "name":"java.lang.Runtime",
-  "methods":[{"name":"version","parameterTypes":[] }]
 },
 {
   "name":"java.lang.String",
@@ -1064,31 +1067,6 @@
   "allDeclaredMethods":true
 },
 {
-  "name":"java.lang.invoke.MethodHandles",
-  "methods":[{"name":"privateLookupIn","parameterTypes":["java.lang.Class","java.lang.invoke.MethodHandles$Lookup"] }]
-},
-{
-  "name":"java.lang.invoke.MethodHandles$Lookup",
-  "methods":[{"name":"defineClass","parameterTypes":["byte[]"] }]
-},
-{
-  "name":"java.lang.module.Configuration",
-  "methods":[{"name":"modules","parameterTypes":[] }]
-},
-{
-  "name":"java.lang.module.ModuleReference",
-  "methods":[{"name":"location","parameterTypes":[] }]
-},
-{
-  "name":"java.lang.module.ResolvedModule",
-  "methods":[{"name":"reference","parameterTypes":[] }]
-},
-{
-  "name":"java.lang.reflect.AccessibleObject",
-  "fields":[{"name":"override"}],
-  "methods":[{"name":"canAccess","parameterTypes":["java.lang.Object"] }]
-},
-{
   "name":"java.lang.reflect.AnnotatedElement",
   "allPublicMethods":true
 },
@@ -1097,15 +1075,12 @@
   "allPublicMethods":true
 },
 {
-  "name":"java.lang.reflect.InaccessibleObjectException"
-},
-{
   "name":"java.lang.reflect.Type",
   "allPublicMethods":true
 },
 {
-  "name":"java.net.URLConnection",
-  "methods":[{"name":"setDefaultUseCaches","parameterTypes":["java.lang.String","boolean"] }]
+  "name":"java.nio.DirectByteBuffer",
+  "methods":[{"name":"cleaner","parameterTypes":[] }]
 },
 {
   "name":"java.sql.DriverManager"
@@ -1130,13 +1105,6 @@
   "allDeclaredMethods":true
 },
 {
-  "name":"java.util.Optional",
-  "methods":[
-    {"name":"get","parameterTypes":[] }, 
-    {"name":"isPresent","parameterTypes":[] }
-  ]
-},
-{
   "name":"java.util.concurrent.AbstractExecutorService",
   "allDeclaredFields":true,
   "allDeclaredMethods":true
@@ -1153,9 +1121,6 @@
   "methods":[{"name":"shutdown","parameterTypes":[] }]
 },
 {
-  "name":"java.util.concurrent.Flow$Publisher"
-},
-{
   "name":"java.util.concurrent.ScheduledExecutorService",
   "allDeclaredConstructors":true
 },
@@ -1169,16 +1134,14 @@
   "allDeclaredMethods":true
 },
 {
-  "name":"java.util.jar.JarFile",
-  "methods":[
-    {"name":"<init>","parameterTypes":["java.io.File","boolean","int"] }, 
-    {"name":"isMultiRelease","parameterTypes":[] }, 
-    {"name":"runtimeVersion","parameterTypes":[] }
-  ]
+  "name":"java.util.function.Consumer"
 },
 {
   "name":"java.util.logging.SimpleFormatter",
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"javax.activation.MimeType"
 },
 {
   "name":"javax.annotation.ManagedBean"
@@ -1201,8 +1164,7 @@
   "name":"javax.inject.Provider"
 },
 {
-  "name":"javax.inject.Qualifier",
-  "allDeclaredMethods":true
+  "name":"javax.inject.Qualifier"
 },
 {
   "name":"javax.inject.Scope",
@@ -1217,14 +1179,6 @@
 },
 {
   "name":"javax.naming.ldap.LdapContext"
-},
-{
-  "name":"javax.net.ssl.SSLEngine",
-  "methods":[{"name":"getApplicationProtocol","parameterTypes":[] }]
-},
-{
-  "name":"javax.net.ssl.SSLParameters",
-  "methods":[{"name":"setApplicationProtocols","parameterTypes":["java.lang.String[]"] }]
 },
 {
   "name":"javax.servlet.Filter",
@@ -1302,6 +1256,9 @@
   "name":"javax.validation.executable.ExecutableValidator"
 },
 {
+  "name":"javax.websocket.CloseReason"
+},
+{
   "name":"javax.websocket.Endpoint",
   "allDeclaredMethods":true
 },
@@ -1322,6 +1279,9 @@
   "allDeclaredMethods":true
 },
 {
+  "name":"javax.websocket.Session"
+},
+{
   "name":"javax.websocket.server.ServerContainer"
 },
 {
@@ -1337,6 +1297,12 @@
     {"name":"getNegotiatedExtensions","parameterTypes":["java.util.List","java.util.List"] }, 
     {"name":"getNegotiatedSubprotocol","parameterTypes":["java.util.List","java.util.List"] }
   ]
+},
+{
+  "name":"javax.xml.bind.Binder"
+},
+{
+  "name":"javax.xml.ws.WebServiceRef"
 },
 {
   "name":"org.apache.catalina.core.ApplicationContextFacade",
@@ -1424,10 +1390,6 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"org.apache.catalina.util.LifecycleBase",
-  "methods":[{"name":"initInternal","parameterTypes":[] }]
-},
-{
   "name":"org.apache.coyote.UpgradeProtocol"
 },
 {
@@ -1505,7 +1467,7 @@
   "methods":[{"name":"circularBeanRefResolver","parameterTypes":[] }]
 },
 {
-  "name":"org.fabri1983.signaling.configuration.HazelcastSignalingConfiguration$CircularBeanRefResolver$$EnhancerBySpringCGLIB$$3364a75b",
+  "name":"org.fabri1983.signaling.configuration.HazelcastSignalingConfiguration$CircularBeanRefResolver$$EnhancerBySpringCGLIB$$816127d0",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
@@ -1535,6 +1497,7 @@
   "name":"org.fabri1983.signaling.configuration.SpringNextRTCComponent",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
   "methods":[
     {"name":"conversationRepository","parameterTypes":[] }, 
     {"name":"inject","parameterTypes":["org.nextrtc.signalingserver.api.NextRTCEndpoint"] }, 
@@ -1703,10 +1666,13 @@
   "allPublicMethods":true
 },
 {
+  "name":"org.graalvm.nativeimage.ImageInfo",
+  "methods":[{"name":"inImageCode","parameterTypes":[] }]
+},
+{
   "name":"org.nextrtc.signalingserver.NextRTCComponent",
   "allDeclaredMethods":true,
-  "allPublicMethods":true,
-  "allDeclaredConstructors":true
+  "allPublicMethods":true
 },
 {
   "name":"org.nextrtc.signalingserver.api.NextRTCEndpoint",
@@ -1729,14 +1695,99 @@
   "methods":[{"name":"post","parameterTypes":["java.lang.Object"] }]
 },
 {
+  "name":"org.nextrtc.signalingserver.api.NextRTCEvents$InternalMember"
+},
+{
+  "name":"org.nextrtc.signalingserver.api.NextRTCEvents[]"
+},
+{
+  "name":"org.nextrtc.signalingserver.api.annotation.NextRTCEventListener",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.nextrtc.signalingserver.api.dto.NextRTCConversation",
+  "allDeclaredMethods":true,
+  "allPublicMethods":true
+},
+{
   "name":"org.nextrtc.signalingserver.api.dto.NextRTCMember",
   "allDeclaredMethods":true,
   "allPublicMethods":true
 },
 {
+  "name":"org.nextrtc.signalingserver.cases.AnswerResponseHandler",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.nextrtc.signalingserver.cases.CandidateHandler",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.nextrtc.signalingserver.cases.CreateConversation",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
+  "methods":[{"name":"execute","parameterTypes":["org.nextrtc.signalingserver.domain.InternalMessage"] }]
+},
+{
+  "name":"org.nextrtc.signalingserver.cases.Exchange",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "methods":[{"name":"execute","parameterTypes":["org.nextrtc.signalingserver.domain.InternalMessage"] }]
+},
+{
+  "name":"org.nextrtc.signalingserver.cases.ExchangeSignalsBetweenMembers",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.nextrtc.signalingserver.cases.JoinConversation",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
+  "methods":[{"name":"execute","parameterTypes":["org.nextrtc.signalingserver.domain.InternalMessage"] }]
+},
+{
+  "name":"org.nextrtc.signalingserver.cases.LeftConversation",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
+  "methods":[{"name":"execute","parameterTypes":["org.nextrtc.signalingserver.domain.InternalMessage"] }]
+},
+{
+  "name":"org.nextrtc.signalingserver.cases.OfferResponseHandler",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
   "name":"org.nextrtc.signalingserver.cases.RegisterMember",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.nextrtc.signalingserver.cases.SignalHandler",
+  "allDeclaredMethods":true,
+  "allPublicMethods":true
+},
+{
+  "name":"org.nextrtc.signalingserver.cases.TextMessage",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
+  "methods":[{"name":"execute","parameterTypes":["org.nextrtc.signalingserver.domain.InternalMessage"] }]
+},
+{
+  "name":"org.nextrtc.signalingserver.cases.connection.ConnectionContext",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
   "allDeclaredConstructors":true
 },
 {
@@ -1748,10 +1799,31 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"org.nextrtc.signalingserver.domain.Conversation",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "methods":[
+    {"name":"getId","parameterTypes":[] }, 
+    {"name":"getLeftConversation","parameterTypes":[] }, 
+    {"name":"getMessageSender","parameterTypes":[] }, 
+    {"name":"left","parameterTypes":["org.nextrtc.signalingserver.domain.Member"] }, 
+    {"name":"setLeftConversation","parameterTypes":["org.nextrtc.signalingserver.cases.LeftConversation"] }, 
+    {"name":"setMessageSender","parameterTypes":["org.nextrtc.signalingserver.domain.MessageSender"] }, 
+    {"name":"toString","parameterTypes":[] }
+  ]
+},
+{
   "name":"org.nextrtc.signalingserver.domain.DefaultMessageSender",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
   "methods":[{"name":"send","parameterTypes":["org.nextrtc.signalingserver.domain.InternalMessage"] }]
+},
+{
+  "name":"org.nextrtc.signalingserver.domain.EventContext"
+},
+{
+  "name":"org.nextrtc.signalingserver.domain.InternalMessage"
 },
 {
   "name":"org.nextrtc.signalingserver.domain.Member",
@@ -1768,7 +1840,12 @@
 {
   "name":"org.nextrtc.signalingserver.domain.MessageSender",
   "allDeclaredMethods":true,
-  "allPublicMethods":true,
+  "allPublicMethods":true
+},
+{
+  "name":"org.nextrtc.signalingserver.domain.RTCConnections",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
   "allDeclaredConstructors":true
 },
 {
@@ -1778,7 +1855,28 @@
   "allDeclaredConstructors":true
 },
 {
+  "name":"org.nextrtc.signalingserver.domain.Signal"
+},
+{
   "name":"org.nextrtc.signalingserver.domain.SignalResolver",
+  "allDeclaredMethods":true,
+  "allPublicMethods":true
+},
+{
+  "name":"org.nextrtc.signalingserver.domain.conversation.BroadcastConversation",
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
+  "methods":[
+    {"name":"broadcast","parameterTypes":["org.nextrtc.signalingserver.domain.Member","org.nextrtc.signalingserver.domain.InternalMessage"] }, 
+    {"name":"exchangeSignals","parameterTypes":["org.nextrtc.signalingserver.domain.InternalMessage"] }, 
+    {"name":"has","parameterTypes":["org.nextrtc.signalingserver.domain.Member"] }, 
+    {"name":"isWithoutMember","parameterTypes":[] }, 
+    {"name":"join","parameterTypes":["org.nextrtc.signalingserver.domain.Member"] }
+  ]
+},
+{
+  "name":"org.nextrtc.signalingserver.domain.conversation.MeshConversation",
+  "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allPublicMethods":true,
   "allDeclaredConstructors":true
@@ -1796,30 +1894,83 @@
   "name":"org.nextrtc.signalingserver.domain.resolver.SpringSignalResolver",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
   "methods":[{"name":"afterPropertiesSet","parameterTypes":[] }]
+},
+{
+  "name":"org.nextrtc.signalingserver.eventbus.AbstractEventDispatcher",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "methods":[{"name":"handle","parameterTypes":["org.nextrtc.signalingserver.api.dto.NextRTCEvent"] }]
+},
+{
+  "name":"org.nextrtc.signalingserver.eventbus.EventBusSetup",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.nextrtc.signalingserver.eventbus.EventDispatcher",
+  "allDeclaredMethods":true,
+  "allPublicMethods":true
+},
+{
+  "name":"org.nextrtc.signalingserver.eventbus.SpringEventDispatcher",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.nextrtc.signalingserver.factory.AbstractConversationFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "methods":[{"name":"create","parameterTypes":["java.lang.String","java.lang.String"] }]
+},
+{
+  "name":"org.nextrtc.signalingserver.factory.ConnectionContextFactory",
+  "allDeclaredMethods":true,
+  "allPublicMethods":true
+},
+{
+  "name":"org.nextrtc.signalingserver.factory.ConversationFactory",
+  "allDeclaredMethods":true,
+  "allPublicMethods":true
 },
 {
   "name":"org.nextrtc.signalingserver.factory.MemberFactory",
   "allDeclaredMethods":true,
-  "allPublicMethods":true,
+  "allPublicMethods":true
+},
+{
+  "name":"org.nextrtc.signalingserver.factory.SpringConnectionContextFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
+  "methods":[{"name":"create","parameterTypes":["org.nextrtc.signalingserver.domain.Member","org.nextrtc.signalingserver.domain.Member"] }]
+},
+{
+  "name":"org.nextrtc.signalingserver.factory.SpringConversationFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
   "allDeclaredConstructors":true
 },
 {
   "name":"org.nextrtc.signalingserver.factory.SpringMemberFactory",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
   "methods":[{"name":"create","parameterTypes":["javax.websocket.Session","java.util.concurrent.ScheduledFuture"] }]
 },
 {
   "name":"org.nextrtc.signalingserver.property.NextRTCProperties",
   "allDeclaredMethods":true,
-  "allPublicMethods":true,
-  "allDeclaredConstructors":true
+  "allPublicMethods":true
 },
 {
   "name":"org.nextrtc.signalingserver.property.SpringNextRTCProperties",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
   "methods":[
     {"name":"getMaxConnectionSetupTime","parameterTypes":[] }, 
     {"name":"getPingPeriod","parameterTypes":[] }, 
@@ -1830,13 +1981,13 @@
 {
   "name":"org.nextrtc.signalingserver.repository.ConversationRepository",
   "allDeclaredMethods":true,
-  "allPublicMethods":true,
-  "allDeclaredConstructors":true
+  "allPublicMethods":true
 },
 {
   "name":"org.nextrtc.signalingserver.repository.Conversations",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
   "methods":[
     {"name":"findBy","parameterTypes":["java.lang.String"] }, 
     {"name":"findBy","parameterTypes":["org.nextrtc.signalingserver.domain.Member"] }, 
@@ -1848,13 +1999,13 @@
 {
   "name":"org.nextrtc.signalingserver.repository.MemberRepository",
   "allDeclaredMethods":true,
-  "allPublicMethods":true,
-  "allDeclaredConstructors":true
+  "allPublicMethods":true
 },
 {
   "name":"org.nextrtc.signalingserver.repository.Members",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
   "methods":[
     {"name":"findBy","parameterTypes":["java.lang.String"] }, 
     {"name":"getAllIds","parameterTypes":[] }, 
@@ -4111,13 +4262,25 @@
   "allDeclaredConstructors":true
 },
 {
-  "name":"sun.misc.Unsafe",
-  "allDeclaredFields":true,
+  "name":"sun.management.OperatingSystemImpl",
   "methods":[
-    {"name":"invokeCleaner","parameterTypes":["java.nio.ByteBuffer"] }, 
-    {"name":"objectFieldOffset","parameterTypes":["java.lang.reflect.Field"] }, 
-    {"name":"putBoolean","parameterTypes":["java.lang.Object","long","boolean"] }
+    {"name":"getCommittedVirtualMemorySize","parameterTypes":[] }, 
+    {"name":"getFreePhysicalMemorySize","parameterTypes":[] }, 
+    {"name":"getFreeSwapSpaceSize","parameterTypes":[] }, 
+    {"name":"getProcessCpuLoad","parameterTypes":[] }, 
+    {"name":"getProcessCpuTime","parameterTypes":[] }, 
+    {"name":"getSystemCpuLoad","parameterTypes":[] }, 
+    {"name":"getTotalPhysicalMemorySize","parameterTypes":[] }, 
+    {"name":"getTotalSwapSpaceSize","parameterTypes":[] }
   ]
+},
+{
+  "name":"sun.misc.Cleaner",
+  "methods":[{"name":"clean","parameterTypes":[] }]
+},
+{
+  "name":"sun.misc.Unsafe",
+  "allDeclaredFields":true
 },
 {
   "name":"sun.nio.ch.SelectorImpl",

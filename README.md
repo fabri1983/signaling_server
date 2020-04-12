@@ -14,7 +14,7 @@ It is cluster aware by using a distributed event bus backed by *Hazelcast* with 
 
 - Uses Maven 3.6.x. You can use `mvnw` if you don't have Maven installed in your host.
 - Uses Spring Boot 2.2.3.RELEASE.
-- After Spring Boot repackages the final *WAR* file, a Docker image can be built using the profile `docker`. So you need to get Docker installed and running.
+- After Spring Boot repackages the final *JAR* file, a Docker image can be built using the profile `docker`. So you need to get Docker installed and running.
 - Runs on **Java 8** and **Java 11** (default profile is `java11`).
 - Native image generation using GraalVM: It is enabled with profile `graal`. Currently struggling with *Spring Graal Native* plugin to correctly create a native image.
 
@@ -135,7 +135,7 @@ mvn clean package -P local,eventbus-hazelcast,java11
 ```
 
 
-## Spring Boot Standalone WAR:
+## Spring Boot Standalone JAR:
 
 #### Eclipse IDE
 - Import as Maven project.
@@ -149,7 +149,7 @@ mvn clean package -P local,eventbus-hazelcast,java11
 - Run:
 ```sh
 mvn clean package
-java -jar target/signaling.war
+java -jar target/signaling.jar
 ```
 	
 #### Access
@@ -190,26 +190,26 @@ Server exposed with [ngrok](https://ngrok.com/).
 ![videochat with local signaling](videochat_example_ngrok.jpg?raw=true "videochat with local signaling")
 
 
-## jdeps on a Spring Boot Fat WAR file
+## jdeps on a Spring Boot Fat JAR file
 
 Use `jdeps` to know which java modules the final application needs to run. Note that we are using `--multi-release=11`.
 
-- *NOTE*: *this guide is only valid for Spring Boot fat WAR due to internal WAR structure. For a fat JAR package you will need to make some adjustments.*
+- *NOTE*: *this guide is only valid for Spring Boot fat JAR due to internal structure.*
 
 - Windows:
 ```bash
 mkdir target\docker-workdir
-cd target\docker-workdir && jar -xf ..\signaling.war && cd ..\..
+cd target\docker-workdir && jar -xf ..\signaling.jar && cd ..\..
 jdeps --add-modules=ALL-MODULE-PATH --ignore-missing-deps --multi-release=11 --print-module-deps ^
-  -cp target\docker-workdir\WEB-INF\lib\*;target\docker-workdir\WEB-INF\lib-provided\* target\docker-workdir\WEB-INF\classes
+  -cp target\docker-workdir\BOOT-INF\lib\* target\docker-workdir\BOOT-INF\classes
 ```
 
 - Linux:
 ```bash
 mkdir target\docker-workdir
-cd target\docker-workdir && jar -xf ..\signaling.war && cd ..\..
+cd target\docker-workdir && jar -xf ..\signaling.jar && cd ..\..
 jdeps --add-modules=ALL-MODULE-PATH --ignore-missing-deps --multi-release=11 --print-module-deps \
-  -cp target/docker-workdir/WEB-INF/lib/*;target/docker-workdir/WEB-INF/lib-provided/* target/docker-workdir/WEB-INF/classes
+  -cp target/docker-workdir/BOOT-INF/lib/* target/docker-workdir/BOOT-INF/classes
 ```
 
 - Example Output:
@@ -220,9 +220,9 @@ java.base,java.compiler,java.desktop,java.instrument,java.management.rmi,java.na
 
 ## Run with Docker and test Distributed Event Bus with Hazelcast
 
-- *NOTE*: this guide is only valid for Spring Boot Fat WAR due to internal WAR structure. If it's a JAR then modify scripts accordingly.
+- *NOTE*: this guide is only valid for Spring Boot Fat JAR due to internal structure.
 
-- First pack the Signaling Server in a Fat WAR artifact using Spring Boot maven plugin:
+- First pack the Signaling Server in a Fat JAR artifact using Spring Boot maven plugin:
 ```bash
 mvn clean package -P local,eventbus-hazelcast,java11,docker
 ```
@@ -232,7 +232,7 @@ In order to take advantage of less frequency changes the [Dockerfile.java8](src/
 [Dockerfile.java11](src/main/docker/Dockerfile.java11) file both define a multi layer image, so next time image build is 
 fired it only updates application code.  
 Script **docker-build.<bat|sh>** is moved to `target` folder during maven life cycle.  
-It decompress the WAR file and creates the multi layer Docker image.  
+It decompress the JAR file and creates the multi layer Docker image.  
 Keep an eye on the context size sent to Docker's context:
 ```bash
 Sending build context to Docker daemon  36.12MB   (this is the size with all libs)
@@ -288,10 +288,10 @@ docker-compose -f target/docker-compose-local.yml stop|start
 
 
 ## Native Image generation with GraalVM using Maven native-image plugin
-**WIP. Executable is created but fails internal Spring Boot War launcher.**
+**WIP. Currently facing Class javax.websocket.Session not found. Which is expected since websocket is not supported in native-image yet.**
 - First set `GRAALMV_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
 - Second set `JAVA_HOME` environment variable to point *GraalVM*. Update your `PATH` as well.
-- Then build the signaling project and generate the WAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
+- Then build the signaling project and generate the JAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
   - Update `pom.xml` modifying Spring Boot version to 2.3.0.M4.
   - Build package:
   ```bash
@@ -301,9 +301,9 @@ See the plugin `native-image-maven-plugin` configuration to get an idea what opt
 
 
 ## Native Image generation with GraalVM using custom scripts
-**WIP. Executable is created but fails internal Spring Boot War launcher.**  
+**WIP. Executable is created but fails main class execution.**  
 - First set `GRAALMV_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
-- Then build the signaling project and generate the WAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
+- Then build the signaling project and generate the JAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
   - Update `pom.xml` modifying Spring Boot version to 2.3.0.M4.
   - Build package:
   ```bash
@@ -317,8 +317,8 @@ Windows:
 Linux
   clone-spring-graal-native.sh
 ```
-- Generate native image from WAR artifact (**you will need 4GB of free memory!**):  
-**Note** that Signaling WAR file contains `META-INF/native-image/org.fabri1983.signaling/native-image.properties` with all the options/flags.
+- Generate native image from JAR artifact (**you will need 4GB of free memory!**):  
+**Note** that Signaling JAR file contains `META-INF/native-image/org.fabri1983.signaling/native-image.properties` with all the options/flags.
 ```bash
 Windows:
   build-native-image.bat

@@ -11,5 +11,9 @@
 {
   "name":"org.apache.tomcat.jni.SSLContext",
   "methods":[{"name":"sniCallBack","parameterTypes":["long","java.lang.String"] }]
+},
+{
+  "name":"org.springframework.boot.loader.JarLauncher",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 }
 ]
