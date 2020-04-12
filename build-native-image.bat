@@ -1,7 +1,7 @@
 @echo off
 setlocal enableextensions enabledelayedexpansion
 
-:: NOTE: you first need to build the signaling project and generate the WAR artifact targeting Java 8 or 11. Update pom.xml accordingly.
+:: NOTE: you first need to build the signaling project and generate the JAR artifact targeting Java 8 or 11. Update pom.xml accordingly.
  
 if "%GRAALVM_HOME%"=="" (
 	echo Variable GRAALVM_HOME is NOT defined
@@ -14,26 +14,24 @@ cd target\spring-graal-native\spring-graal-native-feature
 call mvn clean package
 cd ..\..\..
 
-set WAR=signaling.war
+set JAR=signaling.jar
 
-:: decompress war file to get a classpath with jars and classes
-echo :::::::: Decompressing %WAR% file to build a classpath with jars and classes
+:: decompress jar file to get a classpath with jars and classes
+echo :::::::: Decompressing %JAR% file to build a classpath with jars and classes
 rmdir /Q /S target\graal-build > NUL 2>&1
 mkdir target\graal-build
 cd target\graal-build
-jar -xf ..\%WAR%
-xcopy /E /Q /Y /S META-INF\* WEB-INF\classes\META-INF\
-:: remove native-image folder because it is later read from the WAR file
-rmdir /Q /S WEB-INF\classes\META-INF\native-image > NUL 2>&1
+jar -xf ..\%JAR%
+xcopy /E /Q /Y /S META-INF\* BOOT-INF\classes\META-INF\
+:: remove native-image folder because it is later read from the JAR file
+rmdir /Q /S BOOT-INF\classes\META-INF\native-image > NUL 2>&1
 rmdir /Q /S META-INF\native-image > NUL 2>&1
 
 :: build classpath with all jars and classes
-cd WEB-INF\classes
+cd BOOT-INF\classes
 set LIBPATH_1=
-set LIBPATH_2=
 for /r "..\lib" %%i in (*.jar) do set LIBPATH_1=!LIBPATH_1!%%i;
-for /r "..\lib-provided" %%i in (*.jar) do set LIBPATH_2=!LIBPATH_2!%%i;
-set CP=%CD%;%LIBPATH_1%;%LIBPATH_2%
+set CP=%CD%;%LIBPATH_1%
 
 :: go back to graal-build folder
 cd ..\..
@@ -50,7 +48,7 @@ set CP=%CP%;%FEATURES_JAR%
 echo :::::::: Compiling with graal native-image
 call %GRAALVM_HOME%\bin\native-image ^
   -cp %CP% ^
-  -jar ..\%WAR% ^
+  -jar ..\%JAR% ^
   -H:Class=org.fabri1983.signaling.SignalingEntryPoint
 
 if %ERRORLEVEL% == 0 (

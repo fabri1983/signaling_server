@@ -1047,6 +1047,9 @@
   "allDeclaredMethods":true
 },
 {
+  "name":"java.lang.annotation.Annotation[]"
+},
+{
   "name":"java.lang.annotation.Documented",
   "allDeclaredMethods":true
 },
@@ -1108,6 +1111,10 @@
   "name":"java.util.concurrent.AbstractExecutorService",
   "allDeclaredFields":true,
   "allDeclaredMethods":true
+},
+{
+  "name":"java.util.concurrent.Callable",
+  "methods":[{"name":"call","parameterTypes":[] }]
 },
 {
   "name":"java.util.concurrent.Executor",
@@ -1458,20 +1465,6 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true
-},
-{
-  "name":"org.fabri1983.signaling.configuration.HazelcastSignalingConfiguration$CircularBeanRefResolver",
-  "allDeclaredFields":true,
-  "allDeclaredMethods":true,
-  "allDeclaredConstructors":true,
-  "methods":[{"name":"circularBeanRefResolver","parameterTypes":[] }]
-},
-{
-  "name":"org.fabri1983.signaling.configuration.HazelcastSignalingConfiguration$CircularBeanRefResolver$$EnhancerBySpringCGLIB$$816127d0",
-  "allDeclaredFields":true,
-  "allDeclaredMethods":true,
-  "allDeclaredConstructors":true,
-  "fields":[{"name":"CGLIB$FACTORY_DATA"}]
 },
 {
   "name":"org.fabri1983.signaling.configuration.LocalSignalingConfiguration"
@@ -3325,16 +3318,8 @@
   "allDeclaredMethods":true
 },
 {
-  "name":"org.springframework.cglib.core.MethodWrapper$MethodWrapperKey$$KeyFactoryByCGLIB$$552be97a",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"org.springframework.cglib.proxy.Enhancer$EnhancerKey",
   "allDeclaredMethods":true
-},
-{
-  "name":"org.springframework.cglib.proxy.Enhancer$EnhancerKey$$KeyFactoryByCGLIB$$4ce19e8f",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.springframework.context.ApplicationContext"
@@ -4210,6 +4195,11 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true
+},
+{
+  "name":"org.springframework.web.servlet.view.JstlView",
+  "allDeclaredMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.springframework.web.servlet.view.UrlBasedViewResolver",

@@ -1,7 +1,7 @@
 #!/bin/bash
 # If you need to change permissions for execution then do: sudo chmod 775 build-native-image.sh
 
-# NOTE: you first need to build the signaling project and generate the WAR artifact targeting Java 8 or 11. Update pom.xml accordingly.
+# NOTE: you first need to build the signaling project and generate the JAR artifact targeting Java 8 or 11. Update pom.xml accordingly.
 
 if [ -z "$GRAALVM_HOME" ] ; then
   echo "Please set GRAALVM_HOME to point to your graalvm installation"
@@ -13,28 +13,24 @@ echo :::::::: Building spring-graal-native
 cd target/spring-graal-native/spring-graal-native-feature
 mvn clean package
 cd ../../..
-cd target/spring-graal-native/spring-graal-native-configuration
-mvn clean package
-cd ../../..
 
-export WAR="signaling.war"
+export JAR="signaling.jar"
 
-# decompress war file to get a classpath with jars and classes
-echo :::::::: Decompressing $WAR file to build a classpath with jars and classes
+# decompress jar file to get a classpath with jars and classes
+echo :::::::: Decompressing $JAR file to build a classpath with jars and classes
 rm -rf target/graal-build 2> /dev/null
 mkdir target/graal-build
 cd target/graal-build
-jar -xf ../$WAR
-cp -R META-INF WEB-INF/classes
-# remove native-image folder because it is later read from the WAR file
-rm -rf WEB-INF/classes/META-INF/native-image 2> /dev/null
+jar -xf ../$JAR
+cp -R META-INF BOOT-INF/classes
+# remove native-image folder because it is later read from the JAR file
+rm -rf BOOT-INF/classes/META-INF/native-image 2> /dev/null
 rm -rf META-INF/native-image 2> /dev/null
 
 # build classpath with all jars and classes
 cd WEB-INF/classes
 export LIBPATH_1=`find ../lib | tr '\n' ':'`
-export LIBPATH_2=`find ../lib-provided | tr '\n' ':'`
-export CP=.:$LIBPATH_1:$LIBPATH_2
+export CP=.:$LIBPATH_1
 
 # go back to graal-build folder
 cd ../..
@@ -46,7 +42,7 @@ export CP=$CP:../spring-graal-native/spring-graal-native-feature/target/spring-g
 echo :::::::: Compiling with graal native-image
 $GRAALVM_HOME/bin/native-image --no-server \
   -cp $CP \
-  -jar ../$WAR \
+  -jar ../$JAR \
   -H:Class=org.fabri1983.signaling.SignalingEntryPoint
 $GRAALVM_HOME/bin/native-image --server-shutdown
 

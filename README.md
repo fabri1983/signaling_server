@@ -288,7 +288,7 @@ docker-compose -f target/docker-compose-local.yml stop|start
 
 
 ## Native Image generation with GraalVM using Maven native-image plugin
-**WIP. Currently facing Class javax.websocket.Session not found. Which is expected since websocket is not supported in native-image yet.**
+**WIP. Currently taking infinte amount of time to build native-image. Investigating.**  
 - First set `GRAALMV_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
 - Second set `JAVA_HOME` environment variable to point *GraalVM*. Update your `PATH` as well.
 - Then build the signaling project and generate the JAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
@@ -297,12 +297,12 @@ docker-compose -f target/docker-compose-local.yml stop|start
   ```bash
   mvn clean package -P graal,local,eventbus-hazelcast,java8
   ```
-See the plugin `native-image-maven-plugin` configuration to get an idea what options/flags are used.
 
 
 ## Native Image generation with GraalVM using custom scripts
-**WIP. Executable is created but fails main class execution.**  
+**WIP. Currently taking infinte amount of time to build native-image. Investigating.**  
 - First set `GRAALMV_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
+- Second set `JAVA_HOME` environment variable to point *GraalVM*. Update your `PATH` as well.
 - Then build the signaling project and generate the JAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
   - Update `pom.xml` modifying Spring Boot version to 2.3.0.M4.
   - Build package:

@@ -1,20 +1,14 @@
 # Dockerfile for Java 8 platform
 
 ######################################################################################################
-FROM adoptopenjdk/openjdk8:x86_64-alpine-jre8u232-b09 AS STAGING-WAR
+FROM adoptopenjdk/openjdk8:x86_64-alpine-jre8u232-b09 AS STAGING-APP
 ARG DEPENDENCIES=docker-workdir
 
 RUN mkdir -p /staging/app/
 
 # Stage dependencies and classes
-COPY ${DEPENDENCIES}/js                   /staging/app/js
 COPY ${DEPENDENCIES}/META-INF             /staging/app/META-INF
-COPY ${DEPENDENCIES}/WEB-INF              /staging/app/WEB-INF
-COPY ${DEPENDENCIES}/callTo.html \
-     ${DEPENDENCIES}/general-error.jsp \
-     ${DEPENDENCIES}/index.html \
-     ${DEPENDENCIES}/videochat.html \
-     ${DEPENDENCIES}/run-java.sh          /staging/app/
+COPY ${DEPENDENCIES}/BOOT-INF             /staging/app/BOOT-INF
 
 # Assign execution permission to fabric8's run-java.sh script
 RUN chmod 755 /staging/app/run-java.sh
@@ -33,8 +27,8 @@ ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS} \
 
 ENV PATH="$PATH:$JAVA_HOME/bin"
 
-# Copy staged decompressed WAR from previous stage
-COPY --from=STAGING-WAR /staging/app  /app
+# Copy staged decompressed JAR from previous stage
+COPY --from=STAGING-APP /staging/app  /app
 
 # Using CMD so it can be overwritten from outside
 CMD java -cp /app/BOOT-INF/classes:/app/BOOT-INF/lib/* ${ENV_JAVA_MAIN_CLASS}

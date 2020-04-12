@@ -7,8 +7,6 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ITopic;
 
-import javax.annotation.PostConstruct;
-
 import org.fabri1983.signaling.core.distributed.NextRTCDistributedEventBus;
 import org.fabri1983.signaling.core.distributed.serialization.NextRTCConversationWrapperSerializerV1;
 import org.fabri1983.signaling.core.distributed.serialization.NextRTCEventWrapperSerializerV1;
@@ -90,14 +88,14 @@ public class HazelcastSignalingConfiguration {
 	 * This class serves the solely purpose of resolve circular bean reference creation, which happens 
 	 * when two or more beans depend on each other.
 	 */
-    @Configuration
-    public static class CircularBeanRefResolver {
-    
-    	// Inject beans here
-    	
-    	@PostConstruct
-	    public void circularBeanRefResolver() {
-	    	// set missing dependencies
-	    }
-    }
+//    @Configuration
+//    public static class CircularBeanRefResolver {
+//    
+//    	// Inject beans here
+//    	
+//    	@PostConstruct
+//	    public void circularBeanRefResolver() {
+//	    	// set missing dependencies
+//	    }
+//    }
 }
