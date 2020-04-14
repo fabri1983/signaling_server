@@ -35,7 +35,7 @@
 		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it replaces Session dependency by custom Connection class -->
 		<auth0.jwt.version>3.8.1</auth0.jwt.version>
 		<hazelcast.version>3.12.5</hazelcast.version> <!-- overrides value from Spring Boot's defaults -->
-		<spring.experimental.graal.version>0.6.0.RELEASE</spring.experimental.graal.version>
+		<spring.experimental.graal.version>0.6.1.RELEASE</spring.experimental.graal.version>
 		
 		<!-- NextRTC Video Chat page -->
 		<turn.no.auth.user>turnUser</turn.no.auth.user>
@@ -210,11 +210,6 @@
     			<dependency>
 					<groupId>org.apache.tomcat</groupId>
 					<artifactId>tomcat-el-api</artifactId>
-					<version>${tomcat.version}</version>
-    			</dependency>
-    			<dependency>
-					<groupId>org.apache.tomcat</groupId>
-					<artifactId>tomcat-jasper-el</artifactId>
 					<version>${tomcat.version}</version>
     			</dependency>
     			<dependency>

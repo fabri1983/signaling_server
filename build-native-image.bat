@@ -39,7 +39,7 @@ cd ..\..
 :: spring-graal-native-feature jar being on the classpath is what triggers the Spring Graal auto configuration.
 :: we need to list only the exact jar since there is another one in test-classes
 del /F /Q features_jar.txt > NUL 2>&1
-dir /S /B ..\spring-graal-native\spring-graal-native-feature\target\spring-graal-native-feature-0.6.1.BUILD-SNAPSHOT.jar > features_jar.txt
+dir /S /B ..\spring-graal-native\spring-graal-native-feature\target\spring-graal-native-feature-0.7.0.BUILD-SNAPSHOT.jar > features_jar.txt
 set FEATURES_JAR=
 for /f %%i in (features_jar.txt) do set FEATURES_JAR=%%i;
 set CP=%CP%;%FEATURES_JAR%

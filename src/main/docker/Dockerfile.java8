@@ -9,6 +9,7 @@ RUN mkdir -p /staging/app/
 # Stage dependencies and classes
 COPY ${DEPENDENCIES}/META-INF             /staging/app/META-INF
 COPY ${DEPENDENCIES}/BOOT-INF             /staging/app/BOOT-INF
+COPY ${DEPENDENCIES}/run-java.sh          /staging/app/
 
 # Assign execution permission to fabric8's run-java.sh script
 RUN chmod 755 /staging/app/run-java.sh
@@ -38,4 +39,4 @@ CMD java -cp /app/BOOT-INF/classes:/app/BOOT-INF/lib/* ${ENV_JAVA_MAIN_CLASS}
 #    JAVA_APP_DIR=/app \
 #    JAVA_CLASSPATH=/app/BOOT-INF/classes:/app/BOOT-INF/lib/* \
 #    JAVA_MAIN_CLASS=${ENV_JAVA_MAIN_CLASS} \
-#    /app/run-java.sh
+#    sh /app/run-java.sh

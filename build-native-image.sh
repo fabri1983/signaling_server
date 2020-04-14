@@ -36,7 +36,7 @@ export CP=.:$LIBPATH_1
 cd ../..
 
 # spring-graal-native-feature jar being on the classpath is what triggers the Spring Graal auto configuration.
-export CP=$CP:../spring-graal-native/spring-graal-native-feature/target/spring-graal-native-feature-0.6.1.BUILD-SNAPSHOT.jar
+export CP=$CP:../spring-graal-native/spring-graal-native-feature/target/spring-graal-native-feature-0.7.0.BUILD-SNAPSHOT.jar
 
 # compile with graal native-image
 echo :::::::: Compiling with graal native-image
