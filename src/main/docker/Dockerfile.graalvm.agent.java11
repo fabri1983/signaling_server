@@ -3,7 +3,7 @@
 # Produced json files must be located at src/main/resources/META-INF/native-image/org.fabri1983.signaling folder in the Signaling project. 
  
 ######################################################################################################
-FROM oracle/graalvm-ce:20.0.0-java8 AS STAGING-APP
+FROM oracle/graalvm-ce:20.0.0-java11 AS STAGING-APP
 ARG DEPENDENCIES=docker-workdir
 
 RUN mkdir -p /staging/app/
@@ -14,17 +14,17 @@ COPY ${DEPENDENCIES}/BOOT-INF             /staging/app/BOOT-INF
 
 
 ######################################################################################################
-FROM oracle/graalvm-ce:20.0.0-java8
+FROM oracle/graalvm-ce:20.0.0-java11
 ARG JAVA_MAIN_CLASS
 
 ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS}
 
 RUN gu install native-image \
-    && mkdir native-config
+    && mkdir -p /app/native-config
 
 # Copy staged decompressed JAR from previous stage
 COPY --from=STAGING-APP /staging/app  /app
 
 # Entry with exec so jvm flags are correctly gathered
-ENTRYPOINT exec java -agentlib:native-image-agent=config-output-dir=/native-config/ \
+ENTRYPOINT exec java -agentlib:native-image-agent=config-output-dir=native-config/ \
    -cp /app/BOOT-INF/classes:/app/BOOT-INF/lib/* ${ENV_JAVA_MAIN_CLASS}

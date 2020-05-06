@@ -289,14 +289,15 @@ docker-compose -f target/docker-compose-local.yml stop|start
 
 ## Native Image generation with GraalVM using Maven native-image plugin
 **WIP. Currently taking infinte amount of time to build native-image. Investigating.**  
-- First set `GRAALMV_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
+- First set `GRAALVM_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
 - Second set `JAVA_HOME` environment variable to point *GraalVM*. Update your `PATH` as well.
 - Then build the signaling project and generate the JAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
-  - Update `pom.xml` modifying Spring Boot version to 2.3.0.M4.
+  - Update `pom.xml` modifying Spring Boot version to 2.3.0.RC1.
   - Build package:
   ```bash
   mvn clean package -P graal,local,eventbus-hazelcast,java8
   ```
+  This will generate native image (**you will need 4GB of free memory!**)
 
 
 ## Native Image generation with GraalVM using custom scripts
@@ -304,7 +305,7 @@ docker-compose -f target/docker-compose-local.yml stop|start
 - First set `GRAALMV_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
 - Second set `JAVA_HOME` environment variable to point *GraalVM*. Update your `PATH` as well.
 - Then build the signaling project and generate the JAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
-  - Update `pom.xml` modifying Spring Boot version to 2.3.0.M4.
+  - Update `pom.xml` modifying Spring Boot version to 2.3.0.RC1.
   - Build package:
   ```bash
   mvn clean package -P graal,local,eventbus-hazelcast,java8 -Dskip.native.build=true
@@ -318,7 +319,7 @@ Linux
   clone-spring-graal-native.sh
 ```
 - Generate native image from JAR artifact (**you will need 4GB of free memory!**):  
-**Note** that Signaling JAR file contains `META-INF/native-image/org.fabri1983.signaling/native-image.properties` with all the options/flags.
+Signaling JAR file contains `META-INF/native-image/org.fabri1983.signaling/native-image.properties` with all the options/flags.
 ```bash
 Windows:
   build-native-image.bat
