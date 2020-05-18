@@ -8,16 +8,16 @@ if [ -z "$GRAALVM_HOME" ] ; then
   exit
 fi
 
-# build spring-graal-native project
-echo :::::::: Building spring-graal-native
-cd target/spring-graal-native/spring-graal-native-feature
+# build spring-graalvm-native project
+echo === Building spring-graalvm-native
+cd target/spring-graalvm-native/spring-graalvm-native-feature
 mvn clean package
 cd ../../..
 
 export JAR="signaling.jar"
 
 # decompress jar file to get a classpath with jars and classes
-echo :::::::: Decompressing $JAR file to build a classpath with jars and classes
+echo === Decompressing $JAR file to build a classpath with jars and classes
 rm -rf target/graal-build 2> /dev/null
 mkdir target/graal-build
 cd target/graal-build
@@ -36,20 +36,21 @@ export CP=.:$LIBPATH_1
 cd ../..
 
 # spring-graal-native-feature jar being on the classpath is what triggers the Spring Graal auto configuration.
-export CP=$CP:../spring-graal-native/spring-graal-native-feature/target/spring-graal-native-feature-0.7.0.BUILD-SNAPSHOT.jar
+export CP=$CP:../spring-graalvm-native/spring-graalvm-native-feature/target/spring-graalvm-native-feature-0.7.0.BUILD-SNAPSHOT.jar
 
 # compile with graal native-image
-echo :::::::: Compiling with graal native-image
-$GRAALVM_HOME/bin/native-image --no-server \
+echo === Compiling with graal native-image
+$GRAALVM_HOME/bin/native-image \
+  --no-server \
   -cp $CP \
   -jar ../$JAR \
   -H:Class=org.fabri1983.signaling.SignalingEntryPoint
 $GRAALVM_HOME/bin/native-image --server-shutdown
 
 if [[ $? -eq 0 ]] ; then
-	echo :::::::: Native image located at target/graal-build/
+	echo === Native image located at target/graal-build/
 else
-	echo :::::::: Failed!
+	echo === Failed!
 fi
 
 # let's go back to project base dir

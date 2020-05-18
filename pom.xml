@@ -14,9 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<!--version>2.2.3.RELEASE</version-->
-		<!--version>2.3.0.RC1</version-->
-		<version>2.2.3.RELEASE</version>
+		<version>2.3.0.RELEASE</version>
 	</parent>
 	
 	<properties>
@@ -35,7 +33,7 @@
 		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it replaces Session dependency by custom Connection class -->
 		<auth0.jwt.version>3.8.1</auth0.jwt.version>
 		<hazelcast.version>3.12.5</hazelcast.version> <!-- overrides value from Spring Boot's defaults -->
-		<spring.experimental.graal.version>0.6.1.RELEASE</spring.experimental.graal.version>
+		<spring.experimental.graal.version>0.7.0.BUILD-SNAPSHOT</spring.experimental.graal.version>
 		
 		<!-- NextRTC Video Chat page -->
 		<turn.no.auth.user>turnUser</turn.no.auth.user>
@@ -183,6 +181,12 @@
 				<skip.native.build>false</skip.native.build>
 			</properties>
 			<dependencies>
+				<!-- The magic of Spring Boot which supports native-image generation -->
+				<dependency>
+					<groupId>org.springframework.experimental</groupId>
+					<artifactId>spring-graalvm-native-build</artifactId> <!-- add -build when using dev snapshots -->
+					<version>${spring.experimental.graal.version}</version>
+				</dependency>
 				<!-- Needed to avoid some native image warnings -->
 				<dependency>
 					<groupId>javax.validation</groupId>
@@ -247,12 +251,6 @@
 					<artifactId>tomcat-websocket-api</artifactId>
 					<version>${tomcat.version}</version>
     			</dependency>
-    			<!-- The magic of Spring Boot which supports native-image generation -->
-				<dependency>
-					<groupId>org.springframework.experimental</groupId>
-					<artifactId>spring-graal-native</artifactId>
-					<version>${spring.experimental.graal.version}</version>
-				</dependency>
 			</dependencies>
 			<repositories>
 				<repository>

@@ -13,7 +13,7 @@ It is cluster aware by using a distributed event bus backed by *Hazelcast* with 
 
 
 - Uses Maven 3.6.x. You can use `mvnw` if you don't have Maven installed in your host.
-- Uses Spring Boot 2.2.3.RELEASE.
+- Uses Spring Boot 2.3.0.RELEASE.
 - After Spring Boot repackages the final *JAR* file, a Docker image can be built using the profile `docker`. So you need to get Docker installed and running.
 - Runs on **Java 8** and **Java 11** (default profile is `java11`).
 - Native image generation using GraalVM: It is enabled with profile `graal`. Currently struggling with *Spring Graal Native* plugin to correctly create a native image.
@@ -292,12 +292,12 @@ docker-compose -f target/docker-compose-local.yml stop|start
 - First set `GRAALVM_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
 - Second set `JAVA_HOME` environment variable to point *GraalVM*. Update your `PATH` as well.
 - Then build the signaling project and generate the JAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
-  - Update `pom.xml` modifying Spring Boot version to 2.3.0.RC1.
+  - Update `pom.xml` modifying Spring Boot version to 2.3.0.RC1 (only if you current Spring Boot version doesn't match).
   - Build package:
   ```bash
   mvn clean package -P graal,local,eventbus-hazelcast,java8
   ```
-  This will generate native image (**you will need 4GB of free memory!**)
+  This will generate native image (**you will need 3.8 GB of free memory!**)
 
 
 ## Native Image generation with GraalVM using custom scripts
@@ -305,7 +305,7 @@ docker-compose -f target/docker-compose-local.yml stop|start
 - First set `GRAALMV_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
 - Second set `JAVA_HOME` environment variable to point *GraalVM*. Update your `PATH` as well.
 - Then build the signaling project and generate the JAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
-  - Update `pom.xml` modifying Spring Boot version to 2.3.0.RC1.
+  - Update `pom.xml` modifying Spring Boot version to 2.3.0.RC1 (only if you current Spring Boot version doesn't match).
   - Build package:
   ```bash
   mvn clean package -P graal,local,eventbus-hazelcast,java8 -Dskip.native.build=true
@@ -318,7 +318,7 @@ Windows:
 Linux
   clone-spring-graal-native.sh
 ```
-- Generate native image from JAR artifact (**you will need 4GB of free memory!**):  
+- Generate native image from JAR artifact (**you will need 3.8 GB of free memory!**):  
 Signaling JAR file contains `META-INF/native-image/org.fabri1983.signaling/native-image.properties` with all the options/flags.
 ```bash
 Windows:
