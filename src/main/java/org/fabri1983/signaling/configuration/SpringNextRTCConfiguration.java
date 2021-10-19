@@ -16,7 +16,7 @@ import org.springframework.scheduling.concurrent.ScheduledExecutorFactoryBean;
  * Beans needed by instances created on org.nextrtc.signalingserver package. 
  * We have excluded its configuration class: NextRTCConfig.class.
  */
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @ComponentScan(
 		basePackages = {
 				"org.nextrtc.signalingserver.cases",    "org.nextrtc.signalingserver.domain", 

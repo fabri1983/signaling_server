@@ -1,7 +1,7 @@
 # Dockerfile for Java 8 platform
 
 ######################################################################################################
-FROM adoptopenjdk/openjdk8:x86_64-alpine-jre8u232-b09 AS STAGING-APP
+FROM adoptopenjdk/openjdk8:x86_64-alpine-jre8u265-b01 AS STAGING-APP
 ARG DEPENDENCIES=docker-workdir
 
 RUN mkdir -p /staging/app/
@@ -16,7 +16,7 @@ RUN chmod 755 /staging/app/run-java.sh
 
 
 ######################################################################################################
-FROM adoptopenjdk/openjdk8:x86_64-alpine-jre8u232-b09
+FROM adoptopenjdk/openjdk8:x86_64-alpine-jre8u265-b01
 ARG JAVA_MAIN_CLASS
 
 # JAVA_HOME needs to be set:

@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.0.RELEASE</version>
+		<version>2.5.5</version>
 	</parent>
 	
 	<properties>
@@ -31,10 +31,10 @@
 		<logger.console.ouput>true</logger.console.ouput> <!-- used on logback.xml -->
 		<spring.profiles.active>default</spring.profiles.active> <!-- default spring profile. Overridden by eventbus-<type> profiles -->
 		<nextrtc.signaling.server.version>1.0.0-RC4</nextrtc.signaling.server.version> <!-- NOTE: since version 1.0.0-RC5 it replaces Session dependency by custom Connection class -->
-		<auth0.jwt.version>3.8.1</auth0.jwt.version>
-		<hazelcast.version>3.12.5</hazelcast.version> <!-- overrides value from Spring Boot's defaults -->
-		<spring.experimental.graal.version>0.7.0.BUILD-SNAPSHOT</spring.experimental.graal.version>
-		
+		<auth0.jwt.version>3.18.2</auth0.jwt.version>
+		<spring.native.version>0.10.4</spring.native.version> <!-- 0.10.4 or 0.10.5-SNAPSHOT -->
+		<native.image.plugin.version>21.2.0</native.image.plugin.version>
+
 		<!-- NextRTC Video Chat page -->
 		<turn.no.auth.user>turnUser</turn.no.auth.user>
 		<turn.no.auth.pass>turnUserPassword</turn.no.auth.pass>
@@ -44,8 +44,75 @@
 		<signaling.insecure.path>/signaling/v1/s-insecure</signaling.insecure.path>
 		<api.rest.videochat.room.url>https://127.0.0.1:8443/v1/users/videochat/room</api.rest.videochat.room.url>
 		
-		<dependency.check.maven.version>5.2.2</dependency.check.maven.version>
+		<dependency.check.maven.version>6.3.1</dependency.check.maven.version>
 	</properties>
+	
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-release</id>
+			<name>Spring release</name>
+			<url>https://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-snapshot</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-milestone</id>
+			<name>Spring Milestone</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-release</id>
+			<name>Spring release</name>
+			<url>https://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-snapshot</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-milestone</id>
+			<name>Spring Milestone</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 	
 	<dependencies>
 		<!-- Logging APIs -->
@@ -175,7 +242,7 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>graal</id>
+			<id>native</id>
 			<properties>
 				<skip.docker.build>true</skip.docker.build>
 				<skip.native.build>false</skip.native.build>
@@ -184,8 +251,8 @@
 				<!-- The magic of Spring Boot which supports native-image generation -->
 				<dependency>
 					<groupId>org.springframework.experimental</groupId>
-					<artifactId>spring-graalvm-native-build</artifactId> <!-- add -build when using dev snapshots -->
-					<version>${spring.experimental.graal.version}</version>
+					<artifactId>spring-native</artifactId> <!-- add -build when using dev snapshots -->
+					<version>${spring.native.version}</version>
 				</dependency>
 				<!-- Needed to avoid some native image warnings -->
 				<dependency>
@@ -252,72 +319,6 @@
 					<version>${tomcat.version}</version>
     			</dependency>
 			</dependencies>
-			<repositories>
-				<repository>
-					<id>central</id>
-					<url>https://repo.maven.apache.org/maven2</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>spring-release</id>
-					<name>Spring release</name>
-					<url>https://repo.spring.io/release</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>spring-snapshot</id>
-					<name>Spring Snapshots</name>
-					<url>https://repo.spring.io/snapshot</url>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>spring-milestone</id>
-					<name>Spring Milestone</name>
-					<url>https://repo.spring.io/milestone</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-				<pluginRepositories>
-					<pluginRepository>
-						<id>central</id>
-						<url>https://repo.maven.apache.org/maven2</url>
-						<snapshots>
-							<enabled>false</enabled>
-						</snapshots>
-					</pluginRepository>
-					<pluginRepository>
-						<id>spring-release</id>
-						<name>Spring release</name>
-						<url>https://repo.spring.io/release</url>
-						<snapshots>
-							<enabled>false</enabled>
-						</snapshots>
-					</pluginRepository>
-					<pluginRepository>
-						<id>spring-snapshot</id>
-						<name>Spring Snapshots</name>
-						<url>https://repo.spring.io/snapshot</url>
-						<snapshots>
-							<enabled>true</enabled>
-						</snapshots>
-					</pluginRepository>
-					<pluginRepository>
-						<id>spring-milestone</id>
-						<name>Spring Milestone</name>
-						<url>https://repo.spring.io/milestone</url>
-						<snapshots>
-							<enabled>false</enabled>
-						</snapshots>
-					</pluginRepository>
-				</pluginRepositories>
 		</profile>
 		<profile>
 			<id>Windows</id>
@@ -467,9 +468,9 @@
 							</fileSets>
 						</configuration>
 					</execution>
-					<!-- copy fabric8 run-java.sh script to target -->
+					<!-- copy fabric8io run-java.sh script to target -->
 					<execution>
-						<id>copy-fabric8-run-java-script</id>
+						<id>copy-fabric8io-run-java-script</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>copy</goal>
@@ -484,7 +485,7 @@
 			<plugin>
 				<groupId>org.graalvm.nativeimage</groupId>
 				<artifactId>native-image-maven-plugin</artifactId>
-				<version>20.0.0</version>
+				<version>${native.image.plugin.version}</version>
 				<configuration>
 					<skip>${skip.native.build}</skip>
 					<buildArgs>
@@ -505,7 +506,7 @@
 			<plugin>
 				<groupId>com.github.wvengen</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
-				<version>2.2.0</version>
+				<version>2.4.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -516,7 +517,7 @@
 				</executions>
 				<configuration>
 					<skip>${skip.proguard}</skip>
-					<proguardVersion>6.1.1</proguardVersion>
+					<proguardVersion>7.1.1</proguardVersion> <!-- 6.3.0 or 7.1.1 -->
 					<proguardInclude>${basedir}/proguard.conf</proguardInclude>
 					<outputDirectory>${project.build.directory}</outputDirectory>
 					<injar>${project.build.finalName}.${project.packaging}</injar>
@@ -527,12 +528,24 @@
 					</options>
 				</configuration>
 				<dependencies>
-					<dependency>
+					<!--dependency>
 						<groupId>net.sf.proguard</groupId>
 						<artifactId>proguard-base</artifactId>
-						<version>6.2.0</version>
+						<version>6.3.0beta1</version>
 						<scope>runtime</scope>
-					</dependency>
+			        </dependency-->
+					<dependency>
+						<groupId>com.guardsquare</groupId>
+						<artifactId>proguard-base</artifactId>
+						<version>7.1.1</version>
+						<scope>runtime</scope>
+			        </dependency>
+			        <dependency>
+						<groupId>com.guardsquare</groupId>
+						<artifactId>proguard-core</artifactId>
+						<version>7.1.1</version>
+						<scope>runtime</scope>
+			        </dependency>
 				</dependencies>
 			</plugin>
 			<!-- If using Proguard Maven plugin then put the spring-boot-maven-plugin AFTER proguard plugin -->
@@ -543,6 +556,7 @@
 	        <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<id>chmod for sh script</id>
@@ -573,7 +587,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.5</version>
+				<version>0.8.7</version>
 				<executions>
 					<execution>
 						<goals>

@@ -26,7 +26,6 @@ import org.fabri1983.signaling.core.task.TaskManager;
 import org.fabri1983.signaling.endpoint.SignalingEndpoint;
 import org.fabri1983.signaling.endpoint.SignalingInsecureEndpoint;
 import org.fabri1983.signaling.endpoint.configurator.ContextAwareEndpointConfigurator;
-import org.fabri1983.signaling.http.controller.AppErrorController;
 import org.fabri1983.signaling.http.filter.ApiExceptionResponseFilter;
 import org.fabri1983.signaling.http.filter.PresentUserIdFilter;
 import org.fabri1983.signaling.http.filter.SkipApiExceptionFilter;
@@ -41,9 +40,13 @@ import org.nextrtc.signalingserver.repository.ConversationRepository;
 import org.nextrtc.signalingserver.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.web.ErrorProperties;
+import org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeAttribute;
+import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -52,7 +55,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @Import(value = { SpringNextRTCConfiguration.class, LocalSignalingConfiguration.class, HazelcastSignalingConfiguration.class })
 @PropertySource(value = { "classpath:application.properties", "classpath:nextrtc.properties", "classpath:environment.properties" })
 public class SignalingConfiguration {
@@ -145,8 +148,10 @@ public class SignalingConfiguration {
 	}
 
 	@Bean
-	public AppErrorController appErrorController(ErrorAttributes errorAttributes) {
-		return new AppErrorController(errorAttributes);
+	public ErrorController appErrorController(ErrorAttributes errorAttributes) {
+		ErrorProperties errorProperties = new ErrorProperties();
+		errorProperties.setIncludeStacktrace(IncludeAttribute.NEVER); // do not show stack trace
+		return new BasicErrorController(errorAttributes, errorProperties);
 	}
 
 	@Bean

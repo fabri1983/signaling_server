@@ -1,9 +1,9 @@
 package org.fabri1983.signaling.core.distributed;
 
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.ITopic;
-import com.hazelcast.core.Message;
-import com.hazelcast.core.MessageListener;
+import com.hazelcast.topic.ITopic;
+import com.hazelcast.topic.Message;
+import com.hazelcast.topic.MessageListener;
 
 import org.fabri1983.signaling.core.distributed.wrapper.NextRTCEventWrapper;
 import org.fabri1983.signaling.core.population.ConversationPopulation;
@@ -30,7 +30,7 @@ public class NextRTCDistributedEventBus extends NextRTCEventBus implements Messa
 			ConversationPopulation population, ConversationRepository conversationRepository, 
 			MemberRepository members) {
 		super();
-		this.instanceId = hazelcastInstance.getCluster().getLocalMember().getUuid();
+		this.instanceId = hazelcastInstance.getCluster().getLocalMember().getUuid().toString();
 		this.hzcTopic = hzcTopic;
 		this.population = population;
 		this.conversationRepository = conversationRepository;

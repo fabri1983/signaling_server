@@ -5,7 +5,7 @@ import com.hazelcast.config.ReliableTopicConfig;
 import com.hazelcast.config.SerializerConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.ITopic;
+import com.hazelcast.topic.ITopic;
 
 import org.fabri1983.signaling.core.distributed.NextRTCDistributedEventBus;
 import org.fabri1983.signaling.core.distributed.serialization.NextRTCConversationWrapperSerializerV1;
@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @Profile( {"eventbus-hazelcast"} )
 public class HazelcastSignalingConfiguration {
 

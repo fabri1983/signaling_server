@@ -7,7 +7,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
-@SpringBootApplication(proxyBeanMethods = false)
+@SpringBootApplication
 @ComponentScan("dummy.package.disable.component.scan")
 @Import(value = { SignalingConfiguration.class })
 public class SignalingEntryPoint extends SpringBootServletInitializer {

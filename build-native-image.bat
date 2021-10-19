@@ -8,9 +8,9 @@ if "%GRAALVM_HOME%"=="" (
 	exit /b
 )
 
-:: build spring-graal-native project
-echo === Building spring-graalvm-native
-cd target\spring-graalvm-native\spring-graalvm-native-feature
+:: build spring-native project
+echo === Building spring-native
+cd target\spring-native\spring-native
 call mvn clean package
 cd ..\..\..
 
@@ -36,22 +36,21 @@ set CP=%CD%;%LIBPATH_1%
 :: go back to graal-build folder
 cd ..\..
 
-:: spring-graal-native-feature jar being on the classpath is what triggers the Spring Graal auto configuration.
+:: spring-graal-native jar being on the classpath is what triggers the Spring Graal auto configuration.
 :: we need to list only the exact jar since there is another one in test-classes
-del /F /Q features_jar.txt > NUL 2>&1
-dir /S /B ..\spring-graalvm-native\spring-graalvm-native-feature\target\spring-graalvm-native-feature-0.7.0.BUILD-SNAPSHOT.jar > features_jar.txt
+del /F /Q spring_graalvm_jars.txt > NUL 2>&1
+dir /S /B ..\spring-native\spring-native\target\spring-graalvm-native-0.10.5-SNAPSHOT.jar > spring_graalvm_jars.txt
 set FEATURES_JAR=
-for /f %%i in (features_jar.txt) do set FEATURES_JAR=%%i;
+for /f %%i in (spring_graalvm_jars.txt) do set FEATURES_JAR=%%i;
 set CP=%CP%;%FEATURES_JAR%
 
 :: compile with graal native-image
 echo === Compiling with graal native-image
 call %GRAALVM_HOME%\bin\native-image ^
-  --no-server ^
   -cp %CP% ^
   -jar ..\%JAR% ^
   -H:Class=org.fabri1983.signaling.SignalingEntryPoint
-$GRAALVM_HOME\bin\native-image --server-shutdown
+::$GRAALVM_HOME\bin\native-image --server-shutdown
 
 if %ERRORLEVEL% == 0 (
 	echo === Native image located at target\graal-build\

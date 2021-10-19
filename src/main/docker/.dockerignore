@@ -1,12 +1,15 @@
 # Ignore folders inside target folder to avoid sending them into Docker daemon
 antrun
+cargo*
 classes
+failsafe-reports
 generated-sources
 generated-test-sources
 logs
 m2e-wtp
 maven-archiver
 maven-status
+native-config
 original*.jar
 original*.war
 proguard_map.txt
@@ -16,6 +19,7 @@ protoc-dependencies
 protoc-plugins
 site
 surefire-reports
+SVM*
 test-classes
 jacoco*
 
@@ -27,4 +31,6 @@ signaling_*.jar
 signaling_*.war
 *.original
 spring-boot-graal-feature
+spring-native
 graal-build
+jdeps-workdir

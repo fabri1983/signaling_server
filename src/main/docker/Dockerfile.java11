@@ -1,7 +1,7 @@
 # Dockerfile for Java 11 platform
 
 ######################################################################################################
-FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.5_10 AS STAGING-JRE-MINI
+FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.8_10 AS STAGING-JRE-MINI
 
 # At this point JAVA_HOME refers to:
 #   adoptopenjdk: /opt/java/openjdk

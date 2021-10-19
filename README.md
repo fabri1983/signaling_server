@@ -1,6 +1,6 @@
 # Signaling Server with Spring Boot Websockets and Docker
 
-[![Build Status](https://travis-ci.org/fabri1983/signaling_server.svg?branch=master)](https://travis-ci.org/fabri1983/signaling_server?branch=master)
+[![Build Status](https://app.travis-ci.com/fabri1983/signaling_server.svg?branch=master)](https://app.travis-ci.com/fabri1983/signaling_server?branch=master)
 &nbsp;&nbsp;&nbsp;&nbsp;
 [![Coverage Status](https://coveralls.io/repos/github/fabri1983/signaling_server/badge.svg?branch=master)](https://coveralls.io/github/fabri1983/signaling_server?branch=master)
 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -13,10 +13,10 @@ It is cluster aware by using a distributed event bus backed by *Hazelcast* with 
 
 
 - Uses Maven 3.6.x. You can use `mvnw` if you don't have Maven installed in your host.
-- Uses Spring Boot 2.3.0.RELEASE.
+- Uses Spring Boot 2.5.5.
 - After Spring Boot repackages the final *JAR* file, a Docker image can be built using the profile `docker`. So you need to get Docker installed and running.
 - Runs on **Java 8** and **Java 11** (default profile is `java11`).
-- Native image generation using GraalVM: It is enabled with profile `graal`. Currently struggling with *Spring Graal Native* plugin to correctly create a native image.
+- Native image generation using GraalVM: It is enabled with profile `native`. Currently struggling with *Spring Graal Native* plugin to correctly create a native image.
 
 
 ## Create self signed certificate (no chain ca, no SAN -Subject Alternative Names-)
@@ -124,10 +124,10 @@ Disable a Spring profile repsonsibly to allow communication between nodes.
 Enables a Spring profile which allows the use of a distributed eventbus between exisiting nodes.
 
 - `docker`  
-Fires a docker image creation after package is created. It currenly disables native image generation option.
+Fires a docker image creation after package is created. It disables native image generation option.
 
-- `graal`  
-Native image generation using Graal Native Image. It currently disables docker creation option.
+- `native`  
+Native image generation using Graal Native Image. It disables docker creation option.
     
 Example:
 ```sh
@@ -198,18 +198,18 @@ Use `jdeps` to know which java modules the final application needs to run. Note 
 
 - Windows:
 ```bash
-mkdir target\docker-workdir
-cd target\docker-workdir && jar -xf ..\signaling.jar && cd ..\..
+mkdir target\jdeps-workdir
+cd target\jdeps-workdir && jar -xf ..\signaling.jar && cd ..\..
 jdeps --add-modules=ALL-MODULE-PATH --ignore-missing-deps --multi-release=11 --print-module-deps ^
-  -cp target\docker-workdir\BOOT-INF\lib\* target\docker-workdir\BOOT-INF\classes
+  -cp target\jdeps-workdir\BOOT-INF\lib\* target\jdeps-workdir\BOOT-INF\classes
 ```
 
 - Linux:
 ```bash
-mkdir target\docker-workdir
-cd target\docker-workdir && jar -xf ..\signaling.jar && cd ..\..
+mkdir target\jdeps-workdir
+cd target\jdeps-workdir && jar -xf ..\signaling.jar && cd ..\..
 jdeps --add-modules=ALL-MODULE-PATH --ignore-missing-deps --multi-release=11 --print-module-deps \
-  -cp target/docker-workdir/BOOT-INF/lib/* target/docker-workdir/BOOT-INF/classes
+  -cp target/jdeps-workdir/BOOT-INF/lib/* target/jdeps-workdir/BOOT-INF/classes
 ```
 
 - Example Output:
@@ -292,10 +292,10 @@ docker-compose -f target/docker-compose-local.yml stop|start
 - First set `GRAALVM_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
 - Second set `JAVA_HOME` environment variable to point *GraalVM*. Update your `PATH` as well.
 - Then build the signaling project and generate the JAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
-  - Update `pom.xml` modifying Spring Boot version to 2.3.0.RC1 (only if you current Spring Boot version doesn't match).
+  - Update `pom.xml` modifying Spring Boot version to 2.4.0 (only if you current Spring Boot version doesn't match).
   - Build package:
   ```bash
-  mvn clean package -P graal,local,eventbus-hazelcast,java8
+  mvn clean package -P native,local,eventbus-hazelcast,java8
   ```
   This will generate native image (**you will need 3.8 GB of free memory!**)
 
@@ -305,18 +305,18 @@ docker-compose -f target/docker-compose-local.yml stop|start
 - First set `GRAALMV_HOME` environment variable to point *GraalVM Java 8* or *Java 11* (depending on what graalvm installation you are targeting).
 - Second set `JAVA_HOME` environment variable to point *GraalVM*. Update your `PATH` as well.
 - Then build the signaling project and generate the JAR artifact for *java8* or *java11* (depending on what graalvm installation you are targeting).
-  - Update `pom.xml` modifying Spring Boot version to 2.3.0.RC1 (only if you current Spring Boot version doesn't match).
+  - Update `pom.xml` modifying Spring Boot version to 2.4.0 (only if you current Spring Boot version doesn't match).
   - Build package:
   ```bash
-  mvn clean package -P graal,local,eventbus-hazelcast,java8 -Dskip.native.build=true
+  mvn clean package -P native,local,eventbus-hazelcast,java8 -Dskip.native.build=true
   ```
 - Locate at project root dir and download the [Spring-Graal-Native-Image](https://github.com/spring-projects-experimental/spring-graal-native.git) project:  
 (Next scripts will clone it under target folder)
 ```bash
 Windows:
-  clone-spring-graal-native.bat
+  clone-spring-native.bat
 Linux
-  clone-spring-graal-native.sh
+  clone-spring-native.sh
 ```
 - Generate native image from JAR artifact (**you will need 3.8 GB of free memory!**):  
 Signaling JAR file contains `META-INF/native-image/org.fabri1983.signaling/native-image.properties` with all the options/flags.
@@ -336,5 +336,5 @@ mvn verify -P local,eventbus-hazelcast,java11,securitycheck -Dskip.docker.build=
 
 
 ## TODO
-- Currently hazelcast configuration uses multicast for service discovery. Add different solutions: 
+- Currently hazelcast configuration uses multicast for service discovery. Add different solutions:  
 https://hazelcast.com/blog/hazelcast-auto-discovery-with-eureka/

@@ -3,7 +3,7 @@
 # Produced json files must be located at src/main/resources/META-INF/native-image/org.fabri1983.signaling folder in the Signaling project. 
  
 ######################################################################################################
-FROM oracle/graalvm-ce:20.0.0-java8 AS STAGING-APP
+FROM oracle/graalvm-ce:20.3.0-java8 AS STAGING-APP
 ARG DEPENDENCIES=docker-workdir
 
 RUN mkdir -p /staging/app/
@@ -14,7 +14,7 @@ COPY ${DEPENDENCIES}/BOOT-INF             /staging/app/BOOT-INF
 
 
 ######################################################################################################
-FROM oracle/graalvm-ce:20.0.0-java8
+FROM oracle/graalvm-ce:20.3.0-java8
 ARG JAVA_MAIN_CLASS
 
 ENV ENV_JAVA_MAIN_CLASS=${JAVA_MAIN_CLASS}

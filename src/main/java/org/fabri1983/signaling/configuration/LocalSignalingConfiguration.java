@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @Profile( {"eventbus-local"} )
 public class LocalSignalingConfiguration {
 
