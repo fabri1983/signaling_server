@@ -1,7 +1,7 @@
 @echo off
 setlocal enableextensions enabledelayedexpansion
 
-:: NOTE: you first need to build the signaling project and generate the JAR artifact targeting Java 8 or 11. Update pom.xml accordingly.
+:: NOTE: you first need to build the signaling project and generate the JAR artifact targeting Java 11 or higher. Update pom.xml accordingly.
  
 if "%GRAALVM_HOME%"=="" (
 	echo Variable GRAALVM_HOME is NOT defined
@@ -39,7 +39,7 @@ cd ..\..
 :: spring-graal-native jar being on the classpath is what triggers the Spring Graal auto configuration.
 :: we need to list only the exact jar since there is another one in test-classes
 del /F /Q spring_graalvm_jars.txt > NUL 2>&1
-dir /S /B ..\spring-native\spring-native\target\spring-graalvm-native-0.10.5-SNAPSHOT.jar > spring_graalvm_jars.txt
+dir /S /B ..\spring-native\spring-native\target\spring-graalvm-native-0.11.1-SNAPSHOT.jar > spring_graalvm_jars.txt
 set FEATURES_JAR=
 for /f %%i in (spring_graalvm_jars.txt) do set FEATURES_JAR=%%i;
 set CP=%CP%;%FEATURES_JAR%
