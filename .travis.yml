@@ -2,7 +2,7 @@ sudo: false
 language: java
 
 jdk:
-  - openjdk8
+  - openjdk11
 
 branches:
   only:
@@ -17,15 +17,15 @@ cache:
 install:
   - java -version
   - mvn --version
-  - mvn --batch-mode clean compile -P java8,local,eventbus-local -DskipTests=true
+  - mvn --batch-mode clean compile -P java11,local,eventbus-local -DskipTests=true
 
 # overrides travis 'script' step
 script:
-  - mvn --batch-mode clean package -P java8,local,eventbus-local -DskipTests=true
+  - mvn --batch-mode clean package -P java11,local,eventbus-local -DskipTests=true
 
 after_success:
   # using environment variable $repo_token set in travis web site
-  - mvn clean test -P java8,local,eventbus-local jacoco:report coveralls:report -DrepoToken=$repo_token
+  - mvn clean test -P java11,local,eventbus-local jacoco:report coveralls:report -DrepoToken=$repo_token
 
 notifications:
   email:
